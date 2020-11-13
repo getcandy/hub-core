@@ -1,0 +1,51 @@
+<template>
+    <div class="mt-1 relative rounded-md shadow-sm">
+        <gc-icon :icon="icon" v-if="icon" class="absolute mt-3 ml-3 text-gray-500" size="sm" />
+        <input
+            :value="value"
+            @input="$emit('input', $event.target.value)"
+            @blur="$emit('blur', $event.target.value)"
+            @focus="$emit('focus', $event.target.value)"
+            :disabled="disabled"
+            :class="{
+                'pr-12': $slots.suffix,
+                'pl-8': $slots.prefix || icon
+            }"
+            class="form-input block w-full sm:text-sm sm:leading-5 disabled:bg-gray-100"
+            :type="type"
+            :placeholder="placeholder"
+            :required="required"
+        />
+        <slot name="suffix" />
+    </div>
+</template>
+
+<script>
+export default {
+    props: {
+        value: {
+            default: null
+        },
+        type: {
+            type: String,
+            default: 'text'
+        },
+        icon: {
+          type: String,
+          default: null
+        },
+        disabled: {
+          type: Boolean,
+          default: false
+        },
+        placeholder: {
+            type: String,
+            default: null
+        },
+        required: {
+          type: Boolean,
+          default: false,
+        }
+    }
+}
+</script>
