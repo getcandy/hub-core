@@ -85,6 +85,7 @@ export default function (moduleOptions) {
 
         // Store
         'store/index.js',
+        'store/user.js',
 
         // Pages
         'pages/Login.vue',

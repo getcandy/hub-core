@@ -54,6 +54,7 @@
       :columns="[
         {label: $t('Name'), field: 'name'},
         {label: $t('Email'), field: 'email'},
+        {label: $t('Customer'), field: 'customer'},
       ]"
     >
       <template v-slot:name="row">
@@ -69,6 +70,10 @@
             }">
               {{ row.email }}
             </nuxt-link>
+      </template>
+      <template v-slot:customer="row">
+        <span v-if="row.customer.data.company_name">{{ row.customer.data.company_name }}</span>
+        <span v-else>{{ row.customer.data.firstname }} {{ row.customer.data.firstname }}</span>
       </template>
     </gc-table>
   </div>
@@ -117,7 +122,7 @@ export default {
   methods: {
     async searchCustomers (keywords) {
       const response = await this.$getcandy.on('Customers').getCustomers(
-        '',
+        'customer',
         20,
         0,
         {

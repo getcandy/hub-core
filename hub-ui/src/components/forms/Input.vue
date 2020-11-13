@@ -13,6 +13,8 @@
             }"
             class="form-input block w-full sm:text-sm sm:leading-5 disabled:bg-gray-100"
             :type="type"
+            :autocomplete="autocomplete"
+            :name="name"
             :placeholder="placeholder"
             :required="required"
         />
@@ -29,6 +31,14 @@ export default {
         type: {
             type: String,
             default: 'text'
+        },
+        autocomplete: {
+          type: String,
+          default: "off",
+        },
+        name: {
+          type: String,
+          default: null
         },
         icon: {
           type: String,

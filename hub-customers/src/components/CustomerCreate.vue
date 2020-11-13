@@ -8,7 +8,13 @@
       <gc-input v-model="customer.lastname" />
     </gc-form-field>
     <gc-form-field :label="$t('Company name')">
-      <gc-input v-model="customer.company_name" />
+      <gc-input v-model="customer.companyName" />
+    </gc-form-field>
+    <gc-form-field :label="$t('Contact Number')">
+      <gc-input v-model="customer.contactNumber" type="tel" />
+    </gc-form-field>
+    <gc-form-field :label="$t('VAT No.')">
+      <gc-input v-model="customer.vatNo" />
     </gc-form-field>
     <gc-form-field v-for="(field, handle) in fields" :key="handle" :label="$t(field.label)">
       <gc-input :type="field.type || 'text'" v-model="customer.fields[handle]" />
@@ -128,7 +134,15 @@ export default {
     save () {
       this.processing = true
       this.setFormErrors({})
-      this.$gc.users.create(this.customer).then((response) => {
+      this.$getcandy.on('Customers').postCustomers(
+        this.customer.firstname,
+        this.customer.lastname,
+        this.customer.contactNumber,
+        this.customer.altContactNumber,
+        this.customer.companyName,
+        this.customer.vatNo,
+        JSON.stringify(this.customer.fields)
+      ).then((response) => {
         this.$emit('created', response.data.data)
       }).catch(err => {
         this.setFormErrors(
@@ -149,10 +163,11 @@ export default {
       return {
         'firstname' : null,
         'lastname' : null,
-        'password': null,
-        'password_confirmation' : null,
-        'email' : null,
-        'fields' : [],
+        'companyName': null,
+        'contactNo': null,
+        'altContactNumber': null,
+        'vatNo': null,
+        'fields' : {},
       }
     }
   }

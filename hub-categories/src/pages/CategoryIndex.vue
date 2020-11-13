@@ -48,7 +48,7 @@
       :search-placeholder="$t('Search categories by attribute')"
       :limit="pageLimit"
       :hoverable="true"
-      type="category"
+      type="categories"
       includes="channels,customer_groups,assets.transforms"
       :hideSearch="true"
       :external-term="searchTerm"

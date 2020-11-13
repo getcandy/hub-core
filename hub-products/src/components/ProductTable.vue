@@ -3,7 +3,7 @@
     :search-placeholder="$t('Search products by attribute or SKU')"
     :limit="limit"
     :external-term="searchTerm"
-    type="product"
+    type="products"
     :checkable="checkable"
     class="has-round-edge"
     includes="channels,customer_groups,family,variants,assets.transforms"

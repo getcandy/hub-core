@@ -76,6 +76,7 @@ import UrlManager from './getcandyhub/components/hub/UrlManager.vue'
 import VersionHistory from './getcandyhub/components/hub/VersionHistory.vue'
 import YoutubeUploader from './getcandyhub/components/forms/YoutubeUploader.vue'
 import { state, mutations, actions } from './getcandyhub/store/index.js';
+import UserStore from './getcandyhub/store/user.js';
 
 Vue.use(HubUi)
 
@@ -258,6 +259,11 @@ export default async ({ app }, inject) => {
         state,
         mutations,
         actions
+      })
+
+      app.store.registerModule('user', {
+        namespaced: true,
+        UserStore
       })
 
       app.store.commit('addSection', {

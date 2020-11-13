@@ -1,25 +1,48 @@
 <template>
   <div>
     <toolbar :heading="user.name">
-
+      <gc-button @click="save">{{ $t('Save User') }}</gc-button>
     </toolbar>
     <div class="bg-white p-6" >
-      <div class="grid gap-4 grid-cols-2">
-        <form-field :label="$t('Name')">
-          <gc-input v-model="user.name" />
-        </form-field>
-        <form-field :label="$t('Email')"  required>
-          <gc-input v-model="user.email" type="email" />
-        </form-field>
+      <div class="flex">
+        <div class="w-3/4">
+          <div class="grid gap-4 grid-cols-2">
+            <form-field :label="$t('Name')" :error="getFirstFormError('name')">
+              <gc-input v-model="user.name" />
+            </form-field>
+            <form-field :label="$t('Email')"  :error="getFirstFormError('email')" required>
+              <gc-input v-model="user.email" type="email" />
+            </form-field>
+          </div>
+          <div class="grid gap-4 grid-cols-2">
+            <form-field :label="$t('New Password')" :error="getFirstFormError('password')">
+              <gc-input v-model="newPassword" type="password" name="password" autocomplete="new-password" />
+            </form-field>
+            <form-field :label="$t('New Password Confirmation')"  required>
+              <gc-input v-model="newPasswordConfirmation" type="password" />
+            </form-field>
+          </div>
+        </div>
+        <div class="w-1/4 ml-6">
+          <div class="rounded border shadow-sm  w-full">
+            <header class="bg-gray-100 p-3 border-b"><h3 class="text-xs uppercase text-gray-600 font-bold">Customer Info</h3></header>
+            <div class="border-b p-3 mb-3">
+              <strong class="">
+                <span v-if="customer.company_name">
+                  {{ customer.company_name }}
+                </span>
+                <span v-else>
+                  {{ customer.firstname }} {{ customer.lastname }}
+                </span>
+              </strong>
+            </div>
+            <div>
+              <span v-for="group in customerGroups" :key="group.id">{{ group.name }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="grid gap-4 grid-cols-2">
-        <form-field :label="$t('New Password')">
-          <gc-input v-model="newPassword" type="password" />
-        </form-field>
-        <form-field :label="$t('New Password Confirmation')"  required>
-          <gc-input v-model="newPasswordConfirmation" type="password" />
-        </form-field>
-      </div>
+
     </div>
     <div class="border-b border-gray-200 px-6">
       <nav class="-mb-px flex">
@@ -48,8 +71,12 @@
 const get = require('lodash/get')
 
 import OrderHistory from './components/OrderHistory.vue'
+import HandlesForms from '@getcandy/hub-core/src/mixins/HandlesForms.js'
 
 export default {
+  mixins: [
+    HandlesForms
+  ],
   components: {
     OrderHistory
   },
@@ -64,24 +91,42 @@ export default {
     }
   },
   async asyncData ({ app, params, query }) {
-
     const response = await app.$getcandy.on('Users').getUsersUserId(params.id, {
       query: {
-        include: 'orders,addresses'
+        include: 'orders,addresses,customer.customerGroups'
       }
     })
-
     return {
       user: get(response, 'data.data'),
       orders: get(response, 'data.data.orders.data', [])
     }
+  },
+  methods: {
+    save () {
+      let data = this.user
 
-    // return {
-    //   item: response.data.data,
-    //   attributeGroups: attributeGroupResponse.data.data,
-    //   type: query.type,
-    //   recyclable: response.data.data.recyclable
-    // }
+      if (this.newPassword) {
+        data = {
+          ...data,
+          password: this.newPassword,
+          password_confirmation : this.newPasswordConfirmation
+        }
+      }
+      this.$getcandy.on('Users').putUsersUserId(this.user.id, data).then(() => {
+        this.$notify.queue('success', this.$t('User updated'))
+      }).catch(error => {
+        this.setFormErrors(error.response.data.errors)
+      });
+    }
+  },
+  computed: {
+    customer () {
+      return get(this.user, 'customer.data', {})
+    },
+    customerGroups () {
+      console.log(this.customer)
+      return get(this.customer, 'customer_groups.data', [])
+    }
   }
 }
 </script>

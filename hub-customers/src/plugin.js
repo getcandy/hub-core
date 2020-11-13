@@ -1,6 +1,7 @@
 import CustomerIndex from './customers/pages/CustomerIndex.vue'
 import CustomerEdit from './customers/pages/CustomerEdit.vue'
 import CustomerOrderHistory from './customers/pages/CustomerOrderHistory.vue'
+import { state, mutations, actions } from './customers/store/customer.js';
 
 export default ({ app }, inject) => {
 
@@ -37,6 +38,14 @@ export default ({ app }, inject) => {
       }
     ]
   })
+
+  app.store.registerModule('customer', {
+    namespaced: true,
+    state,
+    mutations,
+    actions
+  })
+
   // TODO: Try and do this more effeciently
 //   app.router.addRoutes([
 //     {

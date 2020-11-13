@@ -26,7 +26,9 @@
       HasAttributes
     ],
     mounted() {
-      this.$getcandy.on('Categories').getCategories(null, null, true).then(response => {
+      this.$getcandy.on('Categories').getCategories({
+        tree: true
+      }).then(response => {
         this.categories = response.data.data
       })
     },

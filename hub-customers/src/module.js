@@ -11,6 +11,7 @@ export default function (moduleOptions) {
     'pages/CustomerEdit.vue',
     'pages/CustomerDetails.vue',
     'pages/CustomerOrderHistory.vue',
+    'store/customer.js',
   ];
 
   templates.forEach((template) => {

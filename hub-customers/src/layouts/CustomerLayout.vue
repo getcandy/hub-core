@@ -1,24 +1,28 @@
 <template>
-  <default-layout v-if="customer">
-    <toolbar :heading="displayName" :subHeading="customer.company_name">
-    </toolbar>
-    <div class="tabs tabs-large">
-      <ul>
-        <nuxt-link tag="li" exact-active-class="is-active" :to="{
-          name: tab.route,
-          params: $route.params
-        }" v-for="(tab, index) in tabs" :key="index">
-          <a>{{ $t(tab.label) }}</a>
-        </nuxt-link>
-      </ul>
-    </div>
-      <nuxt />
-  </default-layout>
+  <div v-if="customer">
+    <default-layout>
+      <toolbar :heading="displayName" :subHeading="customer.company_name">
+        <gc-button @click="save">Save Customer</gc-button>
+      </toolbar>
+      <div class="tabs tabs-large">
+        <ul>
+          <nuxt-link tag="li" exact-active-class="is-active" :to="{
+            name: tab.route,
+            params: $route.params
+          }" v-for="(tab, index) in tabs" :key="index">
+            <a>{{ $t(tab.label) }}</a>
+          </nuxt-link>
+        </ul>
+      </div>
+        <nuxt />
+    </default-layout>
+  </div>
 </template>
 
 <script>
 const map = require('lodash/map')
 const each = require('lodash/each')
+const get = require('lodash/get')
 import Gravatar from 'vue-gravatar'
 import DefaultLayout from '@getcandy/hub-core/src/layouts/Default.vue'
 
@@ -30,7 +34,6 @@ export default {
   data () {
     return {
       additionalBlocks: [],
-      customer: null,
       details: {},
       selectedGroups: [],
       tabs: [{
@@ -40,11 +43,45 @@ export default {
     }
   },
   async mounted() {
-    const response = await this.$getcandy.on('Customers').getCustomersCustomerId(this.$route.params.id, 'users')
+    const response = await this.$getcandy.on('Customers').getCustomersCustomerId(this.$route.params.id, 'users,customerGroups')
+    this.$store.commit('customer/setModel', response.data.data);
+    this.$store.commit('customer/setCustomerGroups', map(get(response, 'data.data.customer_groups.data', []), (group) => {
+      return group.id
+    }))
+  },
+  methods: {
+    async save () {
+      // Save customer
+      await this.$getcandy.on('Customers').putCustomersCustomerId(
+        this.customer.id,
+        {
+          firstname: this.customer.firstname,
+          lastname: this.customer.lastname,
+          contactNumber: this.customer.contactNumber,
+          altContactNumber: this.customer.altContactNumber,
+          companyName: this.customer.companyName,
+          vatNo: this.customer.vatNo,
+          fields: this.customer.fields
+        }
+      )
 
-    this.customer = response.data.data
+      await this.$getcandy.on('Customers').postCustomersCustomerIdCustomerGroups(
+        this.customer.id,
+        {
+          customer_group_ids: this.customerCustomerGroups
+        }
+      )
+
+      this.$notify.queue('success', 'Customer updated')
+    }
   },
   computed: {
+    customer() {
+      return this.$store.state.customer.model
+    },
+    customerCustomerGroups () {
+      return this.$store.state.customer.customerGroups
+    },
     customerGroups() {
       return this.$store.state.core.customerGroups
     },

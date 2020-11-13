@@ -1,8 +1,5 @@
 <template>
-  <div v-if="customer">
-    <div >
-      Hi
-    </div>
+  <div>
     <div class="tabs tabs-large">
       <ul>
         <nuxt-link tag="li" exact-active-class="is-active" :to="{
@@ -13,7 +10,7 @@
         </nuxt-link>
       </ul>
     </div>
-      <slot v-bind:customer="customer"/>
+    <slot/>
   </div>
 </template>
 
@@ -29,7 +26,6 @@ export default {
   data () {
     return {
       additionalBlocks: [],
-      customer: null,
       details: {},
       selectedGroups: [],
       tabs: [{
@@ -37,11 +33,6 @@ export default {
         route: 'customers.edit'
       }]
     }
-  },
-  async mounted() {
-    const response = await this.$getcandy.on('Customers').getCustomersCustomerId(params.id, 'users')
-
-    this.customer = response.data.data
   },
   computed: {
     customerGroups() {
