@@ -1,0 +1,16 @@
+{
+  "name": "@getcandy/monorepo",
+  "version": "0.9.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "private": true,
+  "scripts": {
+    "dev": "yarn workspace getcandy-hub dev",
+    "bootstrap": "lerna bootstrap --hoist --stream"
+  },
+  "devDependencies": {
+    "lerna": "^3.21.0"
+  }
+}
