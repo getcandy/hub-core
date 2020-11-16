@@ -27,6 +27,14 @@
           <div class="rounded border shadow-sm  w-full">
             <header class="bg-gray-100 p-3 border-b"><h3 class="text-xs uppercase text-gray-600 font-bold">Customer Info</h3></header>
             <div class="border-b p-3 mb-3">
+              <nuxt-link
+                :to="{
+                  name: 'customers.edit',
+                  params: {
+                    id: customer.id
+                  }
+                }"
+              >
               <strong class="">
                 <span v-if="customer.company_name">
                   {{ customer.company_name }}
@@ -35,8 +43,9 @@
                   {{ customer.firstname }} {{ customer.lastname }}
                 </span>
               </strong>
+              </nuxt-link>
             </div>
-            <div>
+            <div class="px-3 pb-2">
               <span v-for="group in customerGroups" :key="group.id">{{ group.name }}</span>
             </div>
           </div>
