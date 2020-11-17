@@ -107,11 +107,11 @@ export default {
       userCreateErrors: [],
       newUser: {
         customer_id: null,
-        firstname: 'Alec',
-        lastname: 'Ritson',
-        email: 'steve@neondigital.co.uk',
-        password: 'hammers',
-        password_confirmation: 'hammers'
+        firstname: '',
+        lastname: '',
+        email: '',
+        password: '',
+        password_confirmation: ''
       }
     }
   },
