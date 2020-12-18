@@ -14,10 +14,10 @@
         {label: $t('Type'), field: 'type'},
       ]"
     >
-      <template v-slot:thumbnail="row">
+      <template v-slot:thumbnail="{ row }">
         <thumbnail-loader width="30px" :asset="row"></thumbnail-loader>
       </template>
-      <template v-slot:name="row">
+      <template v-slot:name="{ row }">
         <nuxt-link
             :to="{
               name: 'recycle-bin-id',
@@ -31,10 +31,10 @@
               {{ row.name }}
             </nuxt-link>
       </template>
-      <template v-slot:deleted_at="row">
+      <template v-slot:deleted_at="{ row }">
         {{ $format.date(row.deleted_at) }}
       </template>
-      <template v-slot:type="row">
+      <template v-slot:type="{ row }">
         {{ getTypeLabel(row.type) }}
       </template>
     </gc-table>

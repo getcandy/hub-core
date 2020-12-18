@@ -59,11 +59,11 @@
         {label: '', field: 'actions'},
       ]"
     >
-      <template v-slot:name="{ name }">
-        {{ name }}
+      <template v-slot:name="{ row }">
+        {{ row.name }}
       </template>
-      <template v-slot:email="{ email }">
-        {{ email }}
+      <template v-slot:email="{ row }">
+        {{ row.email }}
       </template>
       <template v-slot:actions="{ id }">
         <nuxt-link :to="{

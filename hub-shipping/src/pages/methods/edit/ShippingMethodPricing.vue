@@ -19,31 +19,31 @@
               {label: '', field: 'actions'},
             ]"
           >
-            <template v-slot:rate="row">
+            <template v-slot:rate="{ row }">
               {{ $format.currency(row.rate, row.currency.data) }}
             </template>
-            <template v-slot:currency="row">
+            <template v-slot:currency="{ row }">
               {{ row.currency.data.name }}
             </template>
-            <template v-slot:min_basket="row">
+            <template v-slot:min_basket="{ row }">
               {{ $format.currency(row.min_basket, row.currency.data) }}
             </template>
-            <template v-slot:min_weight="{ min_weight, weight_unit }">
-              {{ min_weight }}{{ weight_unit }}
+            <template v-slot:min_weight="{ row }">
+              {{ row.min_weight }}{{ row.weight_unit }}
             </template>
-            <template v-slot:min_height="{ min_height, height_unit }">
-              {{ min_height }}{{ height_unit }}
+            <template v-slot:min_height="{ row }">
+              {{ row.min_height }}{{ row.height_unit }}
             </template>
-            <template v-slot:min_width="{ min_width, width_unit }">
-              {{ min_width }}{{ width_unit }}
+            <template v-slot:min_width="{ row }">
+              {{ row.min_width }}{{ row.width_unit }}
             </template>
-            <template v-slot:min_depth="{ min_depth, depth_unit }">
-              {{ min_depth }}{{ depth_unit }}
+            <template v-slot:min_depth="{ row }">
+              {{ row.min_depth }}{{ row.depth_unit }}
             </template>
-            <template v-slot:min_volume="{ min_volume, volume_unit }">
-              {{ min_volume }}{{ volume_unit }}
+            <template v-slot:min_volume="{ row }">
+              {{ row.min_volume }}{{ row.volume_unit }}
             </template>
-            <template v-slot:actions="row">
+            <template v-slot:actions="{ row }">
                 <gc-button  @click="editing = row" size="x-small">
                   <b-icon icon="edit-line" />
                 </gc-button>

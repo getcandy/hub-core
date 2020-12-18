@@ -62,19 +62,19 @@
         {label: null, field: 'actions'},
       ]"
     >
-      <template v-slot:primary="row">
+      <template v-slot:primary="{ row }">
         <gc-toggle v-model="row.primary" v-if="getThumbnail(row)" @click="setPrimary(row)" />
       </template>
-      <template v-slot:thumbnail="row">
+      <template v-slot:thumbnail="{ row }">
         <thumbnail-loader :asset="row" width="50px" />
       </template>
-      <template v-slot:title="row">
+      <template v-slot:title="{ row }">
         <gc-input v-model="row.title" @blur="save" />
       </template>
-      <template v-slot:caption="row">
+      <template v-slot:caption="{ row }">
         <gc-input v-model="row.caption" @blur="save" />
       </template>
-      <template v-slot:tags="row">
+      <template v-slot:tags="{ row }">
         <b-taginput
           @input="save"
           :data="defaultTags"
@@ -83,10 +83,10 @@
           icon="price-tag-3-line"
         />
       </template>
-      <template v-slot:type="row">
+      <template v-slot:type="{ row }">
         <span v-if="row.extension">.{{ row.extension }}</span><span v-else>-</span>
       </template>
-      <template v-slot:actions="row">
+      <template v-slot:actions="{ row }">
         <a :href="row.url" class="button is-text" target="_blank">
           <b-icon icon="download-line" size="is-small" />
         </a>

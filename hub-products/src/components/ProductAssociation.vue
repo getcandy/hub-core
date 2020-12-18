@@ -16,7 +16,7 @@
               {label: null, field: 'actions'},
             ]"
           >
-            <template v-slot:thumbnail="row">
+            <template v-slot:thumbnail="{ row }">
               <nuxt-link :to="{
                   name: 'products.view',
                   params: {
@@ -26,7 +26,7 @@
                 <thumbnail-loader width="30px" :asset="row.assets.data[0]"></thumbnail-loader>
               </nuxt-link>
             </template>
-            <template v-slot:name="row">
+            <template v-slot:name="{ row }">
               <nuxt-link :to="{
                 name: 'products.view',
                 params: {
@@ -36,7 +36,7 @@
                 {{ attribute(row.attribute_data, 'name') }}
               </nuxt-link>
             </template>
-            <template v-slot:actions="row">
+            <template v-slot:actions="{ row }">
               <gc-button @click="attach(row)" theme="green" v-if="!selected.includes(row.id)">Attach</gc-button>
               <gc-button @click="detach(row)" theme="danger" v-else >Detach</gc-button>
             </template>

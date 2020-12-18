@@ -19,14 +19,14 @@
         {label: 'Date', field: 'date'},
       ]"
     >
-      <template v-slot:new_returning="row">
+      <template v-slot:new_returning="{ row }">
         <span class="text-orange-500" data-toggle="tooltip" :title="$t('Returning Customer')" v-if="!firstOrder(row)">R</span>
         <span class="text-blue-500" data-toggle="tooltip" :title="$t('New Customer')" v-else>N</span>
       </template>
-      <template v-slot:status="row">
+      <template v-slot:status="{ row }">
         <span class="tag" :style="getStatusStyles(row.status)">{{ getStatusLabel(row.status) }}</span>
       </template>
-      <template v-slot:reference="row">
+      <template v-slot:reference="{ row }">
         <nuxt-link :to="{
           name: 'orders.view',
           params: {
@@ -36,19 +36,19 @@
           {{ row.reference || row.display_id }}
         </nuxt-link>
       </template>
-      <template v-slot:name="row">
+      <template v-slot:name="{ row }">
         {{ row.billing_details.firstname }} {{ row.billing_details.lastname }}
       </template>
-      <template v-slot:type="row">
+      <template v-slot:type="{ row }">
         {{ row.type }}
       </template>
-      <template v-slot:guest="row">
+      <template v-slot:guest="{ row }">
         {{ row.user.data ? 'No' : 'Yes' }}
       </template>
-      <template v-slot:sub_total="row">
+      <template v-slot:sub_total="{ row }">
         <span v-html="formatSubTotal(row)" />
       </template>
-      <template v-slot:date="row">
+      <template v-slot:date="{ row }">
         {{ $format.date(row.placed_at) }}
       </template>
 

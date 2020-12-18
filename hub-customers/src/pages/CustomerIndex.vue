@@ -19,7 +19,7 @@
         ]"
         @changePage="changePage"
       >
-        <template v-slot:first_name="row">
+        <template v-slot:first_name="{ row }">
           <nuxt-link
             :to="{
               name: 'customers.edit',
@@ -31,7 +31,7 @@
             {{ row.firstname }} {{ row.lastname }}
           </nuxt-link>
         </template>
-        <template v-slot:company_name="row">
+        <template v-slot:company_name="{ row }">
           {{ row.company_name }}
         </template>
       </gc-table>

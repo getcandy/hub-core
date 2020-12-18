@@ -12,16 +12,16 @@
         {label: null, field: 'actions'},
       ]"
     >
-      <template v-slot:status="{ status }">
-        <span class="tag" :style="getStatusStyles(status)">{{ getStatusLabel(status) }}</span>
+      <template v-slot:status="{ row }">
+        <span class="tag" :style="getStatusStyles(row.status)">{{ getStatusLabel(row.satus) }}</span>
       </template>
-      <template v-slot:date="{ placed_at, created_at }">
-        {{ $format.date(placed_at || created_at)}}
+      <template v-slot:date="{ row }">
+        {{ $format.date(row.placed_at || row.created_at)}}
       </template>
-      <template v-slot:type="row">
+      <template v-slot:type="{ row }">
         {{ row.type }}
       </template>
-      <template v-slot:display_id="row">
+      <template v-slot:display_id="{ row }">
         <nuxt-link
             :to="{
               name: 'orders.view',
@@ -33,11 +33,11 @@
             </nuxt-link>
 
       </template>
-      <template v-slot:reference="row">
+      <template v-slot:reference="{ row }">
 
         {{ row.reference }}
       </template>
-      <template v-slot:total="row">
+      <template v-slot:total="{ row }">
         {{ $format.currency(row.order_total) }}
       </template>
     </gc-table>

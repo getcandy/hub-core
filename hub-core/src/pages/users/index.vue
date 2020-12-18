@@ -36,7 +36,7 @@
                   label-field="company_name"
                   value-field="id"
                 >
-                <template v-slot:row="row">
+                <template v-slot:row="{ row }">
                   <span class="font-normal block truncate">
                     {{ row.company_name || `${row.firstname} ${row.lastname}` }}
                   </span>
@@ -57,10 +57,10 @@
         {label: $t('Customer'), field: 'customer'},
       ]"
     >
-      <template v-slot:name="row">
+      <template v-slot:name="{ row }">
         {{ row.name }}
       </template>
-      <template v-slot:email="row">
+      <template v-slot:email="{ row }">
         <nuxt-link
             :to="{
               name: 'users-id',
@@ -71,7 +71,7 @@
               {{ row.email }}
             </nuxt-link>
       </template>
-      <template v-slot:customer="row">
+      <template v-slot:customer="{ row }">
         <span v-if="row.customer.data.company_name">{{ row.customer.data.company_name }}</span>
         <span v-else>{{ row.customer.data.firstname }} {{ row.customer.data.firstname }}</span>
       </template>

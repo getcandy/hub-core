@@ -23,27 +23,27 @@
         {label: 'Filterable', field: 'filterable'},
       ]"
     >
-      <template v-slot:name="row">
+      <template v-slot:name="{ row }">
         <nuxt-link :to="{ name: 'settings-attributes-id', params: { id: row.id }}">
           {{ getLocaleValue(row.name) }}
         </nuxt-link>
       </template>
-      <template v-slot:handle="row">
+      <template v-slot:handle="{ row }">
         <code>{{ row.handle }}</code>
       </template>
-      <template v-slot:group="row">
+      <template v-slot:group="{ row }">
         {{ getLocaleValue(row.group.data.name) }}
       </template>
-      <template v-slot:type="row">
+      <template v-slot:type="{ row }">
         {{ $t(row.type) }}
       </template>
-      <template v-slot:searchable="row">
+      <template v-slot:searchable="{ row }">
         <gc-icon :icon="row.searchable ? 'check' : 'x'" :class="{'text-green-500': row.searchable, 'text-gray-400': !row.searchable}" />
       </template>
-      <template v-slot:required="row">
+      <template v-slot:required="{ row }">
         <gc-icon :icon="row.required ? 'check' : 'x'" :class="{'text-green-500': row.required, 'text-gray-400': !row.required}" />
       </template>
-      <template v-slot:filterable="row">
+      <template v-slot:filterable="{ row }">
         <gc-icon :icon="row.filterable ? 'check' : 'x'" :class="{'text-green-500': row.filterable, 'text-gray-400': !row.filterable}" />
       </template>
       <!-- <b-table-column field="searchable" :label="$t('Searchable')">

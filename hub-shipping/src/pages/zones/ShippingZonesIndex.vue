@@ -9,7 +9,7 @@
         {label: 'Name', field: 'name'},
       ]"
     >
-    <template v-slot:name="row">
+    <template v-slot:name="{ row }">
         <nuxt-link :to="{
           name: 'shipping-zones.edit.details',
           params: {

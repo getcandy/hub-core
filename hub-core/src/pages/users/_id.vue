@@ -133,7 +133,6 @@ export default {
       return get(this.user, 'customer.data', {})
     },
     customerGroups () {
-      console.log(this.customer)
       return get(this.customer, 'customer_groups.data', [])
     }
   }

@@ -9,7 +9,7 @@
         {label: $t('Name'), field: 'name'}
       ]"
     >
-      <template v-slot:thumbnail="row">
+      <template v-slot:thumbnail="{ row }">
         <nuxt-link :to="{
             name: 'collections.edit.details',
             params: {
@@ -19,7 +19,7 @@
           <thumbnail-loader width="30px" :asset="row.assets.data[0]"></thumbnail-loader>
         </nuxt-link>
       </template>
-      <template v-slot:name="row">
+      <template v-slot:name="{ row }">
         <nuxt-link :to="{
           name: 'collections.edit.details',
           params: {

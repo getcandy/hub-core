@@ -49,7 +49,7 @@
             <td class="px-6 py-4 whitespace-no-wrap text-sm font-medium text-gray-900" v-for="(column, colIndex) in columns" :key="colIndex">
               <!-- <slot v-bind:
                 -->
-                <slot :name="column.field" v-bind="row"></slot>
+                <slot :name="column.field" v-bind="{ row, index }"></slot>
             </td>
           </tr>
         </tbody>
