@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="bg-gray-800 text-sm py-2 px-6" v-if="checkedRows.length">
+    <div class="px-6 py-2 text-sm bg-gray-800" v-if="checkedRows.length">
       <update-order-status :order-id="checkedRows[0].id" @save="handleStatusChange" :statuses="settings.statuses.options" />
     </div>
     <gc-table
@@ -8,16 +8,7 @@
       :loading="loading"
       :meta="meta"
       @changePage="changePage"
-      :columns="[
-        {label: null, field: 'new_returning'},
-        {label: 'Status', field: 'status'},
-        {label: 'Reference', field: 'reference'},
-        {label: 'Name', field: 'name'},
-        {label: 'Type', field: 'type'},
-        {label: 'Guest', field: 'guest'},
-        {label: 'Sub Total', field: 'sub_total'},
-        {label: 'Date', field: 'date'},
-      ]"
+      :columns="columns"
     >
       <template v-slot:new_returning="{ row }">
         <span class="text-orange-500" data-toggle="tooltip" :title="$t('Returning Customer')" v-if="!firstOrder(row)">R</span>
@@ -98,6 +89,22 @@
       perPage: {
         type: Number|String,
         required: true
+      }
+    },
+    computed: {
+      columns () {
+        const columns = [
+          {label: null, field: 'new_returning'},
+          {label: 'Status', field: 'status'},
+          {label: 'Reference', field: 'reference'},
+          {label: 'Name', field: 'name'},
+          {label: 'Type', field: 'type'},
+          {label: 'Guest', field: 'guest'},
+          {label: 'Sub Total', field: 'sub_total'},
+          {label: 'Date', field: 'date'},
+        ];
+        this.$nuxt.context.app.$hooks.callHook('orders.table.columns', columns);
+        return columns
       }
     },
     methods: {

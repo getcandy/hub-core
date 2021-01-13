@@ -1,7 +1,7 @@
 <template>
   <div class="mb-4">
     <header class="mb-1 text-gray-700 text-sm" v-if="label">
-      <label class="font-bold ">{{ $t(label) }} <sup v-if="required" class="text-red-500">*</sup></label>
+      <label class="font-bold">{{ $t(label) }} <sup v-if="required" class="text-red-500">*</sup></label>
 
     </header>
     <div>

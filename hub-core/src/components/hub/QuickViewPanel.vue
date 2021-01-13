@@ -6,7 +6,7 @@
     >
     <div
       v-if="open && takeover"
-      class="fixed inset-0 opacity-0 bg-gray-900 z-60"
+      class="fixed inset-0 bg-gray-900 opacity-0 z-60"
       @click="$emit('close')"
     />
     </transition>
@@ -14,17 +14,17 @@
       v-on:enter="panelEnter"
       v-on:leave="panelLeave"
     >
-    <div class="fixed bg-white right-0 top-0 shadow-2xl z-70 h-full" :class="`${width}`" v-if="open">
-      <header class="py-4 px-3 border-b shadow-sm" v-if="heading">
+    <div class="fixed top-0 right-0 h-full bg-white shadow-2xl z-70" :class="`${width}`" v-if="open">
+      <header class="px-3 py-4 border-b shadow-sm" v-if="heading">
         <div class="flex justify-between">
-          <h3 class="text-sm uppercase font-bold" >{{ heading }}</h3>
+          <h3 class="text-sm font-bold uppercase" >{{ heading }}</h3>
           <span class="delete" data-dismiss="quickview" @click="$emit('close')"></span>
         </div>
       </header>
       <div :class="bg">
       <slot />
       </div>
-      <footer class="bg-white px-3 mt-8">
+      <footer class="px-3 mt-8 bg-white">
         <slot name="footer" />
       </footer>
     </div>

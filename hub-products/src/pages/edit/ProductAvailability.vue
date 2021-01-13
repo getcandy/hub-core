@@ -90,9 +90,15 @@
         this.$gc.products.variants.create(this.product.id, event)
       },
       handleVariantsChange: debounce(async function (variant, done) {
-        const variantToSave = variant
 
         await this.createDraft('product', this.product.id, {
+          afterRedirect: async (product) => {
+            this.product.id = product.id
+
+            // We need to find the drafted variant equivalent
+            const variantDraft = find(product.variants.data, v => v.sku === variant.sku )
+            variant.id = variantDraft.id
+          }
         }, this.$getcandy)
 
         const payload = {

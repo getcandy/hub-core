@@ -1,4 +1,3 @@
-
 import Button from './components/forms/Button.vue'
 import Input from './components/forms/Input.vue'
 import FormField from './components/forms/FormField.vue'
@@ -24,6 +23,8 @@ import Table from './components/Table.vue'
 import TabItem from './components/TabItem.vue'
 import Tabs from './components/Tabs.vue'
 import ResourceNav from './components/ResourceNav.vue'
+import DatePicker from './components/forms/DatePicker.vue'
+import ColourPicker from './components/forms/ColourPicker.vue'
 
 const components = {
   button: Button,
@@ -51,7 +52,9 @@ const components = {
   'tabs': Tabs,
   'resource-nav': ResourceNav,
   'form-field': FormField,
-  'search-input': SearchInput
+  'search-input': SearchInput,
+  'date-picker': DatePicker,
+  'colour-picker': ColourPicker
 }
 
 // prettier-ignore

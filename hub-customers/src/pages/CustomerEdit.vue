@@ -1,8 +1,8 @@
 <template>
   <div v-if="customer">
-    <div class="bg-white p-6 flex" >
+    <div class="flex p-6 bg-white" >
       <div class="w-3/4 mr-6">
-        <div class="grid gap-4 grid-cols-3">
+        <div class="grid grid-cols-3 gap-4">
           <form-field :label="$t('First name')">
             <gc-input v-model="customer.firstname" />
           </form-field>
@@ -15,7 +15,7 @@
             <gc-input v-model="customer.company_name" />
           </form-field>
         </div>
-        <div class="grid gap-4 grid-cols-3">
+        <div class="grid grid-cols-3 gap-4">
           <form-field :label="$t(field.label)" v-for="(field, handle) in fields" :key="handle">
             <gc-input v-model="customer.fields[handle]" :type="field.type" />
           </form-field>
@@ -25,7 +25,7 @@
         <h3>Customer groups</h3>
         <fieldset>
             <label
-              class="relative border rounded-tl-md rounded-md mb-1 p-4 flex  cursor-pointer"
+              class="relative flex p-4 mb-1 border rounded-md cursor-pointer rounded-tl-md"
               :class="{
                 'border-gray-200': !customerCustomerGroups.includes(group.id),
                 'bg-indigo-50 border-indigo-200 z-10': customerCustomerGroups.includes(group.id),
@@ -34,10 +34,10 @@
               :key="group.id"
             >
               <div class="flex items-center h-5">
-                <input :value="group.id" type="checkbox" v-model="customerCustomerGroups" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out cursor-pointer">
+                <input :value="group.id" type="checkbox" v-model="customerCustomerGroups" class="w-4 h-4 text-indigo-600 transition duration-150 ease-in-out cursor-pointer form-checkbox">
               </div>
-              <div class="ml-3 flex flex-col">
-                <span class="block text-sm leading-5 font-medium" :class="{
+              <div class="flex flex-col ml-3">
+                <span class="block text-sm font-medium leading-5" :class="{
                   'text-gray-900': !customerCustomerGroups.includes(group.id),
                   'text-indigo-900': customerCustomerGroups.includes(group.id),
                 }">
@@ -48,7 +48,7 @@
         </fieldset>
       </div>
     </div>
-    <header class="shadow-sm bg-white border-t border-b py-3 px-6">
+    <header class="px-6 py-3 bg-white border-t border-b shadow-sm">
       <h3 class="text-sm font-bold text-gray-700">{{ $t('Users') }}</h3>
     </header>
     <gc-table
@@ -65,11 +65,11 @@
       <template v-slot:email="{ row }">
         {{ row.email }}
       </template>
-      <template v-slot:actions="{ id }">
+      <template v-slot:actions="{ row }">
         <nuxt-link :to="{
           name: 'users-id',
           params: {
-            id
+            id: row.id
           }
         }">
           {{ $t('View user') }}

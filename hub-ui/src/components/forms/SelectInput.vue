@@ -1,6 +1,6 @@
 <template>
     <div class="relative">
-      <select :disabled="disabled" @change="$emit('input', $event.target.value)" :value="value" class="disabled:opacity-75 disabled:cursor-not-allowed appearance-none w-full form-input pr-8 rounded leading-tight" id="grid-state">
+      <select :disabled="disabled" @change="handleChange" :value="value" class="disabled:opacity-75 disabled:cursor-not-allowed appearance-none w-full form-input pr-8 rounded leading-tight" id="grid-state">
         <slot />
       </select>
       <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -11,6 +11,12 @@
 
 <script>
 export default {
-  props: ['value', 'disabled']
+  props: ['value', 'disabled'],
+  methods: {
+    handleChange ($event) {
+      this.$emit('input', $event.target.value)
+      this.$emit('change', $event.target.value)
+    }
+  }
 }
 </script>

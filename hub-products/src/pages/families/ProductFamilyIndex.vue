@@ -6,7 +6,7 @@
       :columns="tableColumns"
       :data="families"
     >
-    <template v-slot:name="row">
+    <template v-slot:name="{ row }">
       <nuxt-link :to="{
         name: 'product-families.edit',
         params: {

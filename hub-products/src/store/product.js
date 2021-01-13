@@ -92,7 +92,7 @@ export const actions = {
             excl_tax: true,
             full_response: true,
             option_data: true,
-            draft: true,
+            draft: 1,
             includes: state.defaultIncludes
           })
     },
@@ -103,7 +103,7 @@ export const actions = {
         true,
         true,
         true,
-        true
+        1
       )
 
       const product = response.data.data

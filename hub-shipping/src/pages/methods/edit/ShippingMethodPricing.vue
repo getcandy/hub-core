@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="(rates, index) in groupPricing(prices)" :key="index">
-      <header class="px-6 py-3 bg-white shadow-sm border-b border-t">
+      <header class="px-6 py-3 bg-white border-t border-b shadow-sm">
         <h2 class="font-medium">{{ rates[0].zone.data.name }}</h2>
       </header>
 
@@ -88,10 +88,10 @@
             </b-table-column>
             <b-table-column field="actions">
               <template>
-                <button  @click="editing = props.row" class="inline-flex justify-center rounded-md border border-gray-300 px-1 py-1 bg-white text-base leading-6 font-medium text-gray-600 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                <button  @click="editing = props.row" class="inline-flex justify-center px-1 py-1 text-base font-medium leading-6 text-gray-600 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline sm:text-sm sm:leading-5">
                   <b-icon icon="edit-line" />
                 </button>
-                <button @click="showDeleteConfirm = true" class="inline-flex justify-center  rounded-md border border-transparent px-1 py-1 bg-red-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-red-400 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                <button @click="showDeleteConfirm = true" class="inline-flex justify-center px-1 py-1 text-base font-medium leading-6 text-white transition duration-150 ease-in-out bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-400 focus:outline-none focus:border-blue-300 focus:shadow-outline sm:text-sm sm:leading-5">
                   <b-icon icon="delete-bin-line" />
                 </button>
               </template>

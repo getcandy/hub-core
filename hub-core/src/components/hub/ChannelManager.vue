@@ -1,39 +1,27 @@
 <template>
-  <div class="search-table">
-    <div class="b-table">
-      <table class="table is-fullwidth">
-        <thead>
-          <tr>
-            <th>{{ $t('Channel') }}</th>
-            <th>{{ $t('Published') }}</th>
-            <th v-if="!useCheckboxes"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="channel in data" :key="channel.id">
-            <td>
-              <figure class="status-icon">
-                <span class="status" :class="status(channel).class" v-if="status(channel).level != 2"></span>
-                <b-icon icon="time-line" size="is-small" v-else />
-              </figure>
-              {{ channel.name }}
-            </td>
-            <td>
-                <slot name="control" v-bind:channel="channel" >
-                  <b-datetimepicker
-                    rounded
-                    :placeholder="$t('Click to select')"
-                    v-model="channel.published_at"
-                    @input="handleChanges"
-                    icon="calendar-line">
-                  </b-datetimepicker>
-                </slot>
-            </td>
-            <td v-if="!useCheckboxes"><b-button @click="unpublish(channel)" v-if="channel.published_at">{{ $t('Unpublish') }}</b-button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div>
+    <gc-table
+      :data="channels"
+      :columns="[
+        {label: $t('Channel'), 'field': 'channel'},
+        {label: $t('Published'), 'field': 'published'},
+        {label: null, 'field': 'actions'},
+      ]"
+    >
+      <template v-slot:channel="{ row }">
+        <figure class="status-icon">
+          <span class="status" :class="status(row).class" v-if="status(row).level != 2"></span>
+          <b-icon icon="time-line" size="is-small" v-else />
+        </figure>
+        {{ row.name }}
+      </template>
+      <template v-slot:published="{ index }">
+        <gc-date-picker v-model="channels[index].published_at" :options="{ mode: 'dateTime' }" />
+      </template>
+      <template v-slot:actions="{ row }" v-if="!useCheckboxes">
+        <gc-button @click="row.published_at = null" v-if="row.published_at" theme="gray">{{ $t('Unpublish') }}</gc-button>
+      </template>
+    </gc-table>
   </div>
 </template>
 
@@ -41,6 +29,10 @@
   import moment from 'moment'
   import { each } from 'lodash'
   export default {
+    model: {
+      prop: 'channels',
+      event: 'input',
+    },
     props: {
       channels: {
         type: Array
@@ -50,29 +42,13 @@
         default: false
       }
     },
-    data() {
-      return {
-        data: this.channels
-      }
-    },
-    created() {
-      // We need to make sure that each channel's published date, if it exists is a valid Date object
-      each(this.data, channel => {
-        if (channel.published_at && !this.useCheckboxes) {
-          channel.published_at = new Date(channel.published_at)
-        }
-      })
-    },
-    mounted () {
-
-    },
     methods: {
       handleChanges () {
-        this.$emit('change', this.data)
+        this.$emit('change', this.channels)
       },
       unpublish (channel) {
         channel.published_at = null
-        this.handleChanges()
+        // this.handleChanges()
       },
       status (channel) {
         var status = {

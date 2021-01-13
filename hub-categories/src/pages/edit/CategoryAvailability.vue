@@ -1,16 +1,13 @@
 <template>
   <div v-if="category">
-    <b-tabs
-      horizontal
-      class="secondary-tabs"
-    >
-      <b-tab-item label="Channels">
-        <channel-manager @change="handleChannelChange($event, category)" :channels="category.channels.data" />
-      </b-tab-item>
-      <b-tab-item label="Customer Groups">
+    <gc-tabs>
+      <gc-tab-item :label="$t('Channels')">
+        <channel-manager @change="handleChannelChange($event, category)" v-model="category.channels.data" />
+      </gc-tab-item>
+      <gc-tab-item :label="$t('Customer Groups')">
         <customer-group-manager  @change="handleCustomerGroupsChange($event, category)" :groups="category.customer_groups.data" />
-      </b-tab-item>
-    </b-tabs>
+      </gc-tab-item>
+    </gc-tabs>
   </div>
 </template>
 
@@ -37,18 +34,18 @@
           afterRedirect: async (category) => {
             this.category.id = category.id
           }
-        })
+        }, this.$getcandy)
         await this.$gc.categories.updateChannels(category.id, {
           channels: channels
         })
-        this.$notify.queue('success', this.$t('Channels updated'))
+        this.$notify.queue('success', this.$t('Category updated'))
       }, 300),
       handleCustomerGroupsChange: debounce(async function (groups, category) {
         await this.createDraft('categories', this.category.id, {
           afterRedirect: async (category) => {
             this.category.id = category.id
           }
-        })
+        }, this.$getcandy)
         await this.$gc.categories.updateCustomerGroups(category.id, {
           groups: groups
         })

@@ -22,38 +22,9 @@
           {{ $t('Save changes') }}
         </button> -->
       </toolbar>
-      <div class="card">
-        <div class="tabs tabs-large tabs-large--flush">
-          <ul>
-            <nuxt-link tag="li" exact-active-class="is-active" :to="{
-              name: 'categories.edit.details',
-            }">
-              <a>{{ $t('Category Details') }}</a>
-            </nuxt-link>
-            <nuxt-link tag="li" exact-active-class="is-active" :to="{
-              name: 'categories.edit.media',
-            }">
-              <a>{{ $t('Media') }}</a>
-            </nuxt-link>
-            <nuxt-link tag="li" exact-active-class="is-active" :to="{
-              name: 'categories.edit.availability',
-            }">
-              <a>{{ $t('Availability') }}</a>
-            </nuxt-link>
-            <nuxt-link tag="li" exact-active-class="is-active" :to="{
-              name: 'categories.edit.routes',
-            }">
-              <a>{{ $t('Routes') }}</a>
-            </nuxt-link>
-            <nuxt-link tag="li" exact-active-class="is-active" v-for="(tab, index) in additionalTabs" :to="tab.route"  :key="index">
-              <a>{{ $t(tab.title) }}</a>
-            </nuxt-link>
-            <nuxt-link tag="li" exact-active-class="is-active" :to="{
-              name: 'categories.edit.associations',
-            }" v-if="!isDraft">
-              <a>{{ $t('Associations') }}</a>
-            </nuxt-link>
-          </ul>
+      <div>
+        <div class="flex">
+          <gc-resource-nav :nav="navItems" />
         </div>
         <div>
           <nuxt />
@@ -215,6 +186,35 @@ export default {
     },
     config () {
       return this.$store.state.categories.config
+    },
+    navItems () {
+      return {
+        params: {
+          id: this.category.id
+        },
+        items: [
+          {
+            route: 'categories.edit.details',
+            label: "Attribute Details"
+          },
+          {
+            route: 'categories.edit.media',
+            label: "Media"
+          },
+          {
+            route: 'categories.edit.availability',
+            label: "Availability &amp; Pricing"
+          },
+          {
+            route: 'categories.edit.associations',
+            label: "Associations"
+          },
+          {
+            route: 'categories.edit.routes',
+            label: "Routes"
+          }
+        ]
+      };
     }
   }
 }

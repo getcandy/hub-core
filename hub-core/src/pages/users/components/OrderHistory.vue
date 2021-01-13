@@ -13,7 +13,7 @@
       ]"
     >
       <template v-slot:status="{ row }">
-        <span class="tag" :style="getStatusStyles(row.status)">{{ getStatusLabel(row.satus) }}</span>
+        <span class="tag" :style="getStatusStyles(row.status)">{{ getStatusLabel(row.status) }}</span>
       </template>
       <template v-slot:date="{ row }">
         {{ $format.date(row.placed_at || row.created_at)}}

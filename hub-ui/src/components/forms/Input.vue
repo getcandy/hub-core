@@ -6,6 +6,7 @@
             @input="$emit('input', $event.target.value)"
             @blur="$emit('blur', $event.target.value)"
             @focus="$emit('focus', $event.target.value)"
+            ref="input"
             :disabled="disabled"
             :class="{
                 'pr-12': $slots.suffix,
