@@ -16,7 +16,7 @@
         {{ row.name }}
       </template>
       <template v-slot:published="{ index }">
-        <gc-date-picker v-model="channels[index].published_at" :options="{ mode: 'dateTime' }" />
+        <gc-date-picker v-model="channels[index].published_at" :options="{ mode: 'dateTime' }" @input="handleChanges" />
       </template>
       <template v-slot:actions="{ row }" v-if="!useCheckboxes">
         <gc-button @click="row.published_at = null" v-if="row.published_at" theme="gray">{{ $t('Unpublish') }}</gc-button>
