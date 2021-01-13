@@ -99,7 +99,6 @@
                 }
 
                 if (!existing) {
-                  console.log(attribute);
                     let group = attribute.group.data;
                     if (group){
                       this.$set(group, 'attributes', {
@@ -123,7 +122,6 @@
 
           groups = orderBy(groups, 'position', 'asc');
 
-console.log(groups);
         this.attributeGroups = groups
 
       },

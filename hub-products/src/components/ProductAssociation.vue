@@ -9,7 +9,7 @@
             :limit="10"
             includes="assets.transforms"
             :search-placeholder="$t('Search products')"
-            type="product"
+            type="products"
             :columns="[
               {label: '', field: 'thumbnail'},
               {label: $t('Name'), field: 'name'},
@@ -43,14 +43,13 @@
           </search-table>
         </quick-view-panel>
     </div>
-    <div class="text-center  mx-auto py-24" v-if="!associations.length">
+    <div class="py-24 mx-auto text-center" v-if="!associations.length">
       <h1 class="mt-6 mb-4 text-xl">No product associations exist</h1>
-      <p class="mb-4 text-gray-600 text-sm">Associating products together will help show your customers which products belong to each other</p>
+      <p class="mb-4 text-sm text-gray-600">Associating products together will help show your customers which products belong to each other</p>
 
       <gc-button @click="showBrowser = true">{{ $t('Create association') }}</gc-button>
     </div>
-
-    <div class="search-table" v-if="associations.length">
+    <div class="search-table">
       <div class="b-table">
         <table class="table is-fullwidth">
           <thead>
@@ -66,17 +65,19 @@
               <td><thumbnail-loader width="50px" :asset="row.association.data.assets.data[0]" /></td>
               <td>{{ attribute(row.association.data.attribute_data, 'name') }}</td>
               <td>
-                <b-select placeholder="Select a type" v-model="associations[rowIndex].group.data.id">
+                <gc-select placeholder="Select a type" v-model="associations[rowIndex].group.data.id">
                     <option
                         v-for="option in groups"
                         :value="option.id"
                         :key="option.id">
                         {{ option.name }}
                     </option>
-                </b-select>
+                </gc-select>
               </td>
               <td>
-                <b-button @click="detach(row.association.data)" type="is-danger" icon-right="delete-bin-line" />
+                <gc-button @click="detach(row.association.data)" theme="danger">
+                  {{ $t('Remove') }}
+                </gc-button>
               </td>
             </tr>
           </tbody>
@@ -89,6 +90,7 @@
 <script>
   const each = require('lodash/each')
   const map = require('lodash/map')
+  const get = require('lodash/get')
   const findIndex = require('lodash/findIndex')
   const first = require('lodash/first')
   import { NormalizesObjects, HasAttributes } from '@getcandy/hub-core/src/mixins/Index.js'
@@ -113,6 +115,8 @@
         })
       })
 
+      this.associations = get(this.product, 'associations.data', [])
+
       // We need to get the association groups, this is quite specific
       // to what we're trying to do here so we can just fetch them?
       // TODO: Is this still correct?
@@ -123,7 +127,7 @@
     data() {
       return {
         showBrowser: false,
-        associations: this.product ? this.product.associations.data : [],
+        associations: [],
         selected: [],
         groups: [],
       }

@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="bg-gray-800 flex pl-4 text-white">
+    <div class="flex pl-4 text-white bg-gray-800">
       <button
         v-for="(tab, tabIndex) in tabs"
         :key="tabIndex"
         @click="activate(tab)"
         :class="tab.active ? 'bg-white text-gray-800' : 'hover:bg-gray-700'"
-        class="px-6 py-4 text-sm outline-none border-none focus:border-none focus:outline-none "
+        class="px-6 py-4 text-sm border-none outline-none focus:border-none focus:outline-none "
       >
         {{ getTabLabel(tab) }}
       </button>
@@ -37,7 +37,9 @@ export default {
       return this.secondary ? 'gc-secondary-tabs' : `gc-default-tabs`;
     },
     filteredTabs () {
-      return filter(this.$slots.default, vNode => vNode.componentOptions)
+      return filter(this.$slots.default, (vNode) => {
+        return !!vNode.componentOptions
+      })
     }
   },
   methods: {
@@ -60,11 +62,11 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.tabs = map(this.filteredTabs, (tab, index) => {
-        if (index === 0) {
+        if (index === 1) {
           tab.componentInstance.active = true
         }
         return {
-          active: index == 0,
+          active: index == 1,
           node: tab
         }
       })

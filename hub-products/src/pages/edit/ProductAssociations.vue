@@ -1,17 +1,23 @@
 <template>
   <div v-if="product">
     <!-- Here we want to loop through any sections that have been hooked into -->
-    <gc-tabs secondary>
+    <div class="flex pl-4 text-white bg-gray-800">
+      <button
+        v-for="(tab, tabIndex) in tabs"
+        :key="tabIndex"
+        @click="activeTab = tabIndex"
+        :class="activeTab == tabIndex ? 'bg-white text-gray-800' : 'hover:bg-gray-700'"
+        class="px-6 py-4 text-sm border-none outline-none focus:border-none focus:outline-none "
+      >
+        {{ tab.title }}
+      </button>
+    </div>
+    <component :is="tab" :product="product" @changed="handleChanged" />
+    <!-- <gc-tabs secondary>
       <gc-tab-item v-for="(tab, tabIndex) in tabs" :key="tabIndex" :label="tab.title">
         <component :is="tab.component" :product="product" @changed="handleChanged" />
       </gc-tab-item>
-      <!-- <button  class="tab-active">{{ tab.title }}</button> -->
-    </gc-tabs>
-    <!-- <b-tabs :animated="false" class="secondary-tabs" horizontal position="tabs is-toggle is-left" v-model="activeTab">
-      <b-tab-item :label="tab.title" v-for="(tab, tabIndex) in tabs" :key="tabIndex">
-        <component :is="tab.component" :product="product" @changed="handleChanged" />
-      </b-tab-item>
-    </b-tabs> -->
+    </gc-tabs> -->
   </div>
 </template>
 
@@ -40,7 +46,14 @@
     },
     mounted() {
       this.product = this.normalize(this.$store.state.product.model)
-      this.$nuxt.context.app.$hooks.callHook('products.associations.tabs', this.tabs);
+      this.$nextTick(async () => {
+        await this.$nuxt.context.app.$hooks.callHook('products.associations.tabs', this.tabs);
+      })
+    },
+    computed: {
+      tab () {
+        return this.tabs[this.activeTab].component
+      }
     },
     methods: {
       async handleChanged (callback) {

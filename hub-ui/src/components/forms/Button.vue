@@ -6,9 +6,9 @@
       @click="$emit('click')"
     >
       <div v-if="!loading" class="inline-flex items-center">
-        <gc-icon :icon="iconLeft"  class="-ml-1 mr-1" size="sm" v-if="iconLeft" />
+        <gc-icon :icon="iconLeft"  class="mr-1 -ml-1" size="sm" v-if="iconLeft" />
         <slot />
-        <gc-icon :icon="iconRight"  class="-mr-1 ml-1 w-4" v-if="iconRight" />
+        <gc-icon :icon="iconRight"  class="w-4 ml-1 -mr-1" theme="red" v-if="iconRight" />
       </div>
       <gc-loading-spinner v-if="loading" />
     </button>

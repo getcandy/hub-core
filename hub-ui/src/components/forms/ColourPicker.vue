@@ -1,6 +1,6 @@
 <template>
   <div v-click-outside="() => showPicker = false">
-    <button @click="showPicker = !showPicker" class="w-10 p-1 block border rounded" :style="{
+    <button @click="showPicker = !showPicker" class="block w-10 p-1 border rounded" :style="{
       'background-color': colour
     }">&nbsp;</button>
     <div class="absolute z-50">
@@ -37,7 +37,6 @@ export default {
   },
   methods: {
     setColour (colour) {
-      console.log(colour)
     }
   }
 }

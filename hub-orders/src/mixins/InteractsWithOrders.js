@@ -25,7 +25,6 @@ export default {
         return this.$format.currency(order.order_total, currency)
     },
     firstOrder(order) {
-        console.log(order)
       const user = order.user.data;
       if (!user || !user.first_order.data) {
           return false;

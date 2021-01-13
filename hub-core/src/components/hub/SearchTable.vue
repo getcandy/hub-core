@@ -3,7 +3,7 @@
     <div class="search-field" v-if="hideSearch === false">
       <b-input v-model="searchTerm" @input="refresh" :placeholder="$t(searchPlaceholder)"></b-input>
     </div>
-    <div v-if="largeDataSet" class="text-white bg-red-500 p-4 text-xs font-medium">
+    <div v-if="largeDataSet" class="p-4 text-xs font-medium text-white bg-red-500">
       Large data set returned, showing the first <strong class="text-white">{{ total }}</strong> results, use search and filters to find products.
     </div>
     <div>
@@ -19,20 +19,20 @@
       <!-- <table class="min-w-full divide-y divide-gray-200">
         <thead>
           <tr>
-            <th v-for="(column, index) in columns" :key="index" class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-600 uppercase tracking-wider">
+            <th v-for="(column, index) in columns" :key="index" class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-600 uppercase bg-gray-50">
               {{ column.label }}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr :class="{'bg-white': index % 2 === 0, 'bg-gray-50': index % 2 !== 0 }" v-for="(row, index) in data" :key="index">
-            <td class="px-6 py-4 whitespace-no-wrap text-sm font-medium text-gray-900" v-for="(column, colIndex) in columns" :key="colIndex">
+            <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-no-wrap" v-for="(column, colIndex) in columns" :key="colIndex">
                <slot :name="column.field" v-bind="row"></slot>
             </td>
           </tr>
         </tbody>
       </table>
-      <nav class="border-t border-gray-200 px-4 flex items-center justify-center sm:px-0 pb-3">
+      <nav class="flex items-center justify-center px-4 pb-3 border-t border-gray-200 sm:px-0">
         <div class="hidden md:flex">
           <a
             href="#"
@@ -43,7 +43,7 @@
               'text-indigo-600 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 border-indigo-500': link.active,
               'text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-400': !link.active,
             }"
-            class="-mt-px border-t-2 border-transparent pt-4 px-4 inline-flex items-center text-sm leading-5 font-medium focus:outline-none transition ease-in-out duration-150"
+            class="inline-flex items-center px-4 pt-4 -mt-px text-sm font-medium leading-5 transition duration-150 ease-in-out border-t-2 border-transparent focus:outline-none"
             v-html="link.label"
           >
           </a>
@@ -216,7 +216,6 @@
             }
           })
         } catch (e) {
-          console.log(e);
         }
         this.loading = false
       }

@@ -1,32 +1,33 @@
 <template>
   <div>
-    <div class="tab-content-tools">
-        <b-button type="is-primary" @click="showCategoryBrowser = true">Add Category</b-button>
-        <b-modal :active.sync="showCategoryBrowser"
-          has-modal-card
-          trap-focus
-          aria-role="dialog"
-          aria-modal
-        >
-          <div class="card">
-            <div class="card-content">
-              <search-table :limit="10" includes="assets.transforms" :search-placeholder="$t('Search Categories')" type="category" >
-                <template slot-scope="props">
-                  <b-table-column field="thumbnail">
-                    <thumbnail-loader width="25px" :asset="props.row.assets.data[0]" />
-                  </b-table-column>
-                  <b-table-column field="name" :label="$t('Name')">
-                    {{ attribute(props.row.attribute_data, 'name') }}
-                  </b-table-column>
-                  <b-table-column field="actions">
-                    <b-button @click="attach(props.row)" icon-right="add-box-line" type="primary" v-if="!selected.includes(props.row.id)" />
-                    <b-button @click="detach(props.row)" icon-right="delete-bin-line" type="primary" v-else />
-                  </b-table-column>
-                </template>
-              </search-table>
-            </div>
-          </div>
-        </b-modal>
+    <div>
+        <div class="px-6 py-3 text-right">
+          <gc-button  @click="showBrowser = true" theme="gray">{{ $t('Add Categories') }}</gc-button>
+        </div>
+        <quick-view-panel heading="Search categories" :open="showBrowser" @close="showBrowser = false" width="w-2/3">
+          <search-table
+            :limit="10"
+            includes="assets.transforms"
+            :search-placeholder="$t('Search categories')"
+            type="categories"
+            :columns="[
+              {label: '', field: 'thumbnail'},
+              {label: $t('Name'), field: 'name'},
+              {label: null, field: 'actions'},
+            ]"
+          >
+            <template v-slot:thumbnail="{ row }">
+              <thumbnail-loader width="25px" :asset="row.assets.data[0]" />
+            </template>
+            <template v-slot:name="{ row }">
+              {{ attribute(row.attribute_data, 'name') }}
+            </template>
+            <template v-slot:actions="{ row }">
+              <gc-button @click="attach(row)" theme="green" v-if="!selected.includes(row.id)">Attach</gc-button>
+              <gc-button @click="detach(row)" theme="danger" v-else >Detach</gc-button>
+            </template>
+          </search-table>
+        </quick-view-panel>
     </div>
     <div class="search-table">
       <div class="b-table">
@@ -78,7 +79,7 @@
     },
     data() {
       return {
-        showCategoryBrowser: false,
+        showBrowser: false,
         categories: this.product ? this.product.categories.data : [],
         selected: []
       }
@@ -102,11 +103,7 @@
       },
       async save () {
         await this.$gc.products.associateCategories(this.product.id, this.selected)
-
-        this.$buefy.toast.open({
-          message: this.$t('Associations updated'),
-          type: 'is-success'
-        })
+        this.$notify.queue('success', this.$t('Associations updated'))
       }
     }
   }
