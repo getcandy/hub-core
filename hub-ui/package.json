@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-ui",
-  "version": "0.11.0",
+  "version": "0.11.2",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -23,11 +23,11 @@
     "query-string": "^6.13.7",
     "tabler-icons": "^1.10.0",
     "tailwindcss": "^1.6.0",
+    "v-calendar": "^2.1.3",
     "vue": "^2.6.11",
-    "vue-loader": "^15.9.3",
     "vue-color": "^2.8.0",
-    "vue-template-compiler": "^2.6.11",
-    "v-calendar": "^2.1.3"
+    "vue-loader": "^15.9.3",
+    "vue-template-compiler": "^2.6.11"
   },
   "devDependencies": {
     "@storybook/addon-knobs": "^5.3.19",
