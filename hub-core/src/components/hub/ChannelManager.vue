@@ -19,7 +19,7 @@
         <gc-date-picker v-model="channels[index].published_at" :options="{ mode: 'dateTime' }" @input="handleChanges" />
       </template>
       <template v-slot:actions="{ row }" v-if="!useCheckboxes">
-        <gc-button @click="row.published_at = null" v-if="row.published_at" theme="gray">{{ $t('Unpublish') }}</gc-button>
+        <gc-button @click="unpublish(row)" v-if="row.published_at" theme="gray">{{ $t('Unpublish') }}</gc-button>
       </template>
     </gc-table>
   </div>
@@ -48,7 +48,7 @@
       },
       unpublish (channel) {
         channel.published_at = null
-        // this.handleChanges()
+        this.handleChanges()
       },
       status (channel) {
         var status = {
