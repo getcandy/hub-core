@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-1 relative rounded-md shadow-sm">
+    <div class="relative rounded-md shadow-sm">
         <gc-icon :icon="icon" v-if="icon" class="absolute mt-3 ml-3 text-gray-500" size="sm" />
         <input
             :value="value"
@@ -12,7 +12,7 @@
                 'pr-12': $slots.suffix,
                 'pl-8': $slots.prefix || icon
             }"
-            class="form-input block w-full sm:text-sm sm:leading-5 disabled:bg-gray-100"
+            class="block w-full form-input sm:text-sm sm:leading-5 disabled:bg-gray-100"
             :type="type"
             :autocomplete="autocomplete"
             :name="name"

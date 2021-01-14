@@ -3,8 +3,8 @@
     <div>
       <date-picker :value="date" @input="handleInput" v-bind="options" :is-range="isRange">
         <template v-slot="{ inputValue, togglePopover, inputEvents }">
-          <gc-input :value="inputValue" @focus="togglePopover({ placement: 'bottom' })" v-on="inputEvents" v-if="!isRange" />
-          <gc-input :value="`${date.start} - ${date.end}`" v-else />
+          <input class="block w-full form-input sm:text-sm sm:leading-5 disabled:bg-gray-100" :value="inputValue" @focus="togglePopover({ placement: 'bottom' })" v-on="inputEvents" v-if="!isRange" />
+          <input class="block w-full form-input sm:text-sm sm:leading-5 disabled:bg-gray-100" :value="`${date.start} - ${date.end}`" v-else />
         </template>
       </date-picker>
     </div>

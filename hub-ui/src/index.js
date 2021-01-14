@@ -25,6 +25,9 @@ import Tabs from './components/Tabs.vue'
 import ResourceNav from './components/ResourceNav.vue'
 import DatePicker from './components/forms/DatePicker.vue'
 import ColourPicker from './components/forms/ColourPicker.vue'
+import DropDown from './components/forms/DropDown.vue'
+import DropDownItem from './components/forms/DropDownItem.vue'
+import UserSearch from './components/forms/UserSearch.vue'
 
 const components = {
   button: Button,
@@ -54,7 +57,10 @@ const components = {
   'form-field': FormField,
   'search-input': SearchInput,
   'date-picker': DatePicker,
-  'colour-picker': ColourPicker
+  'colour-picker': ColourPicker,
+  'drop-down': DropDown,
+  'drop-down-item': DropDownItem,
+  'user-search': UserSearch,
 }
 
 // prettier-ignore
