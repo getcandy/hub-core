@@ -57,7 +57,7 @@ export default function (moduleOptions) {
     'pages/families/ProductFamilyEdit.vue',
     'pages/families/ProductFamilyAttributes.vue',
     'pages/families/ProductFamilyProducts.vue',
-    'pages/reports/ProductStockReport.vue',
+    // 'pages/reports/ProductStockReport.vue',
 
     // New components
     'components/variants/VariantManager.vue',

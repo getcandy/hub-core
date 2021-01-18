@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-8xl mx-auto px-8 3xl:px-0">
+  <div class="px-8 mx-auto max-w-8xl 3xl:px-0">
     <header class="py-12">
       <div class="flex justify-between">
         <div>
@@ -20,24 +20,24 @@
       <div class="w-1/2 mr-4">
         <div class="flex mb-4">
           <div class="w-1/2 mr-2">
-            <div class="flex rounded shadow-md bg-white p-4 items-center">
+            <div class="flex items-center p-4 bg-white rounded shadow-md">
               <div class="mr-4">
-                <i class="ri-bank-card-line text-purple-500 text-xl"></i>
+                <i class="text-xl text-purple-500 ri-bank-card-line"></i>
               </div>
               <div class="w-full">
-                <span class="font-medium block mb-2 text-sm text-gray-700">{{ $t('Sales today')}}</span>
+                <span class="block mb-2 text-sm font-medium text-gray-700">{{ $t('Sales today')}}</span>
                 <metric-badge  :top="parseInt(salesMetrics.today)" :bottom="parseInt(salesMetrics.yesterday)" :money="true" v-if="!loadingSalesMetrics" />
                 <b-icon icon="loader-4-line" class="spin" v-else />
               </div>
             </div>
           </div>
           <div class="w-1/2 ml-2">
-            <div class="flex rounded shadow-md bg-white p-4 items-center">
+            <div class="flex items-center p-4 bg-white rounded shadow-md">
               <div class="mr-4">
-                <i class="ri-bank-card-line text-purple-500 text-xl"></i>
+                <i class="text-xl text-purple-500 ri-bank-card-line"></i>
               </div>
               <div class="w-full">
-                <span class="font-medium block mb-2 text-sm text-gray-700">{{ $t('Sales this week')}}</span>
+                <span class="block mb-2 text-sm font-medium text-gray-700">{{ $t('Sales this week')}}</span>
                 <metric-badge :top="parseInt(salesMetrics.current_week)" :bottom="parseInt(salesMetrics.previous_week)" :money="true" v-if="!loadingSalesMetrics" />
                 <b-icon icon="loader-4-line" class="spin" v-else />
               </div>
@@ -46,24 +46,24 @@
         </div>
         <div class="flex mb-4">
           <div class="w-1/2 mr-2">
-            <div class="flex rounded shadow-md bg-white p-4  items-center">
+            <div class="flex items-center p-4 bg-white rounded shadow-md">
               <div class="mr-4">
-                <i class="ri-bank-card-line text-purple-500 text-xl"></i>
+                <i class="text-xl text-purple-500 ri-bank-card-line"></i>
               </div>
               <div class="w-full">
-                <span class="font-medium block mb-2 text-sm text-gray-700">{{ $t('Sales this month')}}</span>
+                <span class="block mb-2 text-sm font-medium text-gray-700">{{ $t('Sales this month')}}</span>
                 <metric-badge :top="parseInt(salesMetrics.current_month)" :bottom="parseInt(salesMetrics.previous_month)" :money="true" v-if="!loadingSalesMetrics" />
                 <b-icon icon="loader-4-line" class="spin" v-else />
               </div>
             </div>
           </div>
           <div class="w-1/2 ml-2">
-            <div class="flex rounded shadow-md bg-white p-4 items-center">
+            <div class="flex items-center p-4 bg-white rounded shadow-md">
               <div class="mr-4">
-                <i class="ri-shopping-cart-line text-purple-500 text-xl"></i>
+                <i class="text-xl text-purple-500 ri-shopping-cart-line"></i>
               </div>
               <div class="w-full">
-                <span class="font-medium block mb-2 text-sm text-gray-700">{{ $t('Orders today')}}</span>
+                <span class="block mb-2 text-sm font-medium text-gray-700">{{ $t('Orders today')}}</span>
                 <metric-badge :top="parseInt(orderMetrics.today)" :bottom="parseInt(orderMetrics.yesterday)" v-if="!loadingOrderMetrics" />
                 <b-icon icon="loader-4-line" class="spin" v-else />
               </div>
@@ -73,24 +73,24 @@
 
         <div class="flex mb-6">
           <div class="w-1/2 mr-2">
-            <div class="flex rounded shadow-md bg-white p-4  items-center">
+            <div class="flex items-center p-4 bg-white rounded shadow-md">
               <div class="mr-4">
-                <i class="ri-shopping-cart-line text-purple-500 text-xl"></i>
+                <i class="text-xl text-purple-500 ri-shopping-cart-line"></i>
               </div>
               <div class="w-full">
-                <span class="font-medium block mb-2 text-sm text-gray-700">{{ $t('Orders this week')}}</span>
+                <span class="block mb-2 text-sm font-medium text-gray-700">{{ $t('Orders this week')}}</span>
                 <metric-badge :top="parseInt(orderMetrics.current_week)" :bottom="parseInt(orderMetrics.previous_week)" v-if="!loadingOrderMetrics" />
                 <b-icon icon="loader-4-line" class="spin" v-else />
               </div>
             </div>
           </div>
           <div class="w-1/2 ml-2">
-            <div class="flex rounded shadow-md bg-white p-4  items-center">
+            <div class="flex items-center p-4 bg-white rounded shadow-md">
               <div class="mr-4">
-                <i class="ri-shopping-cart-line text-purple-500 text-xl"></i>
+                <i class="text-xl text-purple-500 ri-shopping-cart-line"></i>
               </div>
               <div class="w-full">
-                <span class="font-medium block mb-2 text-sm text-gray-700">{{ $t('Orders this month')}}</span>
+                <span class="block mb-2 text-sm font-medium text-gray-700">{{ $t('Orders this month')}}</span>
                 <metric-badge :top="parseInt(orderMetrics.current_month)" :bottom="parseInt(orderMetrics.previous_month)" v-if="!loadingOrderMetrics" />
                 <b-icon icon="loader-4-line" class="spin" v-else />
               </div>
@@ -98,15 +98,15 @@
           </div>
         </div>
 
-        <div class="bg-white shadow-md rounded p-6">
-          <div class="flex mb-4 justify-between items-center">
+        <div class="bg-white rounded shadow-md">
+          <div class="flex items-center justify-between p-6">
             <div>
               <h3 class="font-medium">Order totals for past year</h3>
             </div>
             <div>
               <nuxt-link :to="{
                 name: 'reports.orders',
-              }" class="bg-gray-300 text-gray-700 text-xs py-2 px-3 font-medium rounded hover:bg-gray-400"
+              }" class="px-3 py-2 text-xs font-medium text-gray-700 bg-gray-300 rounded hover:bg-gray-400"
               >See full report</nuxt-link>
 
             </div>
@@ -123,44 +123,44 @@
         </div>
       </div>
       <div class="w-1/2 ml-2">
-        <div class="bg-white shadow-md rounded p-6">
-          <div class="flex mb-4 justify-between items-center">
+        <div class="p-6 bg-white rounded shadow-md">
+          <div class="flex items-center justify-between mb-4">
             <div>
               <h3 class="font-medium">{{ $t('Orders / Sales Report') }}</h3>
             </div>
             <div>
               <nuxt-link :to="{
                 name: 'reports.sales',
-              }" class="bg-gray-300 text-gray-700 text-xs py-2 px-3 font-medium rounded hover:bg-gray-400"
+              }" class="px-3 py-2 text-xs font-medium text-gray-700 bg-gray-300 rounded hover:bg-gray-400"
               >See full report</nuxt-link>
 
             </div>
           </div>
           <sales-report :show-controls="false" :to="orderToDate" initial-style="line" :from="orderFromDate" mode="monthly" />
         </div>
-        <div class="bg-white shadow-md mt-4 rounded p-6">
-          <div class="flex mb-4 justify-between items-center">
+        <div class="p-6 mt-4 bg-white rounded shadow-md">
+          <div class="flex items-center justify-between mb-4">
             <div>
               <h3 class="font-medium">{{ $t('Average order value') }}</h3>
             </div>
             <div>
               <nuxt-link :to="{
                 name: 'reports.orders.avg-order-value',
-              }" class="bg-gray-300 text-gray-700 text-xs py-2 px-3 font-medium rounded hover:bg-gray-400"
+              }" class="px-3 py-2 text-xs font-medium text-gray-700 bg-gray-300 rounded hover:bg-gray-400"
               >See full report</nuxt-link>
             </div>
           </div>
           <order-average-report :show-controls="false" :show-graph="false" :to="orderToDate" initial-style="line" :from="orderFromDate" mode="monthly" />
         </div>
-        <div class="bg-white mt-6 shadow-md rounded p-6">
-          <div class="flex mb-4 justify-between items-center">
+        <div class="p-6 mt-6 bg-white rounded shadow-md">
+          <div class="flex items-center justify-between mb-4">
             <div>
               <h3 class="font-medium">{{ $t('New Vs Returning Customers') }}</h3>
             </div>
             <div>
               <nuxt-link :to="{
                 name: 'reports.customers.new-vs-returning',
-              }" class="bg-gray-300 text-gray-700 text-xs py-2 px-3 font-medium rounded hover:bg-gray-400"
+              }" class="px-3 py-2 text-xs font-medium text-gray-700 bg-gray-300 rounded hover:bg-gray-400"
               >See full report</nuxt-link>
             </div>
           </div>
@@ -169,16 +169,16 @@
         </div>
       </div>
     </div>
-    <div class="bg-white shadow-md mt-4 rounded p-6">
-      <div class="flex mb-4 justify-between items-center">
+    <div class="mt-4 bg-white rounded shadow-md">
+      <div class="flex items-center justify-between p-6">
         <div>
           <h3 class="font-medium">{{ $t('This months best sellers') }}</h3>
-          <p class="text-gray-600 mb-4 text-xs">{{ $t('These figures are based on the number of times a product appears on an order, not the quantity ordered.') }}</p>
+          <p class="text-xs text-gray-600">{{ $t('These figures are based on the number of times a product appears on an order, not the quantity ordered.') }}</p>
         </div>
         <div>
           <nuxt-link :to="{
             name: 'reports.products.best-sellers',
-          }" class="bg-gray-300 text-gray-700 text-xs py-2 px-3 font-medium rounded hover:bg-gray-400"
+          }" class="px-3 py-2 text-xs font-medium text-gray-700 bg-gray-300 rounded hover:bg-gray-400"
           >See full report</nuxt-link>
         </div>
       </div>

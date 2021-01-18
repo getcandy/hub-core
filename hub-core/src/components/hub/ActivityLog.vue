@@ -8,7 +8,6 @@
             'is-primary': item.type == 'default'
           }"
       >
-        <!-- {{ item }} -->
         <div class="timeline-marker is-icon"
           :class="{
             'is-info': item.type == 'system',
@@ -24,6 +23,7 @@
           </template>
           </p>
           <hr>
+          {{ item.description }}
           <div v-for="(detail, handle) in item.properties" :key="handle">
             <template v-if="handle == 'attributes'">
               <template v-if="getChanges(item).length">
@@ -50,6 +50,9 @@
             </template>
             <template v-else-if="detail.message">
               {{ detail.message }}
+            </template>
+            <template v-else-if="detail.description">
+              {{ detail.description }}
             </template>
             <template v-else-if="handle !== 'old'">
               <strong>{{ handle }}:</strong> {{ detail }}

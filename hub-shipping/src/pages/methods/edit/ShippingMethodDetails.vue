@@ -1,12 +1,10 @@
 <template>
   <div v-if="shippingMethod">
-      <div class="bg-white shadow p-6">
       <attribute-translate
         :attribute-groups="attributeGroups"
         :attribute-data="shippingMethod.attribute_data"
         @changed="handleUpdate"
       />
-      </div>
   </div>
 </template>
 

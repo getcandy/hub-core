@@ -4,7 +4,7 @@
       <quick-view-panel :heading="$t('Add Note')" :open="showModal" @close="showModal = false">
         <form class="px-3" @submit="save" ref="form">
             <div class="mb-4">
-              <header class="mb-1 font-bold text-gray-700 text-sm">
+              <header class="mb-1 text-sm font-bold text-gray-700">
                 <label>{{ $t('Visibility') }}</label>
               </header>
               <div>
@@ -15,7 +15,7 @@
               </div>
             </div>
             <div>
-              <header class="mb-1 font-bold text-gray-700 text-sm">
+              <header class="mb-1 text-sm font-bold text-gray-700">
                 <label>{{ $t('Message') }}</label>
               </header>
               <div>
@@ -63,8 +63,6 @@
         this.showModal = false;
       },
       save: function (e) {
-        e.preventDefault()
-
         this.$gc.activityLog.post({
           properties: {
             message: this.message,

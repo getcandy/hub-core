@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div class="flex items-center border-b px-6 py-3" v-if="showControls">
+      <div class="flex items-center px-6 py-3 border-b" v-if="showControls">
         <div>
           <b-datepicker
             placeholder="Click to select..."
@@ -16,37 +16,35 @@
       </div>
       <div v-else>
         <div v-for="(products, month) in data" :key="month">
-          <h3 v-if="showControls" class="font-bold mb-2 mt-4">
+          <header v-if="showControls"  class="px-6 py-4 text-xs font-bold text-gray-600 uppercase bg-gray-200">
             {{ $format.date(month, 'MMMM YYYY') }}
-          </h3>
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="bg-gray-100 text-xs">
-                <th class="font-medium px-2 py-1 text-gray-800">SKU</th>
-                <th class="font-medium px-2 py-1 text-gray-800">Product</th>
-                <th class="font-medium px-2 py-1 text-gray-800">Total orders</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, index) in products.products" :key="index" :class="{
-                'bg-gray-100': index % 2
-              }">
-                <td class="p-2">{{ row.sku }}</td>
-                <td class="p-2">{{ row.description }}</td>
-                <td class="p-2">
-                  {{ $format.number(row.product_count) }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          </header>
+          <gc-table
+            :data="products.products"
+            :columns="[
+              { label: 'SKU', field: 'sku'},
+              { label: 'Product', field: 'product'},
+              { label: 'Total Orders', field: 'orders_total'},
+            ]"
+          >
+            <template v-slot:sku="{ row }">
+              {{ row.sku }}
+            </template>
+            <template v-slot:product="{ row }">
+              {{ row.description }}
+            </template>
+            <template v-slot:orders_total="{ row }">
+              {{ $format.number(row.product_count) }}
+            </template>
+          </gc-table>
         </div>
         <!--<table class="w-full text-sm" :class="{
           'mt-6' : showGraph
         }">
           <thead>
-            <tr class="bg-gray-100 text-xs">
-              <th class="font-medium px-2 py-1 text-gray-800">Month</th>
-              <th class="font-medium px-2 py-1 text-gray-800">Subtotal (excl. tax)</th>
+            <tr class="text-xs bg-gray-100">
+              <th class="px-2 py-1 font-medium text-gray-800">Month</th>
+              <th class="px-2 py-1 font-medium text-gray-800">Subtotal (excl. tax)</th>
             </tr>
           </thead>
           <tbody>

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="px-6 py-2 text-sm bg-gray-800" v-if="checkedRows.length">
-      <update-order-status :order-id="checkedRows[0].id" @save="handleStatusChange" :statuses="settings.statuses.options" />
+    <div class="px-6 py-2 text-sm bg-gray-200" v-if="checkedRows.length">
+      <update-order-status :order-id="checkedRows[0]" @save="handleStatusChange" :statuses="settings.statuses.options" />
     </div>
     <gc-table
       :data="orders"
@@ -10,6 +10,9 @@
       @changePage="changePage"
       :columns="columns"
     >
+      <template v-slot:actions="{ row }">
+        <input type="checkbox" :value="row.id" v-model="checkedRows" />
+      </template>
       <template v-slot:new_returning="{ row }">
         <span class="text-orange-500" data-toggle="tooltip" :title="$t('Returning Customer')" v-if="!firstOrder(row)">R</span>
         <span class="text-blue-500" data-toggle="tooltip" :title="$t('New Customer')" v-else>N</span>
@@ -94,6 +97,7 @@
     computed: {
       columns () {
         const columns = [
+          {label: null, field: 'actions'},
           {label: null, field: 'new_returning'},
           {label: 'Status', field: 'status'},
           {label: 'Reference', field: 'reference'},
@@ -112,21 +116,18 @@
         this.$emit('changePage', page)
       },
       async handleStatusChange (data) {
-        each(this.checkedRows, async (order) => {
+        each(this.checkedRows, async (orderId) => {
           const response = await this.$gc.orders.updateStatus(
-            order.id,
+            orderId,
             data.status,
             data.send_emails,
             data.text
           )
-          const orderInRows = find(this.orders, (o) => o.id == order.id)
+          const orderInRows = find(this.orders, (o) => o.id == orderId)
           orderInRows.status = data.status
         })
 
-        this.$buefy.toast.open({
-          message: 'Order statuses updated',
-          type: 'is-success'
-        })
+        this.$notify.queue('success', this.$t('Order statuses updated'));
 
         this.checkedRows = []
       }

@@ -1,5 +1,6 @@
 <template>
-  <div class="w-full overflow-y-scroll">
+  <div class="w-full">
+    <div class="overflow-y-scroll">
     <table class="w-full" >
       <thead>
         <tr>
@@ -59,6 +60,7 @@
         </tbody>
       </template>
     </table>
+    </div>
     <template v-if="state != 'loading'">
       <nav class="flex items-center justify-center px-4 pb-3 border-t border-gray-200 sm:px-0" v-if="meta && meta.links">
         <div class="hidden md:flex">

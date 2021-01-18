@@ -6,7 +6,6 @@ import ProductDetails from './products/pages/edit/ProductDetails.vue'
 import ProductFamilyAttributes from './products/pages/families/ProductFamilyAttributes.vue'
 import ProductFamilyEdit from './products/pages/families/ProductFamilyEdit.vue'
 import ProductFamilyIndex from './products/pages/families/ProductFamilyIndex.vue'
-import ProductStockReport from './products/pages/reports/ProductStockReport.vue'
 import ProductFamilyProducts from './products/pages/families/ProductFamilyProducts.vue'
 import ProductFamilyStore from './products/store/product-family.js';
 import ProductIndex from './products/pages/ProductIndex.vue'
@@ -90,14 +89,6 @@ export default ({ app }, inject) => {
         path: '/catalogue-manager/product-families/:id/products',
         name: 'product-families.edit.products',
         component: ProductFamilyProducts,
-    },
-    {
-      path: '/reports/products/stock-report',
-      name: 'reports.products.stock-report',
-      component: ProductStockReport,
-      meta: {
-          permissions: ['manage_catalogue']
-      }
     }
   ])
 
@@ -112,20 +103,6 @@ export default ({ app }, inject) => {
   app.store.registerModule('productFamily', ProductFamilyStore)
 
   app.store.commit('product/setConfig', options)
-
-  app.store.commit('addSection', {
-    title: 'Reports',
-    icon: 'pie-chart-line',
-    handle: 'reports',
-    items: [
-      {
-        title: 'Product Stock report',
-        route: {
-          name: 'reports.products.stock-report'
-        }
-      }
-    ]
-  })
 
   app.store.commit('addSection', {
     title: 'Catalogue Manager',
