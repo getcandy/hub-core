@@ -3,7 +3,7 @@
     <div
       v-for="t in transactions"
       :key="t.id"
-      class="border rounded overflow-hidden mb-2 shadow-sm"
+      class="mb-2 overflow-hidden border rounded shadow-sm"
       :class="{
         'border-green-200': t.success,
         'border-red-200':  !t.success,
@@ -14,7 +14,7 @@
           'bg-green-100 border-green-200': t.success,
           'bg-red-100 border-red-200':  !t.success,
         }"
-        class="flex justify-between items-center text-xs border-b py-2 px-4"
+        class="flex items-center justify-between px-4 py-2 text-xs border-b"
       >
         <div
           :class="{
@@ -23,7 +23,7 @@
           }"
           class="font-bold"
         >
-          <span class="mr-2 text-xs py-1 px-2 rounded-md" :class="t.success ? 'bg-green-200' : 'bg-red-200'">{{ $t(t.success ? 'Success' : 'Failed') }}</span> {{ $t(t.refund ? 'Refund' : 'Charge') }} - {{ t.status }} {{ t.notes }}
+          <span class="px-2 py-1 mr-2 text-xs rounded-md" :class="t.success ? 'bg-green-200' : 'bg-red-200'">{{ $t(t.success ? 'Success' : 'Failed') }}</span> {{ $t(t.refund ? 'Refund' : 'Charge') }} - {{ t.status }} {{ t.notes }}
         </div>
 
         <div>
@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="flex items-center justify-between px-4 py-4 text-sm">
-        <div class="text-3xl mr-4">
+        <div class="mr-4 text-3xl">
            {{ $format.currency(t.amount) }}
         </div>
         <div>
@@ -39,7 +39,7 @@
           <span class="text-gray-500">{{ $format.date(t.created_at) }}</span>
         </div>
         <div class="ml-8">
-          <div class="flex items-center text-md font-medium">
+          <div class="flex items-center font-medium text-md">
             <template v-if="t.last_four">
               <div class="mr-2">
                 <div class="flex items-center">
@@ -64,24 +64,24 @@
           </div>
         </div>
         <div>
-          <refund-transaction v-if="canRefund(t)" :initial="t.amount / 100" :reference="t.transaction_id" :max="maxRefund / 100" :id="t.id" />
+          <refund-transaction v-if="canRefund(t)" @success="handleRefund" :initial="t.amount / 100" :reference="t.transaction_id" :max="maxRefund / 100" :id="t.id" />
         </div>
       </div>
-      <div class="text-xs border-t p-4 rounded-b">
+      <div class="p-4 text-xs border-t rounded-b">
         <div class="flex">
-          <span class="flex mr-2 items-center font-medium py-1 px-3 rounded" :class="{'bg-blue-100 text-blue-700': t.cvc_matched, 'bg-gray-100 text-gray-500': !t.cvc_matched}">
+          <span class="flex items-center px-3 py-1 mr-2 font-medium rounded" :class="{'bg-blue-100 text-blue-700': t.cvc_matched, 'bg-gray-100 text-gray-500': !t.cvc_matched}">
             <i class="mr-1" :class="`ri-${t.cvc_matched ? 'check-line' : 'close-line'}`" />
             {{ $t('CVC') }}
           </span>
-          <span class="flex mr-2 items-center font-medium py-1 px-3 rounded" :class="{'bg-blue-100 text-blue-700': t.address_matched, 'bg-gray-100 text-gray-500': !t.address_matched}">
+          <span class="flex items-center px-3 py-1 mr-2 font-medium rounded" :class="{'bg-blue-100 text-blue-700': t.address_matched, 'bg-gray-100 text-gray-500': !t.address_matched}">
             <i class="mr-1" :class="`ri-${t.address_matched ? 'check-line' : 'close-line'}`" />
             {{ $t('Address') }}
           </span>
-          <span class="flex mr-2 items-center font-medium py-1 px-3 rounded" :class="{'bg-blue-100 text-blue-700': t.postcode_matched, 'bg-gray-100 text-gray-500': !t.postcode_matched}">
+          <span class="flex items-center px-3 py-1 mr-2 font-medium rounded" :class="{'bg-blue-100 text-blue-700': t.postcode_matched, 'bg-gray-100 text-gray-500': !t.postcode_matched}">
             <i class="mr-1" :class="`ri-${t.postcode_matched ? 'check-line' : 'close-line'}`" />
             {{ $t('Postcode') }}
           </span>
-          <span class="flex items-center font-medium py-1 px-3 rounded ":class="{'bg-blue-100 text-blue-700': t.threed_secure, 'bg-gray-100 text-gray-500': !t.threed_secure}">
+          <span class="flex items-center px-3 py-1 font-medium rounded ":class="{'bg-blue-100 text-blue-700': t.threed_secure, 'bg-gray-100 text-gray-500': !t.threed_secure}">
             <i class="mr-1" :class="`ri-${t.threed_secure ? 'check-line' : 'close-line'}`" />
             {{ $t('ThreeD Secure') }}
           </span>
@@ -107,7 +107,7 @@
         }
       }
     },
-    methods: {
+    computed: {
       maxRefund() {
         let transactions = 0;
         each(this.transactions, item => {
@@ -116,6 +116,11 @@
           }
         });
         return transactions;
+      },
+    },
+    methods: {
+      handleRefund (transaction) {
+        this.$emit('refunded', transaction)
       },
       canRefund(transaction) {
         return this.maxRefund &&

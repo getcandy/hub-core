@@ -31,6 +31,14 @@ class UppyGetcandy extends Plugin {
           body,
           uploadURL
         })
+      }).catch((error) => {
+        const { data } = error.response
+        this.uppy.emit('upload-error', file, {
+          message: data.file[0]
+        }, {
+          file: file.id,
+          errors: data.file
+        })
       })
     })
     return Promise.all(promises)

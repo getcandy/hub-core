@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="bg-gray-200 px-24 py-4 text-xs font-bold uppercase text-gray-600">
+    <div class="px-24 py-4 text-xs font-bold text-gray-600 uppercase bg-gray-200">
       Name
     </div>
     <div class="m-4" v-sortable="{
@@ -27,7 +27,9 @@
     ],
     mounted() {
       this.$getcandy.on('Categories').getCategories({
-        tree: true
+        query: {
+          tree: true
+        }
       }).then(response => {
         this.categories = response.data.data
       })

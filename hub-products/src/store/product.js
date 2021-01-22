@@ -130,9 +130,23 @@ export const actions = {
         })
     },
 
-    async publish ( { commit, state }, { productId, context }) {
-        await context.products.publish(productId);
-        commit('setLiveId', productId)
-        commit('setIsDraft', false)
+    async publish ( { commit, state, dispatch }, { productId, context }) {
+        await context.on('Products').postProductsIdPublish(productId);
+        const response = await dispatch('fetch', {
+          context,
+          id: productId
+        })
+        commit('setModel', response)
+    },
+
+    async createVariants( { commit, dispatch }, { variants, $gc, $getcandy, productId }) {
+      await $gc.products.variants.create(productId, variants)
+      const response = await dispatch('fetch', {
+        context: $getcandy,
+        id: productId
+      })
+      commit('setModel', response)
+
+      return response
     }
 }

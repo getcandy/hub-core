@@ -2,11 +2,11 @@
   <div v-if="product">
     <gc-tabs>
       <gc-tab-item :label="$t('Pricing &amp; Variants')">
-        <div class="px-6 py-3 text-right" v-if="config.allow_variant_options">
+        <div class="px-6 py-3 text-right" v-if="config.allow_variant_options && product.variants.data.length <= 1">
           <gc-button type="is-primary" @click="showVariantOptions = true" theme="gray">Edit options</gc-button>
         </div>
         <quick-view-panel :open="showVariantOptions" @close="showVariantOptions = false" width="w-4/5 xl:w-3/5">
-          <variant-options :product="product" @save="saveVariants" />
+          <variant-options :product="product" @save="saveVariants" :initial-price="firstVariant.price"/>
         </quick-view-panel>
         <variant-manager @change="handleVariantsChange" :product="product" :languages="languages"></variant-manager>
       </gc-tab-item>
@@ -57,12 +57,18 @@
       },
       config () {
         return this.$store.state.product.config
+      },
+      firstVariant () {
+        return this.product.variants.data[0]
       }
     },
     mounted () {
-      this.product = this.normalize(this.$store.state.product.model)
+      this.syncModel()
     },
     methods: {
+      syncModel () {
+        this.product = this.normalize(this.storeModel)
+      },
       handleCustomerGroupsChange: debounce(async function (groups) {
         await this.createDraft('product', this.product.id, {
           afterRedirect: async (product) => {
@@ -84,10 +90,19 @@
         })
       }, 300),
       async saveVariants (event) {
+        this.showVariantOptions = false
         await this.createDraft('product', this.product.id, {
-
+          afterRedirect: async (product) => {
+            this.product.id = product.id
+          }
         }, this.$getcandy)
-        this.$gc.products.variants.create(this.product.id, event)
+        await this.$store.dispatch('product/createVariants', {
+          productId: this.product.id,
+          $getcandy: this.$getcandy,
+          $gc: this.$gc,
+          variants: event
+        })
+        this.syncModel()
       },
       handleVariantsChange: debounce(async function (variant, done) {
 

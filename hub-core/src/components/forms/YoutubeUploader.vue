@@ -1,9 +1,9 @@
 <template>
   <form @submit.prevent="upload">
     <form-field :label="$t('YouTube video ID')" :instructions="$t('This is the YouTube video ID, not the whole URL')">
-      <b-input v-model="id" required placeholder="G0LpOalhYTU" />
+      <gc-input v-model="id" required placeholder="G0LpOalhYTU" />
     </form-field>
-    <button :disabled="processing" type="submit" class="inline-flex items-center rounded-md border border-green-300 px-4 py-2 bg-white text-base leading-6 font-medium text-green-600 shadow-sm hover:text-green-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+    <button :disabled="processing" type="submit" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-green-600 transition duration-150 ease-in-out bg-white border border-green-300 rounded-md shadow-sm hover:text-green-500 focus:outline-none focus:border-blue-300 focus:shadow-outline sm:text-sm sm:leading-5">
       <b-icon icon="loader-4-line" class="spin" v-if="processing" />
       <span v-else>{{ $t('Upload Video') }}</span>
     </button>
@@ -13,6 +13,14 @@
 <script>
 export default {
   props: {
+    assetable: {
+      type: String,
+      default: 'products',
+    },
+    parentId: {
+      type: String,
+      required: true,
+    },
     type: {
       type: String,
       default: 'external'
@@ -30,9 +38,12 @@ export default {
       try {
         const response = await this.$gc.assets.upload({
           'url': `https://youtu.be/${this.id}`,
-          'mime_type': 'youtube'
+          'mime_type': 'youtube',
+          'parent_id': this.parentId,
+          'parent': this.assetable,
         })
         this.$emit('uploaded', response.data)
+        this.id = null
       } catch (error) {
       }
       this.processing = false

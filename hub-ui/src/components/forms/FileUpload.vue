@@ -3,26 +3,33 @@
     <div ref="uploader" v-if="!uploading"></div>
     <b-progress :value="60" v-else type="is-success" />
 
-    <div v-if="error" class="bg-red-100 text-red-600 py-2 px-4 text-sm font-medium">
-      {{ error }}
-    </div>
+    <div v-for="file in files" :key="file.id" class="flex items-center px-4 py-4">
 
-    <hr v-if="files.length">
-
-    <div v-for="file in files" :key="file.id" class="columns">
-      <div class="column">
-        {{ file.id}}
-        <img :src="file.src" width="100" height="100">
+      <div class="mr-4">
+        <div class="flex">
+          <img :src="file.src" width="100" height="100">
+          <div class="ml-4">
+            <span class="block text-sm font-bold">{{ file.name }}</span>
+            <span class="text-xs font-bold text-gray-500 uppercase">{{ $format.number(file.size / 1000000) }}mb</span>
+          </div>
+        </div>
       </div>
-      <div class="column">
-        <b-icon icon="refresh-line" class="spin" />
+      <div v-if="!!getFileErrors(file.id)">
+        <span class="text-sm text-red-600">{{ getFileErrors(file.id).join(',') }}</span>
+      </div>
+      <div v-if="!getFileErrors(file.id)">
+        <gc-icon icon="rotate-clockwise" spin />
+        <!-- <b-icon icon="refresh-line" class="spin" /> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { filter } from 'lodash'
+
+const filter = require('lodash/filter')
+const find = require('lodash/find')
+
 import UppyGetcandy from '@getcandy/hub-core/src/modules/UppyGetCandy'
 const Uppy = require('@uppy/core')
 const DragDrop = require('@uppy/drag-drop')
@@ -58,7 +65,7 @@ export default {
   data () {
     return {
       uploader: null,
-      error: null,
+      errors: [],
       files: [],
       uploading: false
     }
@@ -90,6 +97,11 @@ export default {
           file,
           response
         })
+      }).on('upload-error', (file, error, response) => {
+        this.errors.push(response)
+        setTimeout(() => {
+          this.uploader.removeFile(file.id)
+        }, 2000)
       }).on('file-added', file => this.addFileToStack(file))
       .on('file-removed', file => this.removeFileFromStack(file))
 
@@ -105,6 +117,12 @@ export default {
     this.$emit('built', this.uploader)
   },
   methods: {
+    getFileErrors (fileId) {
+      const match = find(this.errors, error => {
+        return error.file === fileId
+      })
+      return match ? match.errors : null
+    },
     addFileToStack (file) {
       const reader = new FileReader()
       reader.onload = (e) => {

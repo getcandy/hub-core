@@ -7,7 +7,7 @@
                 'bg-gray-200': !this.value,
                 'opacity-50': this.disabled,
             }"
-            class="relative inline-block flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline"
+            class="relative flex-shrink-0 inline-block h-6 transition-colors duration-200 ease-in-out border-2 border-transparent rounded-full cursor-pointer w-11 focus:outline-none focus:shadow-outline"
         >
             <!-- On: "translate-x-5", Off: "translate-x-0" -->
             <span aria-hidden="true"
@@ -15,7 +15,7 @@
                     'translate-x-5': this.value,
                     'translate-x-0': !this.value
                 }"
-                class="inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200"></span>
+                class="inline-block w-5 h-5 transition duration-200 ease-in-out transform bg-white rounded-full shadow"></span>
         </span>
     </div>
 </template>
@@ -37,6 +37,7 @@ export default {
           if (this.disabled) {
             return
           }
+          console.log('gi')
           this.$emit('input', !this.value)
           this.$emit('click')
         }

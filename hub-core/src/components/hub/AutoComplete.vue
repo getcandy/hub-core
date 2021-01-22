@@ -1,13 +1,12 @@
 <template>
   <div class="relative">
-    <input
-      class="border w-full shadow-inner focus:border-purple-600 outline-none px-2 py-2 rounded border-gray-400"
+    <gc-input
       :value="keywords"
       @input="update"
       @focus="init"
     />
-    <div class="absolute z-50 bg-white  overflow-y-scroll max-h-64 text-sm shadow-md mt-1 w-full" v-if="open && data.length">
-      <button type="button" class="p-2 hover:bg-gray-100 w-full text-left cursor-pointer block" v-for="(row, index) in data" :key="index" @click="selectRow(row)">
+    <div class="absolute z-50 w-full mt-1 overflow-y-scroll text-sm bg-white shadow-md max-h-64" v-if="open && data.length">
+      <button type="button" class="block w-full p-2 text-left cursor-pointer hover:bg-gray-100" v-for="(row, index) in data" :key="index" @click="selectRow(row)">
         {{ row.name }}
       </button>
     </div>

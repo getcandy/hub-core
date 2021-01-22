@@ -31,11 +31,11 @@
       </div>
 
     <!-- Translate dropdown -->
-    <div class="flex bg-white border-t text-sm" v-if="translating">
+    <div class="flex text-sm bg-white border-t" v-if="translating">
       <div class="w-1/2">
         <div class="flex items-center">
           <div class="relative w-1/2">
-            <select v-model="channel" class="appearance-none w-full rounded-none bg-white border-r p-4 focus:outline-none">
+            <select v-model="channel" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
               <option
                 v-for="chan in channels"
                 :value="chan.handle"
@@ -43,12 +43,12 @@
                 {{ chan.name }}
               </option>
             </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+              <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
             </div>
           </div>
           <div class="relative w-1/2">
-            <select v-model="language" class="appearance-none w-full rounded-none bg-white border-r p-4 focus:outline-none">
+            <select v-model="language" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
               <option
                 v-for="lang in languages"
                 :value="lang.lang"
@@ -56,8 +56,8 @@
                 {{ lang.name }}
               </option>
             </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+              <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@
       <div class="w-1/2">
         <div class="flex items-center">
           <div class="relative w-1/2">
-            <select v-model="translateChannel" class="appearance-none w-full rounded-none bg-white border-r p-4 focus:outline-none">
+            <select v-model="translateChannel" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
               <option
                 v-for="chan in channels"
                 :value="chan.handle"
@@ -73,12 +73,12 @@
                 {{ chan.name }}
               </option>
             </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+              <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
             </div>
           </div>
           <div class="relative w-1/2">
-            <select  class="appearance-none w-full rounded-none bg-white border-r p-4 focus:outline-none">
+            <select  class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
               <option
                 v-for="lang in languages"
                 :value="lang.lang"
@@ -87,19 +87,19 @@
                 {{ lang.name }}
               </option>
             </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+              <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
             </div>
           </div>
         </div>
       </div>
     </div>
     </div>
-    <div v-if="hasErrors" class="bg-red-500 text-white px-6 py-3 text-sm">
+    <div v-if="hasErrors" class="px-6 py-3 text-sm text-white bg-red-500">
       Please check missing fields below.
     </div>
     <template v-if="attributeGroups.length == 1">
-      <div v-for="group in attributeGroups" :key="group.id" class="flex py-3" >
+      <div v-for="group in attributeGroups" :key="group.id" class="flex py-3 bg-white" >
         <div class="px-6" :class="{ 'w-full' : !translating, 'w-1/2': translating }">
           <localised-attributes @change="handleChange" :attribute-data="attributeData" :language="language" :channel="channel" :attributes="filteredAttributes(group.attributes.data)" :errors="errors" />
         </div>
@@ -110,7 +110,7 @@
     </template>
     <template v-else>
       <div v-for="group in attributeGroups" :key="group.id" class="card">
-        <header class="flex bg-gray-100 py-4 px-6 cursor-pointer text-sm items-center uppercase text-gray-600" @click.prevent="currentGroup = (currentGroup === group.id ? null : group.id)">
+        <header class="flex items-center px-6 py-4 text-sm text-gray-600 uppercase bg-gray-100 cursor-pointer" @click.prevent="currentGroup = (currentGroup === group.id ? null : group.id)">
           <i class="mr-3" :class="`ri-${currentGroup == group.id || expandAll ? 'checkbox-indeterminate-line' : 'add-box-line'}`" />
           <span class="font-bold">{{ getTabLabel(group) }}</span>
         </header>

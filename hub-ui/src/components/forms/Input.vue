@@ -18,6 +18,8 @@
             :name="name"
             :placeholder="placeholder"
             :required="required"
+            :max="max"
+            :step="step"
         />
         <slot name="suffix" />
     </div>
@@ -56,6 +58,14 @@ export default {
         required: {
           type: Boolean,
           default: false,
+        },
+        step: {
+          type: String,
+          default: null,
+        },
+        max: {
+          type: Number|String,
+          default: null
         }
     }
 }

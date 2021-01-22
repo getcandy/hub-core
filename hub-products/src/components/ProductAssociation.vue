@@ -37,8 +37,10 @@
               </nuxt-link>
             </template>
             <template v-slot:actions="{ row }">
-              <gc-button @click="attach(row)" theme="green" v-if="!selected.includes(row.id)">Attach</gc-button>
-              <gc-button @click="detach(row)" theme="danger" v-else >Detach</gc-button>
+              <template v-if="row.id != product.id">
+                <gc-button @click="attach(row)" theme="green" v-if="!selected.includes(row.id)">Attach</gc-button>
+                <gc-button @click="detach(row)" theme="danger" v-else >Detach</gc-button>
+              </template>
             </template>
           </search-table>
         </quick-view-panel>
@@ -61,21 +63,22 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(row, rowIndex) in associations" :key="rowIndex">
-              <td><thumbnail-loader width="50px" :asset="row.association.data.assets.data[0]" /></td>
-              <td>{{ attribute(row.association.data.attribute_data, 'name') }}</td>
+            <tr v-for="(association, rowIndex) in associations" :key="rowIndex">
+              <td><thumbnail-loader width="50px" :asset="association.thumbnail" /></td>
+              <td>{{ attribute(association.attribute_data, 'name') }}</td>
               <td>
-                <gc-select placeholder="Select a type" v-model="associations[rowIndex].group.data.id">
+                <gc-select placeholder="Select a type" v-model="association.type" @change="updateAssociationType">
                     <option
                         v-for="option in groups"
                         :value="option.id"
+                        :selected="option.id == association.type"
                         :key="option.id">
                         {{ option.name }}
                     </option>
                 </gc-select>
               </td>
               <td>
-                <gc-button @click="detach(row.association.data)" theme="danger">
+                <gc-button @click="detach(association.id)" theme="danger">
                   {{ $t('Remove') }}
                 </gc-button>
               </td>
@@ -111,11 +114,18 @@
     mounted() {
       this.$nextTick(() => {
         each(this.associations, item => {
-          this.selected.push(item.association.data.id)
+          this.selected.push(item.id)
         })
       })
 
-      this.associations = get(this.product, 'associations.data', [])
+      this.associations = map(get(this.product, 'associations.data', []), item => {
+        return {
+          id: item.association.data.id,
+          thumbnail: item.association.data.assets.data[0],
+          attribute_data: item.association.data.attribute_data,
+          type: item.group.data.id
+        }
+      });
 
       // We need to get the association groups, this is quite specific
       // to what we're trying to do here so we can just fetch them?
@@ -136,13 +146,18 @@
       /**
        * Detach a product from the associations
        */
-      detach(product) {
-        this.selected.splice(this.selected.indexOf(product.id), 1);
+      detach(productId) {
+        this.selected.splice(this.selected.indexOf(productId), 1);
         const toRemove = findIndex(this.associations, item => {
-          return item.association.data.id == product.id
+          return item.id == productId
         })
         this.associations.splice(toRemove, 1)
 
+        this.$emit('changed', () => {
+          this.save()
+        })
+      },
+      updateAssociationType(typeId, type) {
         this.$emit('changed', () => {
           this.save()
         })
@@ -153,12 +168,10 @@
          */
         const group = this.normalize(first(this.groups))
         const associations = this.associations.push({
-          association: {
-            data: product
-          },
-          group: {
-            data: group
-          }
+          id: product.id,
+          thumbnail: product.assets.data[0],
+          attribute_data: product.attribute_data,
+          type: group.id
         })
         this.selected.push(product.id);
 
@@ -170,8 +183,8 @@
         // Map it out so our API can understand it.
         let relations = map(this.associations, item => {
           return {
-            'association_id': item.association.data.id,
-            'type' : item.group.data.id
+            'association_id': item.id,
+            'type' : item.type
           }
         });
 

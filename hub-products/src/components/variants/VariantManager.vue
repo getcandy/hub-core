@@ -5,7 +5,7 @@
     </quick-view-panel>
     <div class="flex">
       <div class="w-1/5" v-if="variants.length > 1">
-        <header class="p-6 pt-0">
+        <header class="px-6 py-4">
           <gc-button @click="showCreatePanel = true" size="x-small" theme="gray">{{ $t('Add option') }}</gc-button>
         </header>
         <div
@@ -14,7 +14,7 @@
         >
           <button
             @click="selectVariant(index)"
-            class="p-6 text-sm w-full text-left border-l-4 focus:outline-none"
+            class="w-full px-6 py-4 text-sm text-left border-l-4 focus:outline-none"
             :class="{
               'bg-white text-gray-800 hover:bg-white border-blue-500' : current.id == variant.id,
               'hover:bg-gray-200 text-gray-600 border-transparent ': current.id != variant.id
@@ -23,18 +23,8 @@
             <span v-for="(option, optionIndex) in variant.options" :key="optionIndex">{{ option[locale] }} </span>
           </button>
         </div>
-        <!--<div class="panel">
-          <div class="panel-heading">
-            {{ $t('Variants') }}
-          </div>
-          <a @click.prevent="selectVariant(index)" class="panel-block" :class="{
-            'is-active' : current.id == variant.id
-          }" v-for="(variant, index) in variants" :key="variant.id">
-            <b-tag v-for="(option, optionIndex) in variant.options" :key="optionIndex">{{ option[locale] }}</b-tag>
-          </a>
-        </div>-->
       </div>
-      <div class="bg-white w-full">
+      <div class="w-full bg-white">
         <template v-if="product.option_data.length">
           <div class="p-6">
             <header class="mb-6">
@@ -47,7 +37,7 @@
           </div>
         </template>
         <div>
-          <header class="shadow-sm border-b py-3 px-6">
+          <header class="px-6 py-3 border-b shadow-sm">
             <h3 class="text-sm font-bold text-gray-700">{{ $t('Pricing') }}</h3>
           </header>
           <div class="p-6">
@@ -65,7 +55,7 @@
             <div class="my-4">
               <label class="flex items-center">
                 <toggle v-model="hasGroupPricing" @input="handleCustomerGroupPricingToggle" />
-                <span class="ml-3 block text-sm leading-5 font-medium text-gray-700">{{ $t('Individual Customer Group Pricing') }}</span>
+                <span class="block ml-3 text-sm font-medium leading-5 text-gray-700">{{ $t('Individual Customer Group Pricing') }}</span>
               </label>
             </div>
             <template v-if="hasGroupPricing">
@@ -98,7 +88,7 @@
           </div>
         </div>
         <div>
-          <header class="shadow-sm border-b border-t py-3 px-6">
+          <header class="px-6 py-3 border-t border-b shadow-sm">
             <h3 class="text-sm font-bold text-gray-700">{{ $t('Price Tiers') }}</h3>
           </header>
           <div>
@@ -107,7 +97,7 @@
         </div>
 
         <div>
-          <header class="shadow-sm border-b py-3 px-6">
+          <header class="px-6 py-3 border-b shadow-sm">
             <h3 class="text-sm font-bold text-gray-700">{{ $t('Inventory') }}</h3>
           </header>
           <div class="p-6">
@@ -135,9 +125,9 @@
           </div>
         </div>
         <div>
-          <header class="shadow-sm border-b border-t py-3 px-6">
+          <header class="px-6 py-3 border-t border-b shadow-sm">
             <h3 class="text-sm font-bold text-gray-700">{{ $t('Dimensions & Weight') }}</h3>
-            <p class="text-xs text-gray-600 mt-1">
+            <p class="mt-1 text-xs text-gray-600">
               {{ $t('Add details about this variants sizing, this will help when you come to more advanced shipping calculations.') }}
             </p>
           </header>
@@ -145,7 +135,7 @@
             <div class="md:grid md:grid-cols-3 md:gap-6">
               <form-field :label="$t('Width')">
                 <gc-grouped-input v-model="current.width.value" @input="handleChange">
-                  <select v-model="current.width.unit" @select="handleChange" class="form-select h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm sm:leading-5">
+                  <select v-model="current.width.unit" @select="handleChange" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5">
                     <option value="cm">CM</option>
                     <option value="mm">MM</option>
                     <option value="m">M</option>
@@ -154,7 +144,7 @@
               </form-field>
               <form-field :label="$t('Height')">
                 <gc-grouped-input v-model="current.height.value" @input="handleChange">
-                  <select v-model="current.height.unit" @select="handleChange" class="form-select h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm sm:leading-5">
+                  <select v-model="current.height.unit" @select="handleChange" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5">
                     <option value="cm">CM</option>
                     <option value="mm">MM</option>
                     <option value="m">M</option>
@@ -163,7 +153,7 @@
               </form-field>
               <form-field :label="$t('Depth')">
                 <gc-grouped-input v-model="current.depth.value" @input="handleChange">
-                  <select v-model="current.depth.unit" @select="handleChange" class="form-select h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm sm:leading-5">
+                  <select v-model="current.depth.unit" @select="handleChange" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5">
                     <option value="cm">CM</option>
                     <option value="mm">MM</option>
                     <option value="m">M</option>
@@ -210,9 +200,7 @@
       }
     },
     mounted() {
-      this.variants = JSON.parse(
-        JSON.stringify(this.product.variants.data)
-      );
+      this.syncVariants()
       each(this.product.option_data, (option, handle) => {
         this.$set(this.optionFields, handle, {
           values: {},
@@ -222,6 +210,12 @@
       this.selectVariant(0)
     },
     methods: {
+      syncVariants () {
+        console.log(this.productVariants);
+        this.variants = JSON.parse(
+          JSON.stringify(this.productVariants)
+        );
+      },
       selectVariant(index) {
         this.current = this.variants[index]
         this.current.customer_pricing.data = map(this.current.customer_pricing.data, price => {
@@ -285,7 +279,18 @@
         this.handleChange()
       }
     },
+    watch: {
+      productVariantCount () {
+        this.syncVariants()
+      }
+    },
     computed: {
+      productVariantCount () {
+        return this.productVariants.length
+      },
+      productVariants () {
+        return this.product.variants.data
+      },
       product() {
         return this.$store.state.product.model
       },

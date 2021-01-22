@@ -55,7 +55,7 @@
       </div>
       <div class="bg-white">
         <order-lines :currency="currency" :order="order" v-show="view == 'order-lines'" />
-        <order-transactions :currency="currency" :transactions="transactions" v-show="view == 'transactions'" />
+        <order-transactions :currency="currency" :transactions="transactions" @refunded="handleRefund" v-show="view == 'transactions'" />
         <activity-log type="order" :id="order.id" v-show="view == 'history'" />
         <component v-for="(tab, tabKey) in additionalTabs" :key="tabKey" :is="tab.component" v-show="view == tab.view" :order="order" />
       </div>
@@ -100,6 +100,9 @@
     methods: {
       handleStatusUpdate (status) {
         this.$emit('statusUpdate', status)
+      },
+      handleRefund (transaction) {
+        this.order.transactions.data.unshift(transaction)
       }
     },
     computed: {

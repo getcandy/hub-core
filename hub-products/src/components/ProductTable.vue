@@ -50,41 +50,6 @@
     <template v-slot:purchasable="{ row }">
       <span class="tag is-success-table">{{ purchasable(row, 'customer_groups') }}</span>
     </template>
-    <!-- <template slot-scope="props">
-      <slot name="pre-columns" v-bind="props" />
-      <b-table-column field="thumbnail" label="">
-        <nuxt-link :to="{
-          name: 'products.view',
-          params: {
-              id: props.row.id
-          }
-        }">
-          <thumbnail-loader width="30px" :asset="props.row.assets.data[0]"></thumbnail-loader>
-        </nuxt-link>
-      </b-table-column>
-      <b-table-column field="name" :label="$t('Name')" sortable>
-        <nuxt-link :to="{
-          name: 'products.view',
-          params: {
-              id: props.row.id
-          }
-        }">
-        {{ attribute(props.row.attribute_data, 'name') }}
-        </nuxt-link>
-      </b-table-column>
-      <b-table-column field="stock" :label="$t('Stock')">
-        <edit-stock :product="props.row" />
-      </b-table-column>
-      <b-table-column field="channels" :label="$t('Channels')">
-        {{ visibility(props.row, 'channels') }}
-      </b-table-column>
-      <b-table-column field="customer_groups" :label="$t('Customer Groups')">
-        {{ visibility(props.row, 'customer_groups') }}
-      </b-table-column>
-      <b-table-column field="purchasable" :label="$t('Purchasable')">
-        <span class="tag is-success-table">{{ purchasable(props.row, 'customer_groups') }}</span>
-      </b-table-column>
-    </template> -->
   </search-table>
 </template>
 

@@ -37,74 +37,7 @@
         <div class="flex">
           <gc-resource-nav :nav="navItems" />
         </div>
-          <!-- <div class="tabs tabs-large tabs-large--flush">
-            <ul>
-              <nuxt-link
-                :to="{
-                  name: 'products.view',
-                  params: {
-                    id: product.id
-                  }
-                }"
-                tag="li"
-                exact-active-class="is-active"
-              >
-                <a>{{ $t("Product Details") }}</a>
-              </nuxt-link>
-              <nuxt-link
-                :to="{
-                  name: 'products.edit.media',
-                  params: {
-                    id: product.id
-                  }
-                }"
-                tag="li"
-                exact-active-class="is-active"
-              >
-                <a>{{ $t("Media") }}</a>
-              </nuxt-link>
-              <nuxt-link
-                :to="{
-                  name: 'products.edit.availability',
-                  params: {
-                    id: product.id
-                  }
-                }"
-                tag="li"
-                exact-active-class="is-active"
-              >
-                <a>{{ $t("Availability &amp; Pricing") }}</a>
-              </nuxt-link>
-              <nuxt-link
-                :to="{
-                  name: 'products.edit.associations',
-                  params: {
-                    id: product.id
-                  }
-                }"
-                tag="li"
-                exact-active-class="is-active"
-              >
-                <a>{{ $t("Associations") }}</a>
-              </nuxt-link>
-              <nuxt-link
-                :to="{
-                  name: 'products.edit.urls',
-                  params: {
-                    id: product.id
-                  }
-                }"
-                tag="li"
-                exact-active-class="is-active"
-              >
-                <a>{{ $t("URLs") }}</a>
-              </nuxt-link>
-              <nuxt-link tag="li" exact-active-class="is-active" v-for="(tab, index) in additionalTabs" :to="tab.route"  :key="index">
-                <a>{{ $t(tab.title) }}</a>
-              </nuxt-link>
-            </ul>
-          </div> -->
-            <nuxt />
+        <nuxt />
       </template>
     </template>
   </default-layout>
@@ -140,64 +73,6 @@ export default {
   },
   computed: {
     navItems () {
-      // <nuxt-link
-      //           :to="{
-      //             name: 'products.view',
-      //             params: {
-      //               id: product.id
-      //             }
-      //           }"
-      //           exact-active-class="tab-active"
-      //         >
-      //         {{ $t("Product Details") }}
-      //       </nuxt-link>
-      //       <nuxt-link
-      //           :to="{
-      //             name: 'products.edit.media',
-      //             params: {
-      //               id: product.id
-      //             }
-      //           }"
-      //           exact-active-class="tab-active"
-      //         >
-      //           {{ $t("Media") }}
-      //         </nuxt-link>
-      //         <nuxt-link
-      //           :to="{
-      //             name: 'products.edit.availability',
-      //             params: {
-      //               id: product.id
-      //             }
-      //           }"
-      //           exact-active-class="tab-active"
-      //         >
-      //           {{ $t("Availability &amp; Pricing") }}
-      //         </nuxt-link>
-      //         <nuxt-link
-      //           :to="{
-      //             name: 'products.edit.associations',
-      //             params: {
-      //               id: product.id
-      //             }
-      //           }"
-      //           exact-active-class="tab-active"
-      //         >
-      //           {{ $t("Associations") }}
-      //         </nuxt-link>
-      //         <nuxt-link
-      //           :to="{
-      //             name: 'products.edit.urls',
-      //             params: {
-      //               id: product.id
-      //             }
-      //           }"
-      //           exact-active-class="tab-active"
-      //         >
-      //          {{ $t("URLs") }}
-      //         </nuxt-link>
-      //         <nuxt-link exact-active-class="tab-active" v-for="(tab, index) in additionalTabs" :to="tab.route"  :key="index">
-      //           {{ $t(tab.title) }}
-      //         </nuxt-link>
       return {
         params: {
           id: this.product.id
@@ -225,9 +100,6 @@ export default {
           }
         ]
       };
-
-    // console.log(this.additionalTabs);
-    //   return nav;
     },
     previewUrl() {
       return this.config.preview_url.replace(':id', this.product.id) || null
@@ -348,7 +220,7 @@ export default {
       await this.$router.replace({
         name: 'products'
       })
-      await this.$router.replace({
+      await this.$router.push({
         name: 'products.view',
         params: {
           id: this.liveId
@@ -359,8 +231,9 @@ export default {
     async publish () {
       await this.$store.dispatch('product/publish', {
         productId: this.product.id,
-        context: this.$gc
+        context: this.$getcandy
       })
+
       await this.$router.push({
         name: 'products.view',
         params: {
@@ -371,7 +244,7 @@ export default {
     async restore (versionId) {
       const response = await this.$gc.versions.restore(versionId);
       this.loading = true
-      await this.$router.push({
+      await this.$router.replace({
         name: 'products.view',
         params: {
           id: response.data.id

@@ -62,8 +62,14 @@ export default {
           }
         }
         const response = await this.$gc.categories.post(data)
-        this.$notify.queue('error', this.$t('Category created'))
+        this.$notify.queue('success', this.$t('Category created'))
         this.$emit('created', response.data)
+        this.$router.push({
+          name: 'categories.edit.details',
+          params: {
+            id: response.data.data.id
+          }
+        })
         this.model = this.base()
       } catch (e) {
         if (e.response) {

@@ -1,17 +1,17 @@
 <template>
   <div class="flex flex-col">
-    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-      <div class="align-middle inline-block min-w-full overflow-hidden border-b border-gray-200">
+    <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      <div class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200">
         <table class="min-w-full">
           <thead class="bg-gray-100">
             <tr>
-              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
                 {{ $t('Lower Limit') }}
               </th>
-              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
                 {{ $t('Price') }}
               </th>
-              <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
                 {{ $t('Customer Group')}}
               </th>
               <th class="px-6 py-3 border-b border-gray-200 bg-gray-50"></th>
@@ -19,13 +19,13 @@
           </thead>
           <tbody>
             <tr class="bg-white" v-for="(tier, index) in tiers" :key="index">
-              <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
+              <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                 <b-input v-model="tier.lower_limit" type="number" @input="handleChange(tier)" :expanded="true" />
               </td>
-              <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
-                <price-input v-model="tier.price" @input="handleChange(tier)"  :expanded="true" />
+              <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                <gc-price-input v-model="tier.price" @input="handleChange(tier)"  :expanded="true" :is-cents="false" />
               </td>
-              <td class="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-900">
+              <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                 <select-input placeholder="Select customer group" :expanded="true" v-model="tier.group.id">
                   <option
                     v-for="group in customerGroups"
@@ -36,7 +36,7 @@
                     </option>
                 </select-input>
               </td>
-              <td class="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+              <td class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap">
                 <gc-button @click="remove(index)" theme="danger" size="x-small"><i class="ri-close-line" /></gc-button>
               </td>
 

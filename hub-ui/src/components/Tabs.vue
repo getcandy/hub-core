@@ -62,11 +62,11 @@ export default {
   mounted () {
     this.$nextTick(() => {
       this.tabs = map(this.filteredTabs, (tab, index) => {
-        if (index === 1) {
+        if (index === 0) {
           tab.componentInstance.active = true
         }
         return {
-          active: index == 1,
+          active: index == 0,
           node: tab
         }
       })

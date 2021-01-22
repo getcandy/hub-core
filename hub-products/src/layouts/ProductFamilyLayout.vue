@@ -1,7 +1,7 @@
 <template>
   <default-layout>
-    <div class="h-screen flex items-center justify-center" v-if="loading">
-      <i class="ri-loader-5-line text-3xl spin-fast"></i>
+    <div class="flex items-center justify-center h-screen" v-if="loading">
+      <i class="text-3xl ri-loader-5-line spin-fast"></i>
     </div>
     <div v-else>
       <toolbar :heading="family.name" >
@@ -60,7 +60,7 @@
         try {
           await this.$gc.productFamilies.update(this.family.id, {
             name: this.family.name,
-            attributes: map(this.family.attributes.data, att => att.id)
+            attribute_ids: map(this.family.attributes.data, att => att.id)
           })
         } catch (e) {
           this.$notify.queue('error', this.$t('Unable to save product family'))

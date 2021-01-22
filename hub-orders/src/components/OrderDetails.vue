@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="bg-white border-b shadow-sm px-6 py-3 text-sm font-semibold">
+    <div class="px-6 py-3 text-sm font-semibold bg-white border-b shadow-sm">
       <div class="flex items-center justify-between">
         <div v-if="status">
           <span :style="getStatusStyles(order.status)" class="px-3 py-2 rounded">{{ status.label }}</span>
@@ -18,7 +18,7 @@
       </div>
     </div>
     <div>
-      <div class="flex px-6 py-6 border-b text-sm justify-between">
+      <div class="flex justify-between px-6 py-6 text-sm border-b">
         <div>
           <strong class="text-xs text-gray-600">{{ $t('Order ID') }}</strong><br>
           <span>{{ order.display_id }} </span>
@@ -87,8 +87,15 @@
           <strong class="text-xs text-gray-600">{{ $t('Tracking No.') }}</strong>
           <b-input v-model="order.tracking_no" />
         </div>
+
       </div>
     </div>
+    <div v-if="order.notes" class="px-6 py-4 border-t border-b">
+      <strong>Order Notes</strong>
+      <p>{{ order.notes }}</p>
+    </div>
+
+
   </div>
 </template>
 

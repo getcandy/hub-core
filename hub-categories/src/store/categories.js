@@ -61,26 +61,34 @@ export const actions = {
       ])
   },
   async fetch ({ commit, state }, { context, id }) {
-    const response = await context.categories.find(id, {
-      full_response: true,
-      draft: true,
-      include: [
-        'assets.tags',
-        'assets.transforms',
-        'attributes.group.attributes',
-        'channels',
-        'draft',
-        'publishedParent',
-        'children',
-        'customerGroups',
-        'layout',
-        'versions.user',
-        'routes'
-      ]
-    })
+
+    const includes = Array([
+      'assets.tags',
+      'assets.transforms',
+      'attributes.group.attributes',
+      'channels',
+      'draft',
+      'publishedParent',
+      'children',
+      'customerGroups',
+      'layout',
+      'versions.user',
+      'routes'
+    ]).join(',')
+
+    const response = await context.on('Categories').getCategoriesCategoryId(
+      id,
+      includes,
+      {
+        query: {
+          full_response: true,
+          draft: 1,
+          include: includes
+        }
+      }
+    )
 
     const category = response.data.data
-
     const isDraft = !!category.drafted_at
 
     if (!isDraft) {

@@ -9,7 +9,6 @@
       <b-input
         :value="getValue(attribute.handle)"
         @input="setValue(attribute.handle, $event)"
-        :placeholder="data[attribute.handle][fallbackChannel][fallbackLanguage]"
         :type="attribute.type"
         v-if="(['text', 'number', 'textarea']).includes(attribute.type)"
       />

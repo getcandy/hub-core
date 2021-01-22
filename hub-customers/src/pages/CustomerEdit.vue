@@ -84,24 +84,37 @@
 import HandlesForms from '@getcandy/hub-core/src/mixins/HandlesForms.js'
 const get = require('lodash/get')
 const map = require('lodash/map')
+const each = require('lodash/each')
 
 export default {
   layout: 'customer',
   mixins: [
     HandlesForms
   ],
-  async asyncData({app, params, $store}) {
+  async asyncData({app, params, $store, $set}) {
     const response = await app.$getcandy.on('Customers').getCustomersCustomerId(params.id, 'users,customerGroups')
     // Get customer fields.
     const fieldsResponse = await app.$getcandy.on('Customers').getCustomerFields()
 
+    const fields = get(fieldsResponse, 'data.data.fields', [])
+    const customer = get(response, 'data.data')
+
+    each(fields, (field, handle) => {
+      if (!customer.fields) {
+        customer.fields = {}
+      }
+      if (!customer.fields[field]) {
+        customer.fields[handle] = ''
+      }
+    })
+
     return {
-      customer: get(response, 'data.data'),
+      customer,
       customerCustomerGroups: map(get(response, 'data.data.customer_groups.data', []), (group) => {
         return group.id
       }),
       users: get(response, 'data.data.users.data', []),
-      fields: get(fieldsResponse, 'data.data.fields', [])
+      fields
     }
   },
   mounted() {

@@ -29,28 +29,24 @@
           </search-table>
         </quick-view-panel>
     </div>
-    <div class="search-table">
-      <div class="b-table">
-        <table class="table">
-          <thead>
-            <tr>
-              <th></th>
-              <th>{{ $t('Name') }}</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="category in categories" :key="category.id">
-              <td><thumbnail-loader width="50px" :asset="category.assets.data[0]" /></td>
-              <td>{{ attribute(category.attribute_data, 'name') }}</td>
-              <td>
-                <b-button @click="detach(category)" icon-right="delete-bin-line" type="is-danger" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <gc-table
+      :data="categories"
+      :columns="[
+        {label: '', field: 'thumbnail'},
+        {label: 'Name', field: 'name'},
+        {label: '', field: 'actions'},
+      ]"
+    >
+      <template v-slot:thumbnail="{ row }">
+        <thumbnail-loader width="50px" :asset="row.assets.data[0]" />
+      </template>
+      <template v-slot:name="{ row }">
+        {{ attribute(row.attribute_data, 'name') }}
+      </template>
+      <template v-slot:actions="{ row }">
+        <gc-button @click="detach(row)" theme="danger">Detach</gc-button>
+      </template>
+    </gc-table>
   </div>
 </template>
 

@@ -52,31 +52,29 @@
         </table>
       </div>
     </div>
-    <button @click="addRow" class="bg-blue-100 w-full p-2 text-xs focus:outline-none font-bold uppercase text-blue-600 hover:bg-blue-200">{{ $t('Add Option') }}</button>
-    <div class="search-table">
-      <div class="b-table">
-        <table class="table is-fullwidth" v-if="data.settings.length">
-          <thead>
-            <tr>
-              <th>{{ $t('Variants') }}</th>
-              <th>{{ $t('Price') }}</th>
-              <th>{{ $t('Inventory') }}</th>
-              <th>{{ $t('SKU') }}</th>
-              <th>{{ $t('Hide') }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, rowIndex) in variants" :key="rowIndex">
-              <td><b-tag v-for="attr in row.attrs.split('|')" :key="attr">{{ attr }}</b-tag>&nbsp;</td>
-              <td><gc-input v-model="row.price" /></td>
-              <td><gc-input v-model="row.inventory" /></td>
-              <td><gc-input v-model="row.sku" /></td>
-              <td><gc-toggle v-model="row.hide"></gc-toggle></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <button @click="addRow" class="w-full p-2 text-xs font-bold text-blue-600 uppercase bg-blue-100 focus:outline-none hover:bg-blue-200">{{ $t('Add Option') }}</button>
+    <gc-table
+      :data="variants"
+      :columns="[
+        {label: 'Variants', field: 'variants'},
+        {label: 'Price', field: 'price'},
+        {label: 'Inventory', field: 'inventory'},
+        {label: 'SKU', field: 'sku'},
+      ]"
+    >
+      <template v-slot:variants="{ row }">
+        <b-tag v-for="attr in row.attrs.split('|')" :key="attr">{{ attr }}</b-tag>&nbsp;
+      </template>
+      <template v-slot:price="{ row }">
+        <gc-price-input v-model="row.price" :is-cents="false" />
+      </template>
+      <template v-slot:inventory="{ row }">
+        <gc-input v-model="row.inventory" type="number" />
+      </template>
+      <template v-slot:sku="{ row }">
+        <gc-sku-input v-model="row.sku" />
+      </template>
+    </gc-table>
 
     <div class="text-center">
       <gc-button @click="prepareAndSave" :disabled="!data.settings.length">Save Options</gc-button>
@@ -103,6 +101,10 @@
       locales: {
         type: Array,
         default: () => ['en']
+      },
+      initialPrice: {
+        type: String|Number,
+        default: 0
       },
       currentLocale: {
         type: String,
@@ -230,6 +232,10 @@
         const options =  this.preparedOptions
         const variants = this.preparedVariants
         this.$emit('save', {options, variants})
+        // Reset after save.
+        this.data = {
+          settings: []
+        }
       },
       generateVariants() {
         const val = JSON.parse(JSON.stringify(this.data))
@@ -254,7 +260,7 @@
             return {
               id: String.fromCharCode(65 + Math.floor(Math.random() * 26)) + Date.now(), // Taken from plugin, change this...
               attrs: v,
-              price: null,
+              price: this.initialPrice,
               inventory: 1,
               sku: null,
               hide: false,

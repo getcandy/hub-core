@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="flex p-8">
-      <div class="w-2/3 mr-8">
-        <div class="border border-dashed border-gray-400 overflow-hidden rounded">
-          <file-upload
+    <div class="flex items-center">
+      <div class="w-full p-6">
+        <div class="bg-white">
+          <gc-file-upload
             @built="initUploader"
             @file-added="handleFileAdded"
             @file-uploaded="handleFileUploaded"
@@ -14,10 +14,23 @@
           />
         </div>
       </div>
+      <div class="w-1/3 ml-4">
+        <button @click="showYoutubeUpload = true" class="px-4 py-2 text-sm text-white bg-gray-800 rounded shadow-md hover:bg-gray-900">
+              <div class="flex items-center">
+              <b-icon icon="youtube-line" class="mr-2 text-youtube" />
+              <span class="inline-flex">Upload YouTube Video</span>
+              </div>
+            </button>
+            <quick-view-panel :heading="$t('Upload YouTube video')" :open="showYoutubeUpload" @close="showYoutubeUpload = false">
+              <div class="p-6">
+                <youtube-uploader type="youtube" @uploaded="handleExternalAssetUpload" :assetable="assetable" :parent-id="parent.id" />
+              </div>
+            </quick-view-panel>
+      </div>
       <!-- <div class="w-1/3">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <button @click="showYoutubeUpload = true" class="bg-gray-800 hover:bg-gray-900 text-white shadow-md rounded py-2 px-4 text-sm">
+            <button @click="showYoutubeUpload = true" class="px-4 py-2 text-sm text-white bg-gray-800 rounded shadow-md hover:bg-gray-900">
               <div class="flex items-center">
               <b-icon icon="youtube-line" class="mr-2 text-youtube" />
               <span class="inline-flex">Upload YouTube Video</span>
@@ -33,10 +46,10 @@
       </div> -->
     </div>
 
-    <div class="bg-gray-900 px-8 text-sm font-medium">
+    <div class="px-8 text-sm font-medium bg-gray-900">
       <div class="flex">
         <button
-          class="text-gray-400 px-8 py-3 focus:outline-none"
+          class="px-8 py-3 text-gray-400 focus:outline-none"
           :class="{
             'text-gray-900 bg-white' : filter == type.handle,
             'hover:bg-gray-800 hover:text-white' : filter != type.handle
@@ -270,6 +283,7 @@ export default {
       this.$emit('beforeSave', this.assets, (done) => {
         this.assets.push(asset)
       })
+      this.showYoutubeUpload = false
       this.$emit('externalAssetAdded', response)
     },
     initUploader (context) {
