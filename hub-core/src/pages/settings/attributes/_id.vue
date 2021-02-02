@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="bg-orange-100 text-orange-600 py-3 text-xs font-bold border-b border-orange-300 px-6 flex" v-if="attribute.system">
-      <i class="ri-lock-line mr-2" />
+    <div class="flex px-6 py-3 text-xs font-bold text-orange-600 bg-orange-100 border-b border-orange-300" v-if="attribute.system">
+      <i class="mr-2 ri-lock-line" />
       You are trying to edit a system attribute. Saving has been disabled.
     </div>
     <simple-modal heading="Permanent delete" :open="showDeleteConfirm" @confirmed="deleteAttribute" @close="showDeleteConfirm = false">
@@ -21,7 +21,7 @@
         </div>
       </div>
     </toolbar>
-    <div class="bg-white pb-4 shadow">
+    <div class="pb-4 bg-white shadow">
       <div class="px-6">
         <div class="py-4">
           <div>
@@ -31,7 +31,7 @@
 
         <div class="mb-4">
           <header class="mb-2 text-sm">
-            <label class="font-bold text-gray-700 block">{{ $t('Handle') }}</label>
+            <label class="block font-bold text-gray-700">{{ $t('Handle') }}</label>
           </header>
           <div>
             <b-input v-model="attribute.handle" :disabled="true" />
@@ -39,7 +39,7 @@
         </div>
         <div class="mb-4">
           <header class="mb-2 text-sm">
-            <label class="font-bold text-gray-700 block">{{ $t('Type') }}</label>
+            <label class="block font-bold text-gray-700">{{ $t('Type') }}</label>
           </header>
           <div>
             <gc-select-input v-model="attribute.type" :disabled="attribute.system">
@@ -59,7 +59,7 @@
         </div>
         <div class="mb-4">
           <header class="mb-2 text-sm">
-            <label class="font-bold text-gray-700 block">{{ $t('Attribute Group') }}</label>
+            <label class="block font-bold text-gray-700">{{ $t('Attribute Group') }}</label>
           </header>
           <div>
             <gc-select-input v-model="groupId" :disabled="attribute.system">
@@ -90,12 +90,30 @@
       </div>
 
       <div v-if="(['select', 'multiselect']).includes(attribute.type)">
-        <header class="px-6 my-4 flex justify-between">
+        <header class="flex justify-between px-6 my-4">
           <h3>{{ $t('Lookups') }}</h3>
-          <b-button type="is-primary" @click="addLookup()">{{ $t('Add Lookup') }}</b-button>
+          <gc-button type="is-primary" @click="addLookup()">{{ $t('Add Lookup') }}</gc-button>
         </header>
         <div class="search-table">
-          <b-table searchable paginated :data="attribute.lookups || []">
+          <gc-table
+            :data="attribute.lookups || []"
+            :columns="[
+              {label: 'Label', field: 'label'},
+              {label: 'Value', field: 'value'},
+              {label: null, field: 'actions'},
+            ]"
+          >
+            <template v-slot:label="{ row }">
+              <gc-input v-model="row.label" />
+            </template>
+            <template v-slot:value="{ row }">
+              <gc-input v-model="row.value" />
+            </template>
+            <template v-slot:actions="{ index }">
+              <gc-button theme="danger" @click="removeLookup(index)">{{ $t('Remove') }}</gc-button>
+            </template>
+          </gc-table>
+          <!-- <b-table searchable paginated :data="">
             <template slot-scope="props">
               <b-table-column field="label" :label="$t('Label')" sortable>
                 <b-input v-model="props.row.label" />
@@ -110,7 +128,7 @@
             <template slot="top-left">
               <b-button type="is-primary" @click="addLookup()">{{ $t('Add Lookup') }}</b-button>
             </template>
-          </b-table>
+          </b-table> -->
         </div>
       </div>
       </div>

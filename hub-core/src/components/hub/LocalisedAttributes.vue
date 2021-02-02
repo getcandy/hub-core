@@ -6,7 +6,7 @@
       :key="attribute.handle"
       :errors="getErrors(attribute.handle)"
     >
-      <b-input
+      <gc-input
         :value="getValue(attribute.handle)"
         @input="setValue(attribute.handle, $event)"
         :type="attribute.type"

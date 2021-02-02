@@ -37,7 +37,7 @@
                   value-field="id"
                 >
                 <template v-slot:row="{ row }">
-                  <span class="font-normal block truncate">
+                  <span class="block font-normal truncate">
                     {{ row.company_name || `${row.firstname} ${row.lastname}` }}
                   </span>
                 </template>
@@ -72,8 +72,13 @@
             </nuxt-link>
       </template>
       <template v-slot:customer="{ row }">
-        <span v-if="row.customer.data.company_name">{{ row.customer.data.company_name }}</span>
-        <span v-else>{{ row.customer.data.firstname }} {{ row.customer.data.firstname }}</span>
+        <span v-if="row.customer.data">
+          <span v-if=" row.customer.data.company_name">{{ row.customer.data.company_name }}</span>
+          <span v-else>{{ row.customer.data.firstname }} {{ row.customer.data.firstname }}</span>
+        </span>
+        <span v-else>
+          {{ row.name }}
+        </span>
       </template>
     </gc-table>
   </div>
@@ -162,7 +167,7 @@ export default {
       this.fetch()
     }, 300),
     async fetch () {
-      const response = await this.$getcandy.on('Users').getUsers('', this.perPage, {
+      const response = await this.$getcandy.on('Users').getUsers('customer', this.perPage, {
         query: {
           page: this.page,
           keywords: this.searchTerm || null,

@@ -1,70 +1,72 @@
 <template>
-  <div class="search-table">
-    <div class="b-table">
-      <table class="table is-fullwidth">
-        <thead>
-          <tr>
-            <th>{{ $t('Path') }}</th>
-            <th>{{ $t('Slug') }}</th>
-            <th>{{ $t('Locale') }}</th>
-            <th>{{ $t('Default') }}</th>
-            <th>{{ $t('Redirect') }}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tfoot>
-          <tr>
-            <td>
-              <b-input v-model="newRoute.path" placeholder="/" />
-            </td>
-            <td>
-              <form-field required :instructions="$t('The main slug for the route')">
-                <b-input v-model="newRoute.slug" required />
-              </form-field>
-            </td>
-            <td>
-              <b-select v-model="newRoute.locale" :placeholder="$t('Select a language')">
-                <option v-for="lang in languages" :value="lang.lang" :key="lang.id">{{ lang.name }} ({{ lang.lang }})</option>
-              </b-select>
-            </td>
-            <td><b-switch v-model="newRoute.default"/></td>
-            <td><b-switch v-model="newRoute.redirect" /></td>
-            <td>
-              <b-button @click="add" class="is-small" type="is-primary" icon-right="add-line"/>
-            </td>
-          </tr>
-        </tfoot>
-        <tbody>
-          <tr v-for="(route, routeIndex) in routes" :key="route.id">
-            <td>
-              <b-field :message="$t('Path is used to determine nested routes (optional)')" >
-                <b-input v-model="route.path"  @input="update(route)" placeholder="/" />
-              </b-field>
-            </td>
-            <td>
-              <form-field required :instructions="$t('The main slug for the route')">
-                <b-input v-model="route.slug" @input="update(route)" />
-              </form-field>
-            </td>
-            <td>
-              <b-select v-model="route.locale"  @input="update(route)" :placeholder="$t('Select a language')">
-                <option v-for="lang in languages" :value="lang.lang" :key="lang.id">{{ lang.name }} ({{ lang.lang }})</option>
-              </b-select>
-            </td>
-            <td><b-switch @input="setDefault(routes, routeIndex)" v-model="route.default" :disabled="routes.length == 1"></b-switch></td>
-            <td><b-switch v-model="route.redirect" @input="update(route)" :disabled="route.default"></b-switch></td>
-            <td>
-              <b-button @click="remove(routeIndex)" :disabled="routes.length == 1" class="is-small" type="is-danger" icon-right="delete-bin-line"/>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div>
+    <div class="p-4 text-right">
+      <gc-button @click="createPanelVisible = true">Add route</gc-button>
     </div>
+    <gc-table
+      :data="routes"
+      :columns="[
+        {label: $t('Path'), field: 'path'},
+        {label: $t('Slug'), field: 'slug'},
+        {label: $t('Locale'), field: 'locale'},
+        {label: $t('Default'), field: 'default'},
+        {label: $t('Redirect'), field: 'redirect'},
+        {label: null, field: 'actions'},
+      ]"
+    >
+      <template v-slot:path="{ row }">
+        <gc-input v-model="row.path"  @input="update(row)" placeholder="/" />
+      </template>
+      <template v-slot:slug="{ row }">
+        <gc-input v-model="row.slug"  @input="update(row)" />
+      </template>
+      <template v-slot:locale="{ row }">
+        <gc-select-input v-model="row.locale"  @input="update(row)" :placeholder="$t('Select a language')">
+          <option v-for="lang in languages" :value="lang.lang" :key="lang.id">{{ lang.name }} ({{ lang.lang }})</option>
+        </gc-select-input>
+      </template>
+      <template v-slot:default="{ row, index }">
+        <gc-toggle @input="setDefault(routes, index)" v-model="row.default" :disabled="routes.length == 1" />
+      </template>
+      <template v-slot:redirect="{ row }">
+        <gc-toggle v-model="row.redirect" :disabled="routes.length == 1" @input="update(row)" />
+      </template>
+      <template v-slot:actions="{ index }">
+        <gc-button @click="remove(index)" :disabled="routes.length == 1" theme="danger" size="x-small">
+          {{ $t('Remove') }}
+        </gc-button>
+      </template>
+    </gc-table>
+    <quick-view-panel heading="Create Route" :open="createPanelVisible" @close="createPanelVisible = false">
+      <div class="p-4">
+        <form-field label="Path">
+          <gc-input v-model="newRoute.path" placeholder="/" />
+        </form-field>
+        <form-field required label="Slug" :instructions="$t('The main slug for the route')">
+          <gc-input v-model="newRoute.slug" required />
+        </form-field>
+        <form-field required label="Slug">
+          <gc-select-input v-model="newRoute.locale" :placeholder="$t('Select a language')">
+            <option v-for="lang in languages" :value="lang.lang" :key="lang.id">{{ lang.name }} ({{ lang.lang }})</option>
+          </gc-select-input>
+        </form-field>
+        <form-field label="Default">
+          <gc-toggle v-model="newRoute.default" />
+        </form-field>
+        <form-field label="Redirect">
+          <gc-toggle v-model="newRoute.redirect" />
+        </form-field>
+        <gc-button @click="add">Create Route</gc-button>
+      </div>
+    </quick-view-panel>
   </div>
 </template>
 
 <script>
-  import { filter, each, first, debounce } from 'lodash'
+  const each = require('lodash/each')
+  const first = require('lodash/first')
+  const debounce = require('lodash/debounce')
+
   import HubPage from '@getcandy/hub-core/src/mixins/HubPage'
   import HandlesForms from '@getcandy/hub-core/src/mixins/HandlesForms.js'
 
@@ -86,6 +88,7 @@
     data () {
       return {
         newRoute: {},
+        createPanelVisible: false
       }
     },
     mounted () {
@@ -117,6 +120,7 @@
       add () {
         this.$emit('added', this.newRoute)
         this.newRoute = this.baseRoute()
+        this.createPanelVisible = false
       },
       async remove(index) {
         this.$emit('deleted', index)

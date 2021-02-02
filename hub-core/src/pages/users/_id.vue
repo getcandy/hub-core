@@ -3,10 +3,10 @@
     <toolbar :heading="user.name">
       <gc-button @click="save">{{ $t('Save User') }}</gc-button>
     </toolbar>
-    <div class="bg-white p-6" >
+    <div class="p-6 bg-white" >
       <div class="flex">
         <div class="w-3/4">
-          <div class="grid gap-4 grid-cols-2">
+          <div class="grid grid-cols-2 gap-4">
             <form-field :label="$t('Name')" :error="getFirstFormError('name')">
               <gc-input v-model="user.name" />
             </form-field>
@@ -14,7 +14,7 @@
               <gc-input v-model="user.email" type="email" />
             </form-field>
           </div>
-          <div class="grid gap-4 grid-cols-2">
+          <div class="grid grid-cols-2 gap-4">
             <form-field :label="$t('New Password')" :error="getFirstFormError('password')">
               <gc-input v-model="newPassword" type="password" name="password" autocomplete="new-password" />
             </form-field>
@@ -24,9 +24,9 @@
           </div>
         </div>
         <div class="w-1/4 ml-6">
-          <div class="rounded border shadow-sm  w-full">
-            <header class="bg-gray-100 p-3 border-b"><h3 class="text-xs uppercase text-gray-600 font-bold">Customer Info</h3></header>
-            <div class="border-b p-3 mb-3">
+          <div class="w-full border rounded shadow-sm">
+            <header class="p-3 bg-gray-100 border-b"><h3 class="text-xs font-bold text-gray-600 uppercase">Customer Info</h3></header>
+            <div class="p-3 mb-3 border-b">
               <nuxt-link
                 :to="{
                   name: 'customers.edit',
@@ -53,8 +53,8 @@
       </div>
 
     </div>
-    <div class="border-b border-gray-200 px-6">
-      <nav class="-mb-px flex">
+    <div class="px-6 border-b border-gray-200">
+      <nav class="flex -mb-px">
         <button
           type="button"
           v-for="tab in tabs"
@@ -64,7 +64,7 @@
             'border-indigo-500 text-indigo-600': currentTab == tab.handle,
             'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300': currentTab != tab.handle
           }"
-          class="whitespace-no-wrap py-4 px-4 border-b-2 font-medium text-sm leading-5  focus:outline-none"
+          class="px-4 py-4 text-sm font-medium leading-5 whitespace-no-wrap border-b-2 focus:outline-none"
         >
           {{ $t(tab.label) }}
         </button>
@@ -91,8 +91,9 @@ export default {
   },
   data () {
     return {
-      currentTab: 'order-history',
+      currentTab: 'spending',
       tabs: [
+        {label: 'Spending', handle: 'spending'},
         {label: 'Order History', handle: 'order-history'}
       ],
       newPassword: null,

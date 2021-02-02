@@ -3,6 +3,12 @@
     <div ref="uploader" v-if="!uploading"></div>
     <b-progress :value="60" v-else type="is-success" />
 
+    <div v-if="errors.length && !files.length">
+      <div v-for="(error, errorIndex) in errors" :key="errorIndex">
+        <span class="text-sm text-red-600">{{ error.message }}</span>
+      </div>
+    </div>
+
     <div v-for="file in files" :key="file.id" class="flex items-center px-4 py-4">
 
       <div class="mr-4">
@@ -97,6 +103,9 @@ export default {
           file,
           response
         })
+      }).on('error', (error, fileId) => {
+        this.uploader.removeFile(fileId)
+        this.errors.push(error)
       }).on('upload-error', (file, error, response) => {
         this.errors.push(response)
         setTimeout(() => {

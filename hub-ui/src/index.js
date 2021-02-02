@@ -29,6 +29,7 @@ import DropDown from './components/forms/DropDown.vue'
 import DropDownItem from './components/forms/DropDownItem.vue'
 import UserSearch from './components/forms/UserSearch.vue'
 import SkuInput from './components/forms/SkuInput.vue'
+import SlugInput from './components/forms/SlugInput.vue'
 
 const components = {
   button: Button,
@@ -62,7 +63,8 @@ const components = {
   'drop-down': DropDown,
   'drop-down-item': DropDownItem,
   'user-search': UserSearch,
-  'sku-input': SkuInput
+  'sku-input': SkuInput,
+  'slug-input': SlugInput
 }
 
 // prettier-ignore

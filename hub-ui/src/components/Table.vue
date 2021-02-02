@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="overflow-y-scroll">
+    <div class="overflow-y-auto">
     <table class="w-full" >
       <thead>
         <tr>
