@@ -133,7 +133,7 @@ export default {
     }, 300),
     async fetch() {
       this.loading = true;
-      const response = await this.$getcandy.on('Customers').getCustomers(
+      const response = await this.$getcandy.on('customers', 'getCustomers',
         '',
         this.perPage,
         0,

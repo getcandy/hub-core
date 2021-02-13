@@ -49,7 +49,7 @@ export const actions = {
     commit('setIsDraft', false)
   },
   async createDraft ({ commit }, { context, id }) {
-    return context.on('Categories').postCategoriesCategoryIdDrafts(id, [
+    return context.on('categories', 'postCategoriesCategoryIdDrafts', id, [
         'layout',
         'attributes.group.attributes',
         'assets.transforms',
@@ -76,7 +76,7 @@ export const actions = {
       'routes'
     ]).join(',')
 
-    const response = await context.on('Categories').getCategoriesCategoryId(
+    const response = await context.on('categories', 'getCategoriesCategoryId',
       id,
       includes,
       {
@@ -107,8 +107,8 @@ export const actions = {
     commit('setCreateDraft', false)
   },
   async publish ( { commit, state }, { categoryId, context }) {
-    await context.categories.publish(categoryId);
-    commit('setLiveId', categoryId)
+    const { data } = await context.categories.publish(categoryId);
+    commit('setLiveId', data.data.id)
     commit('setIsDraft', false)
   },
   save ( { commit, state }, payload) {

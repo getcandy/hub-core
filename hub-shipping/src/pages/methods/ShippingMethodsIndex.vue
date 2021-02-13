@@ -1,6 +1,10 @@
 <template>
   <div>
-    <toolbar heading="Shipping Methods" />
+    <toolbar heading="Shipping Methods">
+      <div>
+        <gc-button @click="showCreatePanel = !showCreatePanel">Create shipping method</gc-button>
+      </div>
+    </toolbar>
     <gc-table
       :data="shippingMethods"
       :meta="meta"
@@ -20,19 +24,27 @@
         </nuxt-link>
       </template>
     </gc-table>
+    <quick-view-panel heading="Create Shipping Method" :open="showCreatePanel" @close="showCreatePanel = false">
+      <shipping-method-create @created="handleCreated" />
+    </quick-view-panel>
   </div>
 </template>
 
 <script>
   const each = require('lodash/each')
   import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes'
+  import ShippingMethodCreate from '../../components/ShippingMethodCreate'
 
   export default {
+    components: {
+      ShippingMethodCreate
+    },
     mixins: [
       HasAttributes
     ],
     data() {
       return {
+        showCreatePanel: false,
         page: 1,
         perPage: 30,
         total: 0,
@@ -45,6 +57,10 @@
       this.fetch()
     },
     methods: {
+      async handleCreated () {
+        this.showCreatePanel = false
+        await this.fetch()
+      },
       changePage(val) {
         this.page = val;
         this.fetch()

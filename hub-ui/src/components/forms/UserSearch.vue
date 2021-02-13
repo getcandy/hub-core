@@ -54,7 +54,7 @@ export default {
       this.reset()
     },
     search: debounce(async function () {
-      const response = await this.$getcandy.on('Users').getUsers(
+      const response = await this.$getcandy.on('users', 'getUsers',
         null,
         10,
         {

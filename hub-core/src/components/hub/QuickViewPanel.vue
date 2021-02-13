@@ -6,7 +6,7 @@
     >
     <div
       v-if="open && takeover"
-      class="fixed inset-0 bg-gray-900 opacity-0 z-60"
+      class="fixed inset-0 bg-gray-800 opacity-0 z-60"
       @click="$emit('close')"
     />
     </transition>
@@ -21,7 +21,7 @@
           <span class="delete" data-dismiss="quickview" @click="$emit('close')"></span>
         </div>
       </header>
-      <div :class="bg">
+      <div>
       <slot />
       </div>
       <footer class="px-3 mt-8 bg-white">

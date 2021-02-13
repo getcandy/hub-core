@@ -1,30 +1,25 @@
 <template>
   <div>
-    <table class="table is-fullwidth">
-      <thead>
-        <tr>
-          <th>{{ $t('Zone') }}</th>
-          <th>{{ $t('Enabled') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="zone in shippingZones" :key="zone.id">
-          <td>
-            {{ zone.name }}
-          </td>
-          <td>
-            <b-switch :value="value.includes(zone.id)" @input="input($event, zone.id)">
-            </b-switch>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- {{ shippingZones }}
-    {{ value }} -->
+    <gc-table
+      :data="shippingZones"
+      :columns="[
+        {label: 'Zone', field: 'zone'},
+        {label: 'Enabled', field: 'enabled'}
+      ]"
+    >
+      <template v-slot:zone="{ row }">
+        {{ row.name }}
+      </template>
+      <template v-slot:enabled="{ row }">
+        <gc-toggle :value="zoneIsActive(row)" @input="input($event, row)" />
+      </template>
+    </gc-table>
   </div>
 </template>
 
 <script>
+  const find = require('lodash/find')
+
   export default {
     props: ['value'],
     data () {
@@ -34,7 +29,9 @@
     },
     mounted () {
       if (!this.shippingZones.length) {
-        this.$store.dispatch('shippingZones/fetch', this)
+        this.$store.dispatch('shippingZones/fetch', {
+          context: this.$getcandy
+        })
       }
     },
     computed: {
@@ -43,6 +40,9 @@
       }
     },
     methods: {
+      zoneIsActive (row) {
+        return find(this.value, zone => zone.id === row.id)
+      },
       input (enabled, id) {
         let values = this.value;
 

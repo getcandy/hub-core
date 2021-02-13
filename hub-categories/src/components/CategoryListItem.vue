@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex items-center bg-white shadow my-2 rounded text-sm" @mouseenter="showOptionIndicator = true" @mouseleave="showOptionIndicator = false">
+    <div class="flex items-center my-2 text-sm bg-white rounded shadow" @mouseenter="showOptionIndicator = true" @mouseleave="showOptionIndicator = false">
       <div class="p-2" v-if="sortable">
         <div class="sorter">
             <svg  width="13px" viewBox="0 0 13 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -23,7 +23,7 @@
           <b-icon :icon="!loadedChildren ? 'arrow-right-s-line' : 'arrow-down-s-line'" v-else />
         </button>
       </div>
-      <div class="py-3 w-full">
+      <div class="w-full py-3">
         <div class="flex items-center">
           <div>
             <nuxt-link :to="{
@@ -36,7 +36,7 @@
             </nuxt-link>
           </div>
           <div v-if="category.has_draft">
-            <span class="inline-block p-1 rounded bg-yello-100 text-yello-600 text-xs">{{ $t('Has Draft') }}</span>
+            <span class="inline-block p-1 text-xs rounded bg-yello-100 text-yello-600">{{ $t('Has Draft') }}</span>
           </div>
         </div>
 
@@ -46,14 +46,14 @@
       <div>
         <div class="relative inline-block text-left">
           <div v-if="showOptionIndicator">
-              <button @click="showOptions = !showOptions" type="button" class="inline-flex justify-center px-4 py-2 bg-white text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150">
+              <button @click="showOptions = !showOptions" type="button" class="inline-flex justify-center px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800">
                 <b-icon icon="more-2-line" />
               </button>
           </div>
-          <div class="origin-top-right absolute z-50 right-0 mt-2 w-56 rounded-md shadow-lg" v-if="showOptions">
-            <div class="rounded-md bg-white shadow-xs ">
+          <div class="absolute right-0 z-50 w-56 mt-2 origin-top-right rounded-md shadow-lg" v-if="showOptions">
+            <div class="bg-white rounded-md shadow-xs ">
               <div class="py-1">
-                <button @click="showCreateModal = true" class="text-left block px-4 w-full py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">Create child</button>
+                <button @click="showCreateModal = true" class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">Create child</button>
               </div>
             </div>
           </div>
@@ -125,7 +125,7 @@
       loadChildren() {
         this.loadingChildren = true
         this.showCreateModal = false
-        this.$getcandy.on('Categories').getCategoriesParentParentId(
+        this.$getcandy.on('categories', 'getCategoriesParentParentId',
           this.category.id,
           'routes,assets.transforms'
         ).then(response => {

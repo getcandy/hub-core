@@ -3,6 +3,8 @@
     <media-manager
       assetable="categories"
       :parent="category"
+      :process-on-add="false"
+      @built="storeUploaderInstance"
       @file-added="handleFileAdded"
       @changed="handleChange"
       @beforeSave="handleChange"
@@ -24,6 +26,7 @@
     data() {
       return {
         category: null,
+        uploader: null,
         storeHandle: 'categories'
       }
     },
@@ -31,35 +34,40 @@
       this.category = this.normalize(this.model)
     },
     methods: {
+      storeUploaderInstance (instance) {
+        this.instance = instance
+      },
       async handleFileAdded (file) {
         await this.createDraft('categories', this.category.id, {
           beforeRedirect: async (draft) => {
             this.category.id = draft.id
           }
-        })
+        }, this.$getcandy)
       },
       async handleChange (assets, done) {
-        await this.createDraft('categories', this.category.id, {
-          afterRedirect: async (category) => {
-            this.category.id = category.id
-            done()
-          },
-          alreadyDrafted: async () => {
-            done()
-          }
-        });
+        console.log('Here')
+        // await this.createDraft('categories', this.category.id, {
+        //   afterRedirect: async (category) => {
+        //     this.category.id = category.id
+        //     done()
+        //   },
+        //   alreadyDrafted: async () => {
+        //     done()
+        //   }
+        // }, this.$getcandy);
       },
       async handleExternalAssetUpload (asset) {
-      try {
-        await this.createDraft('product', this.product.id, {
-          beforeRedirect: async (draft) => {
-            this.product.id = draft.id
-          }
-        })
-        const response = await this.$gc.products.attachAsset(this.product.id, asset.data.id)
-      } catch (err) {
+        console.log('Que?')
+      // try {
+      //   await this.createDraft('product', this.product.id, {
+      //     beforeRedirect: async (draft) => {
+      //       this.product.id = draft.id
+      //     }
+      //   }, this.$getcandy)
+      //   const response = await this.$gc.products.attachAsset(this.product.id, asset.data.id)
+      // } catch (err) {
 
-      }
+      // }
     },
       handleFileUploaded (file) {
         const pending = this.files;

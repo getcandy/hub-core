@@ -92,9 +92,9 @@ export default {
     HandlesForms
   ],
   async asyncData({app, params, $store, $set}) {
-    const response = await app.$getcandy.on('Customers').getCustomersCustomerId(params.id, 'users,customerGroups')
+    const response = await app.$getcandy.on('customers', 'getCustomersCustomerId', params.id, 'users,customerGroups')
     // Get customer fields.
-    const fieldsResponse = await app.$getcandy.on('Customers').getCustomerFields()
+    const fieldsResponse = await app.$getcandy.on('customers', 'getCustomerFields')
 
     const fields = get(fieldsResponse, 'data.data.fields', [])
     const customer = get(response, 'data.data')

@@ -1,6 +1,10 @@
 <template>
   <div>
-    <toolbar heading="Shipping Zones" />
+    <toolbar heading="Shipping Zones">
+      <div>
+        <gc-button @click="showCreatePanel = true">{{ $t('Create Shipping Zone') }}</gc-button>
+      </div>
+    </toolbar>
     <gc-table
       :data="zones"
       :meta="meta"
@@ -20,6 +24,9 @@
         </nuxt-link>
       </template>
     </gc-table>
+    <quick-view-panel heading="Create Shipping Zone" :open="showCreatePanel" @close="showCreatePanel = false">
+      <shipping-zone-create @created="handleCreated" />
+    </quick-view-panel>
   </div>
 </template>
 
@@ -27,8 +34,12 @@
   const each = require('lodash/each')
 
   import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes'
+  import ShippingZoneCreate from '../../components/ShippingZoneCreate'
 
   export default {
+    components: {
+      ShippingZoneCreate
+    },
     mixins: [
       HasAttributes
     ],
@@ -40,6 +51,7 @@
         total: 0,
         zones: [],
         customColumns: [],
+        showCreatePanel: false,
       }
     },
     mounted() {
@@ -47,8 +59,11 @@
       // this.$nuxt.context.app.$hooks.callHook('customers.listing.columns', this.customColumns);
     },
     methods: {
+      async handleCreated () {
+        this.showCreatePanel = false
+        await this.fetch()
+      },
       changePage(val) {
-        console.log(val)
         this.page = val;
         this.fetch()
       },

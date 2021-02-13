@@ -54,20 +54,48 @@ export default {
     return {
       loading: true,
       section: 'details',
-      additionalTabs: []
+      navItems: {}
     }
   },
   destroyed () {
     this.$store.dispatch('categories/resetState')
   },
-  mounted() {
-    console.log('mounted')
+  async mounted() {
     if (!this.category) {
-      this.load()
+      await this.load()
     } else {
       this.loading = false
     }
-    this.$nuxt.context.app.$hooks.callHook('category.main.tabs', this.additionalTabs);
+    const items = [
+      {
+        route: 'categories.edit.details',
+        label: "Attribute Details"
+      },
+      {
+        route: 'categories.edit.media',
+        label: "Media"
+      },
+      {
+        route: 'categories.edit.availability',
+        label: "Availability &amp; Pricing"
+      },
+      {
+        route: 'categories.edit.associations',
+        label: "Associations"
+      },
+      {
+        route: 'categories.edit.routes',
+        label: "Routes"
+      }
+    ]
+    this.$nuxt.context.app.$hooks.callHook('category.main.tabs', items)
+
+    this.navItems = {
+      params: {
+        id: this.category.id
+      },
+      items
+    };
   },
   methods: {
     setSection (section) {
@@ -188,35 +216,6 @@ export default {
     config () {
       return this.$store.state.categories.config
     },
-    navItems () {
-      return {
-        params: {
-          id: this.category.id
-        },
-        items: [
-          {
-            route: 'categories.edit.details',
-            label: "Attribute Details"
-          },
-          {
-            route: 'categories.edit.media',
-            label: "Media"
-          },
-          {
-            route: 'categories.edit.availability',
-            label: "Availability &amp; Pricing"
-          },
-          {
-            route: 'categories.edit.associations',
-            label: "Associations"
-          },
-          {
-            route: 'categories.edit.routes',
-            label: "Routes"
-          }
-        ]
-      };
-    }
   }
 }
 </script>

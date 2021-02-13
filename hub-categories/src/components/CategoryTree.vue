@@ -26,7 +26,7 @@
       HasAttributes
     ],
     mounted() {
-      this.$getcandy.on('Categories').getCategories({
+      this.$getcandy.on('categories', 'getCategories', {
         query: {
           tree: true
         }

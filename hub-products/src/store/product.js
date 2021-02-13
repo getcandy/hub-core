@@ -87,8 +87,14 @@ export const actions = {
         commit('setIsDraft', false)
         commit('setCreateDraft', false)
     },
+    setAttribute ({ commit }, { field, value }) {
+      commit('setOnModel', {
+        field,
+        value
+      })
+    },
     async createDraft ({ commit, state }, { context, id }) {
-        return await context.on('Products').postProductsIdDrafts(id, {
+        return await context.on('products', 'postProductsIdDrafts', id, {
             excl_tax: true,
             full_response: true,
             option_data: true,
@@ -97,8 +103,8 @@ export const actions = {
           })
     },
     async fetch ({ commit, state }, { context, id }) {
-      const response = await context.on('Products').getProductsProductId(
-        id || this.$route.params.id,
+      const response = await context.on('products', 'getProductsProductId',
+        id,
         Array(state.defaultIncludes).join(','),
         true,
         true,
@@ -123,7 +129,7 @@ export const actions = {
         const { context, data } = payload;
         commit('setState', 'saving')
         commit('setErrors', {})
-        context.on('Products').putProductsProductId(state.model.id, data).then(response => {
+        context.on('products', 'putProductsProductId', state.model.id, data).then(response => {
             commit('setState', 'saved')
         }).catch(error => {
             commit('setErrors', error.body)
@@ -131,10 +137,10 @@ export const actions = {
     },
 
     async publish ( { commit, state, dispatch }, { productId, context }) {
-        await context.on('Products').postProductsIdPublish(productId);
+        const { data } = await context.on('products', 'postProductsIdPublish', productId);
         const response = await dispatch('fetch', {
           context,
-          id: productId
+          id: data.data.id
         })
         commit('setModel', response)
     },

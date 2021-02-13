@@ -211,7 +211,6 @@
     },
     methods: {
       syncVariants () {
-        console.log(this.productVariants);
         this.variants = JSON.parse(
           JSON.stringify(this.productVariants)
         );

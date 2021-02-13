@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     async searchCustomers (keywords) {
-      const response = await this.$getcandy.on('Customers').getCustomers(
+      const response = await this.$getcandy.on('customers', 'getCustomers',
         'customer',
         20,
         0,
@@ -147,7 +147,7 @@ export default {
       this.fetch()
     },
     createUser () {
-      const response = this.$getcandy.on('Users').postUsers(this.newUser).then(response => {
+      const response = this.$getcandy.on('users', 'postUsers', this.newUser).then(response => {
         this.showCreatePanel = false
         this.newUser = {
           customer_id: null,
@@ -167,7 +167,7 @@ export default {
       this.fetch()
     }, 300),
     async fetch () {
-      const response = await this.$getcandy.on('Users').getUsers('customer', this.perPage, {
+      const response = await this.$getcandy.on('users', 'getUsers', 'customer', this.perPage, {
         query: {
           page: this.page,
           keywords: this.searchTerm || null,

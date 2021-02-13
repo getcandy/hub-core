@@ -1,45 +1,43 @@
 <template>
   <default-layout>
-    <b-loading :is-full-page="false" :active="loading" />
-    <template v-if="product">
-      <template>
-        <toolbar heading="Products" :subHeading="productName">
-          <div class="flex items-center">
-            <div>
-              <draft-tools
-                :preview-url="previewUrl"
-                :is-draft="isDraft"
-                @discard="discard"
-                @delete="triggerDelete"
-                @publish="publish"
-                @restore="restore"
-                :versions="product.versions ? product.versions.data : []"
-                :created-at="product.created_at"
-                :updated-at="product.updated_at"
-              />
-            </div>
-            <div class="ml-3">
-              <gc-button theme="gray" @click="showSettingsPanel = true">
-                <gc-icon icon="settings" size="sm" class="mr-1" /> Settings
-              </gc-button >
-                <quick-view-panel
-                  :open="showSettingsPanel"
-                  @close="showSettingsPanel = false"
-                  heading="Product Settings"
-                >
-                  <div class="p-6">
-                    <product-settings :product="product" @save="handleSettingsSave" />
-                  </div>
-                </quick-view-panel>
-            </div>
+    <loading-spinner v-if="!product" />
+    <div v-else>
+      <toolbar heading="Products" :subHeading="title">
+        <div class="flex items-center">
+          <div>
+            <draft-tools
+              :preview-url="previewUrl"
+              :is-draft="isDraft"
+              @discard="discard"
+              @delete="triggerDelete"
+              @publish="publish"
+              @restore="restore"
+              :versions="product.versions ? product.versions.data : []"
+              :created-at="product.created_at"
+              :updated-at="product.updated_at"
+            />
           </div>
-        </toolbar>
-        <div class="flex">
-          <gc-resource-nav :nav="navItems" />
+          <div class="ml-3">
+            <gc-button theme="gray" @click="showSettingsPanel = true">
+              <gc-icon icon="settings" size="sm" class="mr-1" /> Settings
+            </gc-button >
+              <quick-view-panel
+                :open="showSettingsPanel"
+                @close="showSettingsPanel = false"
+                heading="Product Settings"
+              >
+                <div class="p-6">
+                  <product-settings :product="product" @save="handleSettingsSave" />
+                </div>
+              </quick-view-panel>
+          </div>
         </div>
-        <nuxt />
-      </template>
-    </template>
+      </toolbar>
+      <div class="flex">
+        <gc-resource-nav :nav="navItems" />
+      </div>
+      <nuxt />
+    </div>
   </default-layout>
 </template>
 
@@ -60,7 +58,7 @@ export default {
   ],
   head () {
     return {
-      title: this.product ? this.attribute(this.product.attribute_data, "name") : 'Loading...'
+      title: this.title
     }
   },
   data () {
@@ -68,44 +66,15 @@ export default {
       loading: false,
       showHistoryModal: false,
       showSettingsPanel: false,
-      additionalTabs: []
+      navItems: {}
     }
   },
   computed: {
-    navItems () {
-      return {
-        params: {
-          id: this.product.id
-        },
-        items: [
-          {
-            route: 'products.view',
-            label: "Attribute Details"
-          },
-          {
-            route: 'products.edit.media',
-            label: "Media"
-          },
-          {
-            route: 'products.edit.availability',
-            label: "Availability &amp; Pricing"
-          },
-          {
-            route: 'products.edit.associations',
-            label: "Associations"
-          },
-          {
-            route: 'products.edit.urls',
-            label: "URLs"
-          }
-        ]
-      };
+    title () {
+      return this.product ? this.attribute(this.product.attribute_data, "name") : 'Loading...'
     },
     previewUrl() {
-      return this.config.preview_url.replace(':id', this.product.id) || null
-    },
-    productName () {
-      return this.product ? this.attribute(this.product.attribute_data, "name") : 'Loading...'
+      return this.product ? (this.config.preview_url.replace(':id', this.product.id) || null) : null
     },
     product () {
       return this.$store.state.product.model
@@ -113,56 +82,54 @@ export default {
     liveId () {
       return this.$store.state.product.liveId
     },
-    channel () {
-      return this.$store.state.core.channel
-    },
-    locale () {
-      return this.$i18n.locale
-    },
-    shouldCreateDraft () {
-      return this.$store.state.product.createDraft
-    },
     isDraft () {
       return this.$store.state.product.isDraft
-    },
-    state () {
-      return this.$store.state.product.state
     },
     config () {
       return this.$store.state.product.config
     }
   },
-  watch: {
-    async shouldCreateDraft (val) {
-      if (val) {
-        const draft = await this.createDraft('product', this.product.id, {}, this.$getcandy);
-        // this.product = draft
-
-        // const response = await this.$gc.products.createDraft(this.product.id)
-        // await this.$router.replace({
-        //   name: this.$route.name,
-        //   params: {
-        //     id: response.data.data.id
-        //   }
-        // })
-        // this.load(response.data.data.id)
-      }
-    }
-  },
   destroyed () {
     this.$store.dispatch('product/resetState')
   },
-  mounted () {
-    if (!this.product) {
-      this.loading = true
-      this.$store.commit('product/setPendingAssets', [])
-      this.load()
-    }
-    // this.$nuxt.context.app.$hooks.callHook('product.main.tabs', this.additionalTabs);
+  async mounted () {
+    this.loading = true
+    this.$store.commit('product/setPendingAssets', [])
+    await this.load()
+    const items = [
+      {
+        route: 'products.view',
+        label: "Attribute Details"
+      },
+      {
+        route: 'products.edit.media',
+        label: "Media"
+      },
+      {
+        route: 'products.edit.availability',
+        label: "Availability &amp; Pricing"
+      },
+      {
+        route: 'products.edit.associations',
+        label: "Associations"
+      },
+      {
+        route: 'products.edit.urls',
+        label: "URLs"
+      }
+    ]
+    this.$nuxt.context.app.$hooks.callHook('product.main.tabs', items)
+
+    this.navItems = {
+      params: {
+        id: this.product.id
+      },
+      items
+    };
   },
   methods: {
     handleSettingsSave ({ familyId }) {
-      this.$getcandy.on('Products').putProductsProductId(this.product.id, {
+      this.$getcandy.on('products', 'putProductsProductId', this.product.id, {
         familyId: familyId,
         attribute_data: this.product.attribute_data
       }).then(response  => {
@@ -177,7 +144,6 @@ export default {
           context: this.$getcandy,
           id: id || this.$route.params.id
         })
-
         const product = response
         const hasDraft = product.draft.data
 
@@ -191,7 +157,6 @@ export default {
           await this.load(product.draft.data.id)
           return
         }
-
         this.$store.commit('product/setModel', product)
 
         this.loading = false
@@ -232,13 +197,6 @@ export default {
       await this.$store.dispatch('product/publish', {
         productId: this.product.id,
         context: this.$getcandy
-      })
-
-      await this.$router.push({
-        name: 'products.view',
-        params: {
-          id: this.product.id
-        }
       })
     },
     async restore (versionId) {

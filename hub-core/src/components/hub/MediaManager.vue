@@ -1,31 +1,32 @@
 <template>
   <div>
-    <div class="flex items-center">
-      <div class="w-full p-6">
-        <div class="bg-white">
-          <gc-file-upload
+    <div>
+      <quick-view-panel :open="showUploader" heading="Upload asset" :takeover="true" @close="showUploader = false">
+        <gc-file-upload
             @built="initUploader"
             @file-added="handleFileAdded"
             @file-uploaded="handleFileUploaded"
+            @finished="showUploader = false"
             :initial-files="pending"
             :process-on-add="processOnAdd"
             :assetable="assetable"
             :parent-id="parent.id"
           />
+      </quick-view-panel>
+      <quick-view-panel :heading="$t('Upload YouTube video')" :open="showYoutubeUpload" @close="showYoutubeUpload = false">
+        <div class="p-6">
+          <youtube-uploader type="youtube" @uploaded="handleExternalAssetUpload" :assetable="assetable" :parent-id="parent.id" />
         </div>
-      </div>
-      <div class="w-1/3 ml-4">
-        <button @click="showYoutubeUpload = true" class="px-4 py-2 text-sm text-white bg-gray-800 rounded shadow-md hover:bg-gray-900">
-              <div class="flex items-center">
-              <b-icon icon="youtube-line" class="mr-2 text-youtube" />
-              <span class="inline-flex">Upload YouTube Video</span>
-              </div>
-            </button>
-            <quick-view-panel :heading="$t('Upload YouTube video')" :open="showYoutubeUpload" @close="showYoutubeUpload = false">
-              <div class="p-6">
-                <youtube-uploader type="youtube" @uploaded="handleExternalAssetUpload" :assetable="assetable" :parent-id="parent.id" />
-              </div>
-            </quick-view-panel>
+      </quick-view-panel>
+      <div class="flex items-center px-6 py-4 bg-white">
+        <div class="mr-4">
+          <gc-button @click="showUploader = true">Upload file</gc-button>
+        </div>
+        <div>
+          <gc-button @click="showYoutubeUpload = true">
+            Upload YouTube Video
+          </gc-button>
+        </div>
       </div>
       <!-- <div class="w-1/3">
         <div class="grid grid-cols-2 gap-4">
@@ -117,6 +118,7 @@
 </template>
 
 <script>
+import QuickViewPanel from './QuickViewPanel.vue'
 const first = require('lodash/first')
 const find = require('lodash/find')
 const map = require('lodash/map')
@@ -124,6 +126,7 @@ const get = require('lodash/get')
 
 
 export default {
+  components: { QuickViewPanel },
   props: {
     processOnAdd: {
       type: Boolean,
@@ -148,6 +151,7 @@ export default {
   },
   data () {
     return {
+      showUploader: false,
       deleteModalOpen: false,
       assetToDelete: {},
       filter: null,
@@ -288,6 +292,7 @@ export default {
     },
     initUploader (context) {
       this.uploader = context
+      this.$emit('built', context)
     },
     handleFileAdded (file) {
       this.$emit('file-added', file)
@@ -309,7 +314,7 @@ export default {
     },
     deleteAsset (event) {
       const asset = this.assetToDelete;
-      this.$getcandy.on('Assets').postAssetsAssetIdDetachOwnerId(asset.id, this.parentId, {
+      this.$getcandy.on('assets', 'postAssetsAssetIdDetachOwnerId', asset.id, this.parentId, {
         type: asset.type
       }).then(response => {
         this.assets.splice(this.deletedIndex, 1)

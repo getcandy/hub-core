@@ -179,7 +179,7 @@
         // channel, category, page, searchType, keywords, rank, idsOnly, include, sort, options = {
 
         try {
-          const response = await this.$getcandy.on('Search').getSearch(
+          const response = await this.$getcandy.on('search', 'getSearch',
             this.channel,
             null,
             this.page,
@@ -192,7 +192,7 @@
             true,
             {
               query: {
-                per_page: this.limit
+                limit: this.limit
               }
             }
           )

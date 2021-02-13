@@ -19,6 +19,15 @@
             >
               <a>{{ $t('Details') }}</a>
             </nuxt-link>
+            <nuxt-link
+              :to="{
+                name: 'shipping-zones.edit.countries',
+              }"
+              exact-active-class="is-active"
+              tag="li"
+            >
+              <a>{{ $t('Countries') }}</a>
+            </nuxt-link>
           </ul>
         </div>
         <nuxt />
@@ -51,7 +60,8 @@ export default {
   methods: {
     async save () {
       await this.$gc.shippingZones.update(this.shippingZone.id, {
-        name: this.shippingZone.name
+        name: this.shippingZone.name,
+        countries: this.selectedCountries
       })
       this.$notify.queue('success', this.$t('Shipping Zone saved'))
     }
@@ -63,7 +73,7 @@ export default {
     if (!this.shippingZone) {
       this.loading = true
       const response = await this.$gc.shippingZones.find(this.$route.params.id, {
-        includes: 'countries',
+        include: 'countries',
         full_response: true
       })
       this.$store.commit('shippingZones/setModel', response.data.data)
@@ -74,6 +84,9 @@ export default {
   computed: {
     shippingZone () {
       return this.$store.state.shippingZones.model
+    },
+    selectedCountries () {
+      return this.$store.state.shippingZones.selectedCountries
     },
     channel () {
       return this.$store.state.core.channel

@@ -9,3 +9,9 @@ export const mutations = {
         state.model[conf.field] = conf.value
     },
 }
+
+export const actions = {
+    setModel ({ commit }, model) {
+        commit('setModel', model)
+    }
+}

@@ -110,8 +110,13 @@
           afterRedirect: async (product) => {
             this.product.id = product.id
 
+            const variants = product.variants.data;
             // We need to find the drafted variant equivalent
-            const variantDraft = find(product.variants.data, v => v.sku === variant.sku )
+            const variantDraft = find(variants, v => {
+              if (v.published_parent && v.published_parent.data) {
+                return v.published_parent.data.id === variant.id
+              }
+            })
             variant.id = variantDraft.id
           }
         }, this.$getcandy)

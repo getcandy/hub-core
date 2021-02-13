@@ -94,7 +94,7 @@
         this.loadData()
       },
       loadData() {
-        this.$getcandy.on('Collections').getCollections(
+        this.$getcandy.on('collections', 'getCollections', 
           'assets.transforms',
           this.perPage,
           true,

@@ -1,16 +1,13 @@
 <template>
   <div v-if="shippingMethod">
-    <b-tabs
-      horizontal
-      class="secondary-tabs"
-    >
-      <b-tab-item :label="$t('Channels')">
-        <channel-manager :channels="shippingMethod.channels.data" />
-      </b-tab-item>
-      <b-tab-item :label="$t('Zones')">
-        <shipping-zone-chooser v-model="selectedShippingZones" />
-      </b-tab-item>
-    </b-tabs>
+    <gc-tabs>
+      <gc-tab-item :label="$t('Channels')">
+        <channel-manager :channels="shippingMethod.channels.data" @change="syncModel" />
+      </gc-tab-item>
+      <gc-tab-item :label="$t('Zones')">
+        <shipping-zone-chooser v-model="selectedShippingZones" @input="updateShippingZones"/>
+      </gc-tab-item>
+    </gc-tabs>
   </div>
 </template>
 
@@ -37,9 +34,16 @@
     mounted () {
       this.shippingMethod = this.normalize(this.model)
 
-      this.selectedShippingZones = map(this.shippingMethod.zones.data, item => {
-        return item.id;
-      });
+      this.selectedShippingZones = this.shippingMethod.zones.data
+    },
+    methods: {
+      updateShippingZones () {
+        this.$store.dispatch('shippingZones/setSelectedZones', this.selectedShippingZones)
+        this.syncModel()
+      },
+      syncModel () {
+        this.$store.dispatch('shippingMethods/setModel', this.normalize(this.shippingMethod))
+      },
     },
     computed: {
       model () {

@@ -2,12 +2,12 @@
   <div>
     <div class="md:flex">
       <div class="mx-8 lg:w-2/5 lg:ml-48 lg:mt-48 lg:mr-32">
-        <div class="my-8 w-48">
+        <div class="w-48 my-8">
           <get-candy-logo />
         </div>
         <div class="mb-4">
-          <span class="text-purple-800 text-xl block">Welcome to</span>
-          <strong class="text-purple-800 text-3xl uppercase">The Hub</strong>
+          <span class="block text-xl text-purple-800">Welcome to</span>
+          <strong class="text-3xl text-purple-800 uppercase">The Hub</strong>
         </div>
           <form @submit.prevent="process" action="" class="has-margin-top-20">
             <form-field :label="$t('Email')" :error="getError('email')" required>
@@ -21,12 +21,12 @@
                 <span>{{ $t(forgotPassword ? 'Send reset email' : 'Sign in') }}</span>
               </gc-button>
             </div>
-            <div class="text-red-600 mt-4 text-sm" v-if="message">
+            <div class="mt-4 text-sm text-red-600" v-if="message">
               {{ message }}
             </div>
           </form>
       </div>
-      <div class="login-image hidden lg:block w-full h-screen">
+      <div class="hidden w-full h-screen login-image lg:block">
 
       </div>
     </div>
@@ -38,8 +38,8 @@ export default {
   layout: 'auth',
   data () {
     return {
-      email: '',
-      password: '',
+      email: 'alec@neondigital.co.uk',
+      password: 'HurkeyDurk@01245',
       message: '',
       processing: false,
       forgotPassword: false,
@@ -74,12 +74,9 @@ export default {
       this.message = null
       this.processing = true
       try {
-        if (this.config.auth == 'sanctum') {
-          await this.$axios.get('/sanctum/csrf-cookie')
-        }
-        await this.$auth.loginWith('local', {
+        await this.$auth.loginWith('hub', {
           data: {
-            email: this.email,
+            username: this.email,
             password: this.password
           }
         })
@@ -100,7 +97,12 @@ export default {
           if (response.errors) {
             this.errors = response.errors
           }
-          this.message = response.error || response.message
+          if (response.error && response.error.message) {
+            this.message = response.error.message
+          } else {
+            this.message = response.error || response.message
+          }
+
         } else {
           if (window.console) {
             console.error(e)

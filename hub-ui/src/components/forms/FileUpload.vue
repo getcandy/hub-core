@@ -1,9 +1,32 @@
 <template>
   <div>
-    <div ref="uploader" v-if="!uploading"></div>
-    <b-progress :value="60" v-else type="is-success" />
+    <div>
+      <div class="bg-gray-200 border-b">
+        <div ref="uploader">&nbsp;</div>
+      </div>
+      <div>
+        <span class="block p-4 text-sm text-center text-gray-500" v-if="!files.length">Files pending upload will appear here.</span>
+        <div v-for="file in files" :key="file.id" class="p-4 border-b">
+          <div class="flex">
+              <img :src="file.src" width="50" class="mr-4">
+              <div class="flex-none w-full ">
+                <p class="text-sm truncate">{{ file.name }}</p>
+                <span class="text-xs font-bold text-gray-500 uppercase">{{ $format.number(file.size / 1000) }}kb</span>
+              </div>
+          </div>
+          <div v-if="!!getFileErrors(file.id)">
+            <span class="text-sm text-red-600">{{ getFileErrors(file.id).join(',') }}</span>
+          </div>
+          <div v-if="!getFileErrors(file.id)">
+          </div>
+        </div>
+        <div class="p-4">
+          <gc-button @click="startUpload"  :loading="refreshing" v-if="!refreshing && files.length">Start Upload</gc-button>
+        </div>
+      </div>
+    </div>
 
-    <div v-if="errors.length && !files.length">
+    <!-- <div v-if="errors.length && !files.length">
       <div v-for="(error, errorIndex) in errors" :key="errorIndex">
         <span class="text-sm text-red-600">{{ error.message }}</span>
       </div>
@@ -16,18 +39,17 @@
           <img :src="file.src" width="100" height="100">
           <div class="ml-4">
             <span class="block text-sm font-bold">{{ file.name }}</span>
-            <span class="text-xs font-bold text-gray-500 uppercase">{{ $format.number(file.size / 1000000) }}mb</span>
+            <span class="text-xs font-bold text-gray-500 uppercase">{{ $format.number(file.size / 1000) }}kb</span>
           </div>
         </div>
       </div>
       <div v-if="!!getFileErrors(file.id)">
         <span class="text-sm text-red-600">{{ getFileErrors(file.id).join(',') }}</span>
       </div>
+
       <div v-if="!getFileErrors(file.id)">
-        <gc-icon icon="rotate-clockwise" spin />
-        <!-- <b-icon icon="refresh-line" class="spin" /> -->
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -55,10 +77,6 @@ export default {
     height: {
       default: null
     },
-    processOnAdd: {
-      type: Boolean,
-      default: false
-    },
     parentId: {
       type: String,
       default: null
@@ -71,23 +89,31 @@ export default {
   data () {
     return {
       uploader: null,
+      refreshing: false,
       errors: [],
       files: [],
       uploading: false
     }
   },
+  mounted () {
+    this.init()
+  },
   watch: {
-    processOnAdd (val) {
-      if (val && this.files.length) {
-        this.uploader.upload()
+    parentId () {
+      // Looks like the parentId has changed, so we need to make sure we
+      // add the files that got uploaded back into the instance.
+      let filesToPreserve = []
+      this.refreshing = true
+      if (this.uploader) {
+        filesToPreserve = this.uploader.getFiles()
       }
+
+      this.init(filesToPreserve)
     }
   },
-  mounted () {
-    const uppyTwo = new Uppy({ autoProceed: false })
-    this.uploader = uppyTwo
-      .use(DragDrop, { target: this.$refs.uploader })
-      .use(UppyGetcandy, {
+  computed: {
+    config () {
+      return {
         context: this.$gc,
         parent_id: this.parentId,
         assetable: this.assetable,
@@ -95,37 +121,71 @@ export default {
           width: this.width,
           height: this.height
         }
-      })
-      .use(ProgressBar, { target: this.$refs.progressbar, hideAfterFinish: false })
-      .on('upload-success', (file, response) => {
-        this.uploader.removeFile(file.id)
-        this.$emit('file-uploaded', {
-          file,
-          response
-        })
-      }).on('error', (error, fileId) => {
-        this.uploader.removeFile(fileId)
-        this.errors.push(error)
-      }).on('upload-error', (file, error, response) => {
-        this.errors.push(response)
-        setTimeout(() => {
-          this.uploader.removeFile(file.id)
-        }, 2000)
-      }).on('file-added', file => this.addFileToStack(file))
-      .on('file-removed', file => this.removeFileFromStack(file))
-
-    if (this.initialFiles.length) {
-      this.initialFiles.forEach((file) => {
-        try {
-          this.uploader.addFile(file)
-        } catch (e) {
-          //
-        }
-      })
+      }
     }
-    this.$emit('built', this.uploader)
   },
   methods: {
+    startUpload () {
+      if (this.refreshing) {
+        return
+      }
+      this.uploader.upload().then(response => {
+        this.error = null
+        this.$emit('finished')
+      }).catch(error => {
+        this.uploader.removeFile(error.file)
+        this.error = error.message
+      })
+    },
+    init (files) {
+      if (this.uploader) {
+        this.uploader.close()
+      }
+      const uppyTwo = new Uppy({
+        autoProceed: false
+      })
+      this.uploader = uppyTwo
+        .use(DragDrop, {
+          target: this.$refs.uploader
+        })
+        .use(UppyGetcandy, this.config)
+        .use(ProgressBar, {
+          target: this.$refs.progressbar,
+          hideAfterFinish: false
+        })
+        .on('upload-success', (file, response) => {
+          this.uploader.removeFile(file.id)
+          this.$emit('file-uploaded', {
+            file,
+            response
+          })
+        }).on('error', (error, fileId) => {
+          this.uploader.removeFile(fileId)
+          this.errors.push(error)
+        }).on('upload-error', (file, error, response) => {
+          this.errors.push(response)
+          setTimeout(() => {
+            this.uploader.removeFile(file.id)
+          }, 2000)
+        }).on('file-added', file => this.addFileToStack(file))
+        .on('file-removed', file => this.removeFileFromStack(file))
+
+      if (this.initialFiles.length) {
+        this.initialFiles.forEach((file) => {
+          try {
+            this.uploader.addFile(file)
+          } catch (e) {
+            //
+          }
+        })
+      }
+
+      if (files) {
+        this.uploader.addFiles(files)
+      }
+      this.refreshing = false
+      this.$emit('built', this.uploader)
+    },
     getFileErrors (fileId) {
       const match = find(this.errors, error => {
         return error.file === fileId
@@ -138,19 +198,8 @@ export default {
         file.src = e.target.result
         this.files.push(file)
       }
-
       this.$emit('file-added', file)
-
       reader.readAsDataURL(file.data)
-
-      if (this.processOnAdd) {
-        this.uploader.upload().then(response => {
-          this.error = null
-        }).catch(error => {
-          this.uploader.removeFile(error.file)
-          this.error = error.message
-        })
-      }
     },
     removeFileFromStack (oldFile) {
       this.files = filter(this.files, (file) => {

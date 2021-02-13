@@ -37,7 +37,6 @@ export default {
           if (this.disabled) {
             return
           }
-          console.log('gi')
           this.$emit('input', !this.value)
           this.$emit('click')
         }

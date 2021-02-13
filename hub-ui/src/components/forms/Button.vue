@@ -1,7 +1,7 @@
 <template>
     <button
       :type="type"
-      :class="`${btnClass} inline-flex items-center`"
+      :class="`${btnClass} inline-flex items-center disabled:cursor-not-allowed disabled:bg-red-500`"
       :disabled="loading || disabled"
       @click="$emit('click')"
     >

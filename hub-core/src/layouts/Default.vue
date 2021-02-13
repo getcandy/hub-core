@@ -2,17 +2,17 @@
   <div class="wrapper">
     <gc-icon-sprite />
     <main-nav />
-    <div class="main-body bg-gray-100">
+    <div class="bg-gray-100 main-body">
       <nuxt v-if="!$slots.default" />
       <slot v-else />
     </div>
-    <footer class="ml-24 mr-12 mt-8">
+    <footer class="mt-8 ml-24 mr-12">
       <div class="flex items-center justify-end">
       <get-candy-stamp class="w-6 mr-2" />
-      <a href="https://www.getcandy.io/" class="text-gray-500 text-sm" target="_blank" rel="noopener">GetCandy Hub v2.0</a>
+      <a href="https://www.getcandy.io/" class="text-sm text-gray-500" target="_blank" rel="noopener">GetCandy Hub v2.0</a>
       </div>
     </footer>
-    <div class="fixed bottom-0 w-full p-6 flex justify-center z-50" v-if="notify.pending.length">
+    <div class="fixed bottom-0 z-50 flex justify-center w-full p-6" v-if="notify.pending.length">
       <div class="flex-none">
         <app-notification v-for="(alert, index) in notify.pending" :key="index" :message="alert.message" :level="alert.level" @close="closeNotification(index)"/>
       </div>

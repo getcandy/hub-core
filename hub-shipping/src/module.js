@@ -11,6 +11,8 @@ export default function (moduleOptions) {
     // Components
     'components/ShippingZoneChooser.vue',
     'components/ShippingMethodPriceForm.vue',
+    'components/ShippingMethodCreate.vue',
+    'components/ShippingZoneCreate.vue',
 
     // Pages
     'pages/methods/ShippingMethodsIndex.vue',
@@ -19,6 +21,7 @@ export default function (moduleOptions) {
     'pages/methods/edit/ShippingMethodAvailability.vue',
     'pages/zones/ShippingZonesIndex.vue',
     'pages/zones/edit/ShippingZonesDetails.vue',
+    'pages/zones/edit/ShippingZoneCountries.vue',
   ];
 
   templates.forEach((template) => {

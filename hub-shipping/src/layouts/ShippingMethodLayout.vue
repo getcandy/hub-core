@@ -7,39 +7,8 @@
           {{ $t('Save changes') }}
         </gc-button>
       </toolbar>
-      <div class="bg-white">
-        <div class="tabs tabs-large">
-          <ul>
-            <nuxt-link
-              :to="{
-                name: 'shipping-methods.edit.details',
-              }"
-              exact-active-class="is-active"
-              tag="li"
-            >
-              <a>{{ $t('Shipping Method Details') }}</a>
-            </nuxt-link>
-            <nuxt-link
-              :to="{
-                name: 'shipping-methods.edit.pricing',
-              }"
-              exact-active-class="is-active"
-              tag="li"
-            >
-              <a>{{ $t('Pricing') }}</a>
-            </nuxt-link>
-            <nuxt-link
-              :to="{
-                name: 'shipping-methods.edit.availability',
-              }"
-              exact-active-class="is-active"
-              tag="li"
-            >
-              <a>{{ $t('Availability') }}</a>
-            </nuxt-link>
-          </ul>
-        </div>
-
+      <div class="flex">
+        <gc-resource-nav :nav="navItems" />
       </div>
       <div>
         <nuxt />
@@ -83,6 +52,8 @@ export default {
     saveDetails () {
       this.$gc.shippingMethods.update(this.model.id, {
         attribute_data: this.model.attribute_data,
+        channels: this.model.channels.data,
+        zones: this.model.zones.data,
         type: this.model.type
       }).then(response => {
         this.$notify.queue('success', this.$t('Shipping method saved'))
@@ -93,6 +64,27 @@ export default {
     }
   },
   computed: {
+    navItems () {
+      return {
+        params: {
+          id: this.model.id
+        },
+        items: [
+          {
+            route: 'shipping-methods.edit.details',
+            label: "Attribute Details"
+          },
+          {
+            route: 'shipping-methods.edit.pricing',
+            label: "Pricing"
+          },
+          {
+            route: 'shipping-methods.edit.availability',
+            label: "Availability"
+          }
+        ]
+      };
+    },
     model () {
       return this.$store.state.shippingMethods.model
     },

@@ -9,11 +9,13 @@
       ]"
     >
       <template v-slot:channel="{ row }">
-        <figure class="status-icon">
-          <span class="status" :class="status(row).class" v-if="status(row).level != 2"></span>
-          <b-icon icon="time-line" size="is-small" v-else />
-        </figure>
-        {{ row.name }}
+        <div class="flex items-center">
+          <figure class="block mr-2">
+            <span class="block w-2 h-2 border border-gray-600 rounded-full" :class="status(row).class" v-if="status(row).level != 2"></span>
+            <gc-icon icon="clock" size="sm" v-else class="text-gray-500" />
+          </figure>
+          <span>{{ row.name }}</span>
+        </div>
       </template>
       <template v-slot:published="{ index }">
         <gc-date-picker v-model="channels[index].published_at" :options="{ mode: 'dateTime' }" @input="handleChanges" />
@@ -63,11 +65,11 @@
           if (publish_date.isAfter(now)) {
             status.text = 'Publishes ' + publish_date.fromNow();
             status.level = 2;
-            status.class = 'status-pending';
+            status.class = 'bg-yellow-500 border-yellow-600';
           } else {
             status.text = 'Published ' + publish_date.fromNow();
             status.level = 1;
-            status.class = 'status-live';
+            status.class = 'bg-green-500 border-green-600';
           }
         }
         return status;

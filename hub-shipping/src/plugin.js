@@ -3,8 +3,9 @@ import ShippingMethodDetails from './shipping/pages/methods/edit/ShippingMethodD
 import ShippingMethodPricing from './shipping/pages/methods/edit/ShippingMethodPricing.vue'
 import ShippingMethodAvailability from './shipping/pages/methods/edit/ShippingMethodAvailability.vue'
 import ShippingZonesIndex from './shipping/pages/zones/ShippingZonesIndex.vue'
+import ShippingZoneCountries from './shipping/pages/zones/edit/ShippingZoneCountries.vue'
 import ShippingZonesDetails from './shipping/pages/zones/edit/ShippingZonesDetails.vue'
-import { state, mutations } from './shipping/store/shippingMethods.js';
+import { state, mutations, actions } from './shipping/store/shippingMethods.js';
 import ShippingZoneState from './shipping/store/shippingZones.js';
 
 export default ({ app }, inject) => {
@@ -57,6 +58,14 @@ export default ({ app }, inject) => {
         meta: {
           permissions: ['manage_shipping']
         }
+    },
+    {
+      path: '/order-processing/shipping-zones/:id/countries',
+      name: 'shipping-zones.edit.countries',
+      component: ShippingZoneCountries,
+      meta: {
+        permissions: ['manage_shipping']
+      }
     }
   ])
 
@@ -64,7 +73,8 @@ export default ({ app }, inject) => {
   app.store.registerModule('shippingMethods', {
     namespaced: true,
     state,
-    mutations
+    mutations,
+    actions
   })
 
   app.store.registerModule('shippingZones', ShippingZoneState)

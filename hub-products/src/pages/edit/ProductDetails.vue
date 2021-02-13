@@ -140,6 +140,12 @@
             attribute_data: val
           }
         })
+
+        this.$store.dispatch('product/setAttribute', {
+          field: 'attribute_data',
+          value: val
+        })
+
         if (!this.hasErrors) {
           this.$notify.queue('success', 'Product saved')
         }

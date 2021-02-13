@@ -8,7 +8,7 @@ export default {
   },
   computed: {
     storeFormErrors () {
-      return this.$store.state.formErrors
+      return this.$store.state.core.formErrors
     }
   },
   methods: {
@@ -25,7 +25,7 @@ export default {
       return this.formErrors[field] || this.storeFormErrors[field]
     },
     getFirstFormError (field) {
-      return first(this.formErrors[field])
+      return first(this.formErrors[field]) || first(this.storeFormErrors[field])
     }
   }
 }

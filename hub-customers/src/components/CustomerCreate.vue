@@ -134,7 +134,7 @@ export default {
     save () {
       this.processing = true
       this.setFormErrors({})
-      this.$getcandy.on('Customers').postCustomers(
+      this.$getcandy.on('customers', 'postCustomers',
         this.customer.firstname,
         this.customer.lastname,
         this.customer.contactNumber,

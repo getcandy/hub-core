@@ -101,7 +101,7 @@ export default {
     }
   },
   async asyncData ({ app, params, query }) {
-    const response = await app.$getcandy.on('Users').getUsersUserId(params.id, {
+    const response = await app.$getcandy.on('users', 'getUsersUserId', params.id, {
       query: {
         include: 'orders,addresses,customer.customerGroups'
       }
@@ -122,7 +122,7 @@ export default {
           password_confirmation : this.newPasswordConfirmation
         }
       }
-      this.$getcandy.on('Users').putUsersUserId(this.user.id, data).then(() => {
+      this.$getcandy.on('users', 'putUsersUserId', this.user.id, data).then(() => {
         this.$notify.queue('success', this.$t('User updated'))
       }).catch(error => {
         this.setFormErrors(error.response.data.errors)

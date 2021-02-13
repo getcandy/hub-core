@@ -43,7 +43,7 @@ export default {
     }
   },
   async mounted() {
-    const response = await this.$getcandy.on('Customers').getCustomersCustomerId(this.$route.params.id, 'users,customerGroups')
+    const response = await this.$getcandy.on('customers', 'getCustomersCustomerId', this.$route.params.id, 'users,customerGroups')
     this.$store.commit('customer/setModel', response.data.data);
     this.$store.commit('customer/setCustomerGroups', map(get(response, 'data.data.customer_groups.data', []), (group) => {
       return group.id
@@ -52,7 +52,7 @@ export default {
   methods: {
     async save () {
       // Save customer
-      await this.$getcandy.on('Customers').putCustomersCustomerId(
+      await this.$getcandy.on('customers', 'putCustomersCustomerId',
         this.customer.id,
         {
           firstname: this.customer.firstname,
@@ -65,7 +65,7 @@ export default {
         }
       )
 
-      await this.$getcandy.on('Customers').postCustomersCustomerIdCustomerGroups(
+      await this.$getcandy.on('customers', 'postCustomersCustomerIdCustomerGroups',
         this.customer.id,
         {
           customer_group_ids: this.customerCustomerGroups

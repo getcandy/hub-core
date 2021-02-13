@@ -124,6 +124,7 @@ export default function (moduleOptions) {
         src: path.resolve(__dirname, 'plugin.js'),
         options: moduleOptions
     })
+
 }
 
 module.exports.meta = require('../package.json')
