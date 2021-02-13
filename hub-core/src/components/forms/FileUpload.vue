@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div ref="uploader" v-if="!uploading"></div>
-    <b-progress :value="60" v-else type="is-success" />
+    <div v-if="!uploading" ref="uploader" />
+    <b-progress v-else :value="60" type="is-success" />
 
     <div v-if="error" class="bg-red-100 text-red-600 py-2 px-4 text-sm font-medium">
       {{ error }}
@@ -11,7 +11,7 @@
 
     <div v-for="file in files" :key="file.id" class="columns">
       <div class="column">
-        {{ file.id}}
+        {{ file.id }}
         <img :src="file.src" width="100" height="100">
       </div>
       <div class="column">
@@ -29,7 +29,6 @@ const DragDrop = require('@uppy/drag-drop')
 const ProgressBar = require('@uppy/progress-bar')
 // const UppyGetcandy = require('~/core/UppyGetcandy')
 
-
 export default {
   props: {
     initialFiles: {
@@ -37,9 +36,11 @@ export default {
       default: () => []
     },
     width: {
+      type: [String, Number],
       default: null
     },
     height: {
+      type: [String, Number],
       default: null
     },
     processOnAdd: {
@@ -117,9 +118,9 @@ export default {
       reader.readAsDataURL(file.data)
 
       if (this.processOnAdd) {
-        this.uploader.upload().then(response => {
+        this.uploader.upload().then((response) => {
           this.error = null
-        }).catch(error => {
+        }).catch((error) => {
           this.uploader.removeFile(error.file)
           this.error = error.message
         })

@@ -8,18 +8,18 @@
       </template>
       <template slot="start">
         <template v-for="(section, handle) in sections">
-          <b-navbar-dropdown :label="$t(section.title)" :key="handle" v-if="section.items">
+          <b-navbar-dropdown v-if="section.items" :key="handle" :label="$t(section.title)">
             <b-navbar-item
               v-if="section.dashboard"
+              :key="`${section.handle}-dashboard`"
               :to="{
                 name: `${section.handle}.dashboard`
               }"
-              :key="`${section.handle}-dashboard`"
               tag="router-link"
             >
               Dashboard
             </b-navbar-item>
-            <b-navbar-item :to="item.route" v-for="(item, itemIndex) in section.items" :key="itemIndex" tag="router-link">
+            <b-navbar-item v-for="(item, itemIndex) in section.items" :key="itemIndex" :to="item.route" tag="router-link">
               {{ $t(item.title) }}
             </b-navbar-item>
           </b-navbar-dropdown>
@@ -47,12 +47,12 @@
               <b-navbar-item slot="trigger">
                 <figure class="image is-32x32 has-margin-top-5">
                   <gravatar :email="user.email" class="is-rounded" />
-                  </figure>
+                </figure>
               </b-navbar-item>
               <b-dropdown-item :has-link="true" aria-role="listitem">
                 <nuxt-link :to="{ name: 'recycle-bin' }">
-              Recycling bin
-            </nuxt-link>
+                  Recycling bin
+                </nuxt-link>
                 <nuxt-link :to="{ name: 'account' }">
                   {{ $t('Profile settings') }}
                 </nuxt-link>
@@ -61,7 +61,7 @@
                 </nuxt-link>
               </b-dropdown-item>
               <b-dropdown-item separator />
-              <b-dropdown-item @click.native="logout" class="has-text-danger" aria-role="listitem">
+              <b-dropdown-item class="has-text-danger" aria-role="listitem" @click.native="logout">
                 {{ $t('Logout') }}
               </b-dropdown-item>
             </b-dropdown>

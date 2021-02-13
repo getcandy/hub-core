@@ -3,9 +3,9 @@
     <b-field>
       <b-input
         :value="formattedValue"
-        @input="input"
         type="number"
         step="any"
+        @input="input"
       />
     </b-field>
   </div>
@@ -23,14 +23,14 @@ export default {
       default: null
     }
   },
-  methods: {
-    input (val) {
-      this.$emit('input', val * 100)
-    }
-  },
   computed: {
     formattedValue () {
       return this.$format.currency(this.value, null, true, false)
+    }
+  },
+  methods: {
+    input (val) {
+      this.$emit('input', val * 100)
     }
   }
 }

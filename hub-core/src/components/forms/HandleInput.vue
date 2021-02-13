@@ -3,17 +3,22 @@
 </template>
 
 <script>
-  const snakeCase = require('lodash/snakeCase')
+const snakeCase = require('lodash/snakeCase')
 
-  export default {
-    props: ['value'],
-    methods: {
-      sanitize (value) {
-        const sanitized = snakeCase(value);
+export default {
+  props: {
+    value: {
+      type: null,
+      required: true
+    }
+  },
+  methods: {
+    sanitize (value) {
+      const sanitized = snakeCase(value)
 
-        this.$emit('input', sanitized)
-        this.$emit('raw', value)
-      }
-    },
+      this.$emit('input', sanitized)
+      this.$emit('raw', value)
+    }
   }
+}
 </script>

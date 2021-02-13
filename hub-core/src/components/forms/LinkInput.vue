@@ -15,26 +15,31 @@
 </template>
 
 <script>
-  export default {
-    props: ['value'],
-    data () {
-      return {
-        data: {
-          url: '',
-          title: '',
-          newTab: false
-        }
-      }
-    },
-    mounted () {
-      if (this.value) {
-        this.data = this.value
-      }
-    },
-    methods: {
-      handleInput() {
-        this.$emit('input', this.data)
+export default {
+  props: {
+    value: {
+      type: null,
+      required: true
+    }
+  },
+  data () {
+    return {
+      data: {
+        url: '',
+        title: '',
+        newTab: false
       }
     }
+  },
+  mounted () {
+    if (this.value) {
+      this.data = this.value
+    }
+  },
+  methods: {
+    handleInput () {
+      this.$emit('input', this.data)
+    }
   }
+}
 </script>

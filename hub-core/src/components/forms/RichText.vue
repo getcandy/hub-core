@@ -1,8 +1,7 @@
 <template>
   <div class="editor">
-    <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+    <editor-menu-bar v-slot="{ commands, isActive }" :editor="editor">
       <div class="flex bg-white border border-gray-400 border-b-0 p-2 rounded-t">
-
         <button
           class="text-editor-control"
           :class="{ 'is-active': isActive.bold() }"
@@ -104,7 +103,6 @@
         >
           <i class="ri-arrow-go-forward-line" />
         </button>
-
       </div>
     </editor-menu-bar>
     <editor-content :editor="editor" />
@@ -112,35 +110,46 @@
 </template>
 
 <script>
-const debounce = require('lodash/debounce')
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
 import {
   Blockquote,
-  CodeBlock,
-  HardBreak,
   Heading,
-  HorizontalRule,
   OrderedList,
   BulletList,
   ListItem,
-  TodoItem,
-  TodoList,
   Bold,
-  Code,
   Italic,
   Link,
   Strike,
   Underline,
-  History,
+  History
 } from 'tiptap-extensions'
 
 export default {
-  props: ['value'],
   components: {
     EditorContent,
-    EditorMenuBar,
+    EditorMenuBar
   },
-  mounted() {
+  props: {
+    value: {
+      type: null,
+      required: true
+    }
+  },
+  data () {
+    return {
+      editor: null,
+      content: null
+    }
+  },
+  watch: {
+    value (val) {
+      this.editor.setContent(val, false, {
+        preserveWhitespace: true
+      })
+    }
+  },
+  mounted () {
     this.editor = new Editor({
       extensions: [
         new Blockquote(),
@@ -153,7 +162,7 @@ export default {
         new Italic(),
         new Strike(),
         new Underline(),
-        new History(),
+        new History()
       ],
       onUpdate: ({ getHTML }) => {
         this.content = getHTML()
@@ -167,25 +176,12 @@ export default {
       this.content = this.value
       this.editor.setContent(this.content, false, {
         preserveWhitespace: true
-      });
-    }
-  },
-  data() {
-    return {
-      editor: null,
-      content: null
-    }
-  },
-  watch: {
-    value (val) {
-      this.editor.setContent(val, false, {
-        preserveWhitespace: true
-      });
+      })
     }
   },
   beforeDestroy () {
     this.editor.destroy()
-  },
+  }
 }
 </script>
 

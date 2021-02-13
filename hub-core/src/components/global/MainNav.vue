@@ -1,31 +1,37 @@
 <template>
   <div>
     <nav class="main-nav">
-
       <nuxt-link :to="{ name: 'index'}">
-      <img src="/getcandy-icon.svg" alt="GetCandy" class="main-nav__icon">
+        <img src="/getcandy-icon.svg" alt="GetCandy" class="main-nav__icon">
       </nuxt-link>
 
       <ul>
-        <li class="main-nav__item"
+        <li
           v-for="item in sections"
           :key="item.handle"
+          class="main-nav__item"
           @mouseover="current = item.handle"
           @mouseleave="current = null"
         >
-          <div class="main-nav__item__icon" :class="{
-            'main-nav__item__icon--active': sectionIsActive(item.handle),
-            'main-nav__item__icon--open': current == item.handle && !sectionIsActive(item.handle),
-          }">
+          <div
+            class="main-nav__item__icon"
+            :class="{
+              'main-nav__item__icon--active': sectionIsActive(item.handle),
+              'main-nav__item__icon--open': current == item.handle && !sectionIsActive(item.handle),
+            }"
+          >
             <b-icon :icon="item.icon" />
           </div>
           <span class="main-nav__item__title">{{ $t(item.label) }}</span>
         </li>
         <li class="main-nav__item">
           <nuxt-link :to="{ name: 'settings' }">
-            <div class="main-nav__item__icon" :class="{
-              'main-nav__item__icon--active': sectionIsActive('settings')
-            }">
+            <div
+              class="main-nav__item__icon"
+              :class="{
+                'main-nav__item__icon--active': sectionIsActive('settings')
+              }"
+            >
               <b-icon icon="settings-4-line" />
             </div>
             <span class="main-nav__item__title">{{ $t('Settings') }}</span>
@@ -41,9 +47,12 @@
         </li>-->
         <li class="main-nav__item">
           <nuxt-link :to="{ name: 'recycle-bin' }">
-            <div class="main-nav__item__icon" :class="{
-              'main-nav__item__icon--active': sectionIsActive('recycle-bin')
-            }">
+            <div
+              class="main-nav__item__icon"
+              :class="{
+                'main-nav__item__icon--active': sectionIsActive('recycle-bin')
+              }"
+            >
               <b-icon icon="delete-bin-line" />
             </div>
             <span class="main-nav__item__title">{{ $t('Recycle Bin') }}</span>
@@ -59,27 +68,32 @@
 
       <div class="main-nav__profile">
         <nuxt-link :to="{ name: 'account' }">
-            <figure class="image is-64x64">
-              <gravatar :email="$auth.user.email" class="is-rounded" />
-            </figure>
+          <figure class="image is-64x64">
+            <gravatar :email="$auth.user.email" class="is-rounded" />
+          </figure>
         </nuxt-link>
       </div>
     </nav>
 
-    <nav class="sub-nav" v-for="(section, handle) in sections"
+    <nav
+      v-for="(section, handle) in sections"
       :key="handle"
+      class="sub-nav"
       :class="{ active: current == handle }"
       @mouseover="current = handle"
       @mouseleave="current = null"
     >
-      <h3 class="sub-nav__title">{{ $t(section.title) }}</h3>
+      <h3 class="sub-nav__title">
+        {{ $t(section.title) }}
+      </h3>
       <ul class="sub-nav__items">
-        <li class="sub-nav__item" v-for="(item, itemIndex) in sortedItems(section.items)" :key="itemIndex">
-          <nuxt-link :to="item.route">{{ $t(item.title) }}</nuxt-link>
+        <li v-for="(item, itemIndex) in sortedItems(section.items)" :key="itemIndex" class="sub-nav__item">
+          <nuxt-link :to="item.route">
+            {{ $t(item.title) }}
+          </nuxt-link>
         </li>
       </ul>
     </nav>
-
   </div>
 </template>
 
@@ -92,17 +106,9 @@ export default {
   components: {
     Gravatar
   },
-  data() {
+  data () {
     return {
       current: null
-    };
-  },
-  methods: {
-    sortedItems (items) {
-      return sortBy(items, 'title')
-    },
-    sectionIsActive (section) {
-      return this.$route.path.split('/').includes(section)
     }
   },
   computed: {
@@ -123,5 +129,13 @@ export default {
       return this.$store.state.core.languages
     }
   },
+  methods: {
+    sortedItems (items) {
+      return sortBy(items, 'title')
+    },
+    sectionIsActive (section) {
+      return this.$route.path.split('/').includes(section)
+    }
+  }
 }
 </script>
