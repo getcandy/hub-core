@@ -1,22 +1,31 @@
 <template>
-  <div v-show="open" class="fixed z-50 bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
+  <div v-show="open" class="fixed inset-x-0 bottom-0 z-50 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
     <transition
-      v-on:enter="overlayEnter"
-      v-on:leave="overlayLeave"
+      enter-class="opacity-0"
+      enter-active-class="duration-300 ease-out opacity-1"
+      enter-to-class="opacity-1"
+      leave-class="opacity-100"
+      leave-active-class="duration-200 ease-in"
+      leave-to-class="opacity-0"
     >
       <div v-show="open">
         <div class="absolute inset-0 bg-gray-900 opacity-75" @click="$emit('close')"></div>
       </div>
     </transition>
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
     <transition
-      v-on:enter="panelEnter"
-      v-on:leave="panelLeave"
+      enter-class="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
+      enter-active-class="duration-300 ease-out"
+      enter-to-class="translate-y-0 opacity-100 sm:scale-100"
+      leave-class="translate-y-0 opacity-100 sm:scale-100"
+      leave-active-class="duration-200 ease-in"
+      leave-to-class="translate-y-4 opacity-0 sm:translate-y-0 sm:scale-95"
     >
-    <div v-show="open" class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+    <div class="overflow-hidden transition-all transform bg-white rounded-lg shadow-xl sm:max-w-lg sm:w-full">
+      <div class="px-4 pt-5 pb-4 bg-white sm:p-6 sm:pb-4">
         <div class="sm:flex sm:items-start">
-          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-            <h3 class="text-lg leading-6 font-medium text-gray-900" v-if="heading">
+          <div class="w-full mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3 class="text-lg font-medium leading-6 text-gray-900" v-if="heading">
               {{ $t(heading) }}
             </h3>
             <div class="mt-4">
@@ -27,7 +36,7 @@
           </div>
         </div>
       </div>
-      <div class="bg-gray-50 p-4 sm:px-6 sm:py-4 sm:flex sm:flex-row-reverse" v-if="confirmable">
+      <div class="p-4 bg-gray-50 sm:px-6 sm:py-4 sm:flex sm:flex-row-reverse" v-if="confirmable">
         <gc-button @click="$emit('confirmed')" type="button" theme="danger">
           {{ buttonText }}
         </gc-button>
@@ -41,7 +50,6 @@
 </template>
 
 <script>
-import anime from 'animejs/lib/anime.es.js';
 
 export default {
   props: {
@@ -60,50 +68,6 @@ export default {
     buttonText: {
       type: String,
       default: 'Confirm'
-    }
-  },
-  methods: {
-    overlayEnter (element, done) {
-      anime({
-        targets: element,
-        opacity: .75,
-        easing: 'linear',
-        duration: 200,
-        complete: () => done()
-      });
-    },
-    overlayLeave (element, done) {
-      anime({
-        targets: element,
-        opacity: 0,
-        easing: 'linear',
-        duration: 200,
-        complete: () => done()
-      });
-    },
-    panelLeave (element, done) {
-      anime({
-        targets: element,
-        translateX: '100%',
-        easing: 'easeOutQuint',
-        duration: 350,
-        complete: () => done()
-      });
-    },
-    panelEnter (element, done) {
-      var tl = anime.timeline({
-        targets: element,
-        easing: 'linear',
-        duration: 350
-      })
-      tl.add({
-        scale: 0.75,
-        duration: 0
-      })
-      tl.add({
-        scale: 1,
-        easing: 'spring'
-      })
     }
   }
 }
