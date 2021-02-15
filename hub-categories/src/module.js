@@ -1,8 +1,6 @@
 import path from 'path'
 
-
 export default function (moduleOptions) {
-
   const templates = [
     // Categories
     'components/CategoryAssociations.vue',
@@ -22,8 +20,8 @@ export default function (moduleOptions) {
     'pages/edit/CategoryAvailability.vue',
     'pages/edit/CategoryAssociations.vue',
     'pages/edit/CategoryDisplay.vue',
-    'pages/edit/CategoryRoutes.vue',
-  ];
+    'pages/edit/CategoryRoutes.vue'
+  ]
 
   templates.forEach((template) => {
     this.addTemplate({
@@ -38,7 +36,6 @@ export default function (moduleOptions) {
   })
 
   this.addLayout(path.resolve(__dirname, 'layouts/CategoryLayout.vue'), 'category')
-
 }
 
 module.exports.meta = require('../package.json')

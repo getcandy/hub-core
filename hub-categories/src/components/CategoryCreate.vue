@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="parent" class="mb-4">
-      <small class="block">{{ $t(`Creating child category for`)}}</small>
+      <small class="block">{{ $t(`Creating child category for`) }}</small>
       <strong>{{ parent.name }}</strong>
     </div>
     <form @submit.prevent="save">
@@ -25,7 +25,7 @@ import HandlesForms from '@getcandy/hub-core/src/mixins/HandlesForms.js'
 export default {
   mixins: [
     HasAttributes,
-    HandlesForms,
+    HandlesForms
   ],
   props: {
     parent: {
@@ -33,7 +33,7 @@ export default {
       default: null
     }
   },
-  data() {
+  data () {
     return {
       create: false,
       model: this.base(),
@@ -50,7 +50,7 @@ export default {
       this.manualUrl = true
       this.model.url = this.$format.slug(event)
     },
-    async save() {
+    async save () {
       this.clearFormErrors()
       this.processing = true
 
@@ -80,15 +80,15 @@ export default {
 
       this.processing = false
     },
-    base() {
+    base () {
       return {
         name: {
           en: ''
         },
         description: {
-          en : ''
+          en: ''
         },
-        url: '',
+        url: ''
       }
     }
   }
