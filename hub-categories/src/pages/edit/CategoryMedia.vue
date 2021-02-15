@@ -5,7 +5,6 @@
       assetable="categories"
       :parent="category"
       :process-on-add="false"
-      @built="storeUploaderInstance"
       @file-added="handleFileAdded"
       @changed="handleChange"
       @beforeSave="handleChange"
@@ -29,7 +28,6 @@ export default {
     return {
       pendingDraftCreation: false,
       category: null,
-      uploader: null,
       storeHandle: 'categories'
     }
   },
@@ -42,16 +40,13 @@ export default {
     this.category = this.normalize(this.model)
   },
   methods: {
-    storeUploaderInstance (instance) {
-      this.instance = instance
-    },
     async handleFileAdded () {
       this.pendingDraftCreation = true
       await this.createDraft('categories', this.category.id, {
         beforeRedirect: (draft) => {
           this.category.id = draft.id
         }
-      }, this.$getcandy)
+      })
       this.pendingDraftCreation = false
     },
     async handleChange (assets, done) {

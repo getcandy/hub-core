@@ -7,7 +7,6 @@ export default {
   },
   data () {
     return {
-      creatingDraft: false,
       storeHandle: 'product'
     }
   },
@@ -15,14 +14,11 @@ export default {
     async createDraft (type, id, config = {}, context) {
       // If we're already a draft, then don't worry.
       if (this.isDraft || this.creatingDraft) {
-        console.log('Hi')
         if (config.alreadyDrafted) {
           await config.alreadyDrafted()
         }
         return;
       }
-
-      this.creatingDraft = true;
 
       const response = await this.$store.dispatch(`${type}/createDraft`, {
         context: context || this.$gc,
@@ -45,8 +41,6 @@ export default {
       this.$store.commit(`${type}/setModelId`, draft.id)
       // this.$store.commit(`${type}/setModel`, draft)
       this.$store.commit(`${type}/setLiveId`, id)
-
-      this.creatingDraft = false
 
       return draft
     }

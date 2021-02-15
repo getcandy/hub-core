@@ -1,7 +1,9 @@
 <template>
   <div v-if="product">
     <media-manager
+      :refreshing="pendingDraftCreation"
       assetable="products"
+      :process-on-add="false"
       :parent="product"
       @file-added="handleFileAdded"
       @changed="handleChange"
@@ -12,8 +14,6 @@
 </template>
 
 <script>
-const filter = require('lodash/filter')
-
 import { NormalizesObjects, HasDrafts } from '@getcandy/hub-core/src/mixins/Index.js'
 
 export default {
@@ -22,23 +22,18 @@ export default {
     NormalizesObjects,
     HasDrafts
   ],
-  computed: {
-    storeModel () {
-      return this.$store.state.product.model
-    }
-  },
-  data() {
+  data () {
     return {
       product: null,
+      pendingDraftCreation: false,
       processOnAdd: false,
       pending: [],
       assetsToMerge: []
     }
   },
-  mounted() {
-    this.product = this.normalize(this.storeModel)
-    if (this.isDraft) {
-      this.processOnAdd = true
+  computed: {
+    storeModel () {
+      return this.$store.state.product.model
     }
   },
   watch: {
@@ -46,45 +41,44 @@ export default {
       this.processOnAdd = val
     }
   },
+  mounted () {
+    this.product = this.normalize(this.storeModel)
+    if (this.isDraft) {
+      this.processOnAdd = true
+    }
+  },
   methods: {
-    async handleFileAdded (file) {
+    async handleFileAdded () {
+      this.pendingDraftCreation = true
       await this.createDraft('product', this.product.id, {
-        beforeRedirect: async (draft) => {
+        beforeRedirect: (draft) => {
           this.product.id = draft.id
         }
-      }, this.$getcandy)
+      })
+      this.pendingDraftCreation = false
     },
     async handleExternalAssetUpload (asset) {
       try {
         await this.createDraft('product', this.product.id, {
-          beforeRedirect: async (draft) => {
+          beforeRedirect: (draft) => {
             this.product.id = draft.id
           }
         }, this.$getcandy)
-        const response = await this.$gc.products.attachAsset(this.product.id, asset.data.id)
+        await this.$gc.products.attachAsset(this.product.id, asset.data.id)
       } catch (err) {
 
       }
     },
     async handleChange (assets, done) {
       await this.createDraft('product', this.product.id, {
-        afterRedirect: async (product) => {
+        afterRedirect: (product) => {
           this.product.id = product.id
           done()
         },
-        alreadyDrafted: async () => {
+        alreadyDrafted: () => {
           done()
         }
-      }, this.$getcandy);
-    },
-    handleFileUploaded (file) {
-      const pending = this.files;
-
-      const remaining = filter(pending, existing => {
-        return existing.id != file.id
       })
-
-      this.$store.commit('product/setPendingAssets', remaining)
     }
   }
 }

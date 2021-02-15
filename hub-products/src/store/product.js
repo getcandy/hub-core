@@ -1,33 +1,35 @@
+const defaultIncludes = Array([
+  'assets.tags',
+  'assets.transforms',
+  'associations.association.assets.transforms',
+  'associations.group',
+  'attributes.group.attributes',
+  'categories.assets.transforms',
+  'categories.routes',
+  'channels',
+  'collections',
+  'collections.routes',
+  'customerGroups',
+  'draft',
+  'publishedParent',
+  'family.attributes.group',
+  'layout',
+  'routes',
+  'variants.customerPricing.group',
+  'variants.customerPricing.tax',
+  'variants.image.transforms',
+  'variants.tax',
+  'variants.tiers.group',
+  'versions.user'
+]).join(',')
+
 export const state = () => ({
   model: null,
   liveId: null,
   isDraft: false,
   createDraft: false,
+  creatingDraft: false,
   attributes: null,
-  defaultIncludes: [
-    'assets.tags',
-    'assets.transforms',
-    'associations.association.assets.transforms',
-    'associations.group',
-    'attributes.group.attributes',
-    'categories.assets.transforms',
-    'categories.routes',
-    'channels',
-    'collections',
-    'collections.routes',
-    'customerGroups',
-    'draft',
-    'publishedParent',
-    'family.attributes.group',
-    'layout',
-    'routes',
-    'variants.customerPricing.group',
-    'variants.customerPricing.tax',
-    'variants.image.transforms',
-    'variants.tax',
-    'variants.tiers.group',
-    'versions.user'
-  ],
   state: 'idle',
   pendingAssets: [],
   assets: [],
@@ -35,6 +37,9 @@ export const state = () => ({
   errors: {}
 })
 export const mutations = {
+  setCreatingDraft (state, val) {
+    state.creatingDraft = val
+  },
   setModel (state, model) {
     state.model = model
   },
@@ -72,87 +77,169 @@ export const mutations = {
     state.pendingAssets = assets
   },
   setAssets (state, assets) {
-      state.assets = assets
+    state.assets = assets
   },
   addPendingAsset (state, asset) {
-      const pending = state.pendingAssets
-      pending.push(asset)
-      state.pendingAssets = pending
+    const pending = state.pendingAssets
+    pending.push(asset)
+    state.pendingAssets = pending
   }
 }
 
 export const actions = {
-    resetState ({ commit }) {
-        commit('setModel', null)
-        commit('setIsDraft', false)
-        commit('setCreateDraft', false)
-    },
-    setAttribute ({ commit }, { field, value }) {
-      commit('setOnModel', {
-        field,
-        value
-      })
-    },
-    async createDraft ({ commit, state }, { context, id }) {
-        return await context.on('products', 'postProductsIdDrafts', id, {
-            excl_tax: true,
-            full_response: true,
-            option_data: true,
-            draft: 1,
-            includes: state.defaultIncludes
-          })
-    },
-    async fetch ({ commit, state }, { context, id }) {
-      const response = await context.on('products', 'getProductsProductId',
-        id,
-        Array(state.defaultIncludes).join(','),
-        true,
-        true,
-        true,
-        1
-      )
-
-      const product = response.data.data
-      const isDraft = !!product.drafted_at
-
-      if (!isDraft) {
-          commit('setLiveId', product.id)
-      } else {
-          commit('setLiveId', product.published_parent.data.id)
+  resetState ({ commit }) {
+    commit('setModel', null)
+    commit('setIsDraft', false)
+    commit('setCreateDraft', false)
+  },
+  setAttribute ({ commit }, { field, value }) {
+    commit('setOnModel', {
+      field,
+      value
+    })
+  },
+  /**
+   * Create a draft for a given product
+   *
+   * @param   {Function}  commit
+   * @param   {String}  id
+   * @param   {Object}  $nuxt
+   *
+   * @return  {Object}
+   */
+  async createDraft ({ commit }, { id, $nuxt }) {
+    commit('setCreatingDraft', true)
+    const response = await $nuxt.$getcandy.on('products', 'postProductsIdDrafts', id, {
+      query: {
+        include: defaultIncludes,
+        full_response: true
       }
+    })
+    commit('setIsDraft', true)
+    commit('setModel', response.data.data)
+    commit('setLiveId', id)
+    commit('setCreatingDraft', false)
+    return response
+  },
+  /**
+   * Fetch the product from the API
+   *
+   * @param   {Object}  commit
+   * @param   {Function}  dispatch
+   * @param   {Object}  $nuxt
+   * @param   {String}  id
+   *
+   * @return  {Object}
+   */
+  async fetch ({ commit, dispatch }, { $nuxt, id }) {
+    const response = await $nuxt.$getcandy.on('products', 'getProductsProductId',
+      id,
+      defaultIncludes,
+      true,
+      true,
+      true,
+      1
+    )
 
-      commit('setIsDraft', isDraft)
+    const product = response.data.data
+    const isDraft = !!product.drafted_at
+    const draftModel = product.draft.data
 
-      return product
-    },
-    save ( { commit, state }, payload) {
-        const { context, data } = payload;
-        commit('setState', 'saving')
-        commit('setErrors', {})
-        context.on('products', 'putProductsProductId', state.model.id, data).then(response => {
-            commit('setState', 'saved')
-        }).catch(error => {
-            commit('setErrors', error.body)
-        })
-    },
-
-    async publish ( { commit, state, dispatch }, { productId, context }) {
-        const { data } = await context.on('products', 'postProductsIdPublish', productId);
-        const response = await dispatch('fetch', {
-          context,
-          id: data.data.id
-        })
-        commit('setModel', response)
-    },
-
-    async createVariants( { commit, dispatch }, { variants, $gc, $getcandy, productId }) {
-      await $gc.products.variants.create(productId, variants)
-      const response = await dispatch('fetch', {
-        context: $getcandy,
-        id: productId
+    if (draftModel) {
+      await this.$router.replace({
+        name: 'products.view',
+        params: {
+          id: draftModel.id
+        }
       })
-      commit('setModel', response)
-
-      return response
+      await dispatch('fetch', {
+        $nuxt,
+        id: draftModel.id
+      })
+      return
     }
+
+    commit('setModel', product)
+
+    if (!isDraft) {
+      commit('setLiveId', product.id)
+    } else {
+      commit('setLiveId', product.published_parent.data.id)
+    }
+
+    commit('setIsDraft', isDraft)
+
+    return product
+  },
+  save ({ commit, state }, payload) {
+    const { context, data } = payload
+    commit('setState', 'saving')
+    commit('setErrors', {})
+    context.on('products', 'putProductsProductId', state.model.id, data).then((response) => {
+      commit('setState', 'saved')
+    }).catch((error) => {
+      commit('setErrors', error.body)
+    })
+  },
+
+  async publish ({ commit }, { id, $nuxt }) {
+    const response = await $nuxt.$getcandy.on('products', 'postProductsIdPublish', id, {
+      query: {
+        include: defaultIncludes,
+        full_response: true
+      }
+    })
+
+    const { params } = $nuxt.$route
+    const publishedId = response.data.data.id
+
+    // Only try and redirect if the ID for the current route
+    // is different, otherwise we get an error.
+    if (params.id !== publishedId) {
+      await this.$router.replace({
+        name: 'products.view',
+        params: {
+          id: publishedId
+        }
+      })
+    }
+
+    commit('setModel', response.data.data)
+    commit('setIsDraft', false)
+    return response
+  },
+  /**
+   * Discard a product
+   *
+   * @param   {Function}  dispatch
+   * @param   {String}  id
+   * @param   {Object}  $nuxt
+   * @param   {String}  liveId
+   *
+   * @return  void
+   */
+  async discard ({ dispatch }, { id, $nuxt, liveId }) {
+    await $nuxt.$gc.products.destroy(id)
+    await $nuxt.$router.push({
+      name: 'products.view',
+      params: {
+        id: liveId
+      }
+    })
+    dispatch('fetch', {
+      id: liveId,
+      $nuxt
+    })
+  },
+
+  async createVariants ({ commit, dispatch }, { variants, $gc, $getcandy, productId }) {
+    await $gc.products.variants.create(productId, variants)
+    const response = await dispatch('fetch', {
+      context: $getcandy,
+      id: productId
+    })
+    commit('setModel', response)
+
+    return response
+  }
 }

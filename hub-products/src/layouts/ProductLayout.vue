@@ -1,35 +1,41 @@
 <template>
   <default-layout>
-    <loading-spinner v-if="!product" />
+    <div v-if="$fetchState.pending" class="h-screen flex w-full items-center justify-center">
+      <div class="flex items-center text-gray-500">
+        <loading-spinner class="mr-2" />
+        <span class="text-xs uppercase font-medium">{{ $t('Fetching Product') }}</span>
+      </div>
+    </div>
     <div v-else>
-      <toolbar heading="Products" :subHeading="title">
+      <toolbar heading="Products" :sub-heading="title">
         <div class="flex items-center">
           <div>
             <draft-tools
               :preview-url="previewUrl"
               :is-draft="isDraft"
+              :creating-draft="creatingDraft"
+              :versions="product.versions ? product.versions.data : []"
+              :created-at="product.created_at"
+              :updated-at="product.updated_at"
               @discard="discard"
               @delete="triggerDelete"
               @publish="publish"
               @restore="restore"
-              :versions="product.versions ? product.versions.data : []"
-              :created-at="product.created_at"
-              :updated-at="product.updated_at"
             />
           </div>
           <div class="ml-3">
             <gc-button theme="gray" @click="showSettingsPanel = true">
               <gc-icon icon="settings" size="sm" class="mr-1" /> Settings
-            </gc-button >
-              <quick-view-panel
-                :open="showSettingsPanel"
-                @close="showSettingsPanel = false"
-                heading="Product Settings"
-              >
-                <div class="p-6">
-                  <product-settings :product="product" @save="handleSettingsSave" />
-                </div>
-              </quick-view-panel>
+            </gc-button>
+            <quick-view-panel
+              :open="showSettingsPanel"
+              heading="Product Settings"
+              @close="showSettingsPanel = false"
+            >
+              <div class="p-6">
+                <product-settings :product="product" @save="handleSettingsSave" />
+              </div>
+            </quick-view-panel>
           </div>
         </div>
       </toolbar>
@@ -56,9 +62,37 @@ export default {
     HasAttributes,
     HasDrafts
   ],
-  head () {
-    return {
-      title: this.title
+  async fetch () {
+    await this.load()
+    const items = [
+      {
+        route: 'products.view',
+        label: 'Attribute Details'
+      },
+      {
+        route: 'products.edit.media',
+        label: 'Media'
+      },
+      {
+        route: 'products.edit.availability',
+        label: 'Availability &amp; Pricing'
+      },
+      {
+        route: 'products.edit.associations',
+        label: 'Associations'
+      },
+      {
+        route: 'products.edit.urls',
+        label: 'URLs'
+      }
+    ]
+    this.$nuxt.context.app.$hooks.callHook('product.main.tabs', items)
+
+    this.navItems = {
+      params: {
+        id: this.product.id
+      },
+      items
     }
   },
   data () {
@@ -70,10 +104,13 @@ export default {
     }
   },
   computed: {
-    title () {
-      return this.product ? this.attribute(this.product.attribute_data, "name") : 'Loading...'
+    creatingDraft () {
+      return this.$store.state.product.creatingDraft
     },
-    previewUrl() {
+    title () {
+      return this.product ? this.attribute(this.product.attribute_data, 'name') : 'Loading...'
+    },
+    previewUrl () {
       return this.product ? (this.config.preview_url.replace(':id', this.product.id) || null) : null
     },
     product () {
@@ -92,47 +129,15 @@ export default {
   destroyed () {
     this.$store.dispatch('product/resetState')
   },
-  async mounted () {
-    this.loading = true
+  mounted () {
     this.$store.commit('product/setPendingAssets', [])
-    await this.load()
-    const items = [
-      {
-        route: 'products.view',
-        label: "Attribute Details"
-      },
-      {
-        route: 'products.edit.media',
-        label: "Media"
-      },
-      {
-        route: 'products.edit.availability',
-        label: "Availability &amp; Pricing"
-      },
-      {
-        route: 'products.edit.associations',
-        label: "Associations"
-      },
-      {
-        route: 'products.edit.urls',
-        label: "URLs"
-      }
-    ]
-    this.$nuxt.context.app.$hooks.callHook('product.main.tabs', items)
-
-    this.navItems = {
-      params: {
-        id: this.product.id
-      },
-      items
-    };
   },
   methods: {
     handleSettingsSave ({ familyId }) {
       this.$getcandy.on('products', 'putProductsProductId', this.product.id, {
-        familyId: familyId,
+        familyId,
         attribute_data: this.product.attribute_data
-      }).then(response  => {
+      }).then((response) => {
         this.load(this.product.id)
         this.showSettingsPanel = false
         this.$notify.queue('success', 'Product settings saved')
@@ -140,35 +145,16 @@ export default {
     },
     async load (id) {
       try {
-        const response = await this.$store.dispatch('product/fetch', {
-          context: this.$getcandy,
+        await this.$store.dispatch('product/fetch', {
+          $nuxt: this.$nuxt,
           id: id || this.$route.params.id
         })
-        const product = response
-        const hasDraft = product.draft.data
-
-        if (hasDraft) {
-          await this.$router.replace({
-            name: 'products.view',
-            params: {
-              id: product.draft.data.id
-            }
-          })
-          await this.load(product.draft.data.id)
-          return
-        }
-        this.$store.commit('product/setModel', product)
-
-        this.loading = false
       } catch (e) {
         return this.$nuxt.error({
           statusCode: e.response ? e.response.status : 500,
           message: e.message
         })
       }
-    },
-    save () {
-      alert('Save product!')
     },
     async triggerDelete () {
       await this.$gc.products.destroy(this.product.id)
@@ -178,29 +164,29 @@ export default {
       this.$notify.queue('success', this.$t('Product deleted'))
     },
     async discard () {
-      const productId = this.product.id
-      this.$store.dispatch('product/resetState')
-      this.loading = true
-      await this.$gc.products.destroy(productId)
-      await this.$router.replace({
-        name: 'products'
-      })
-      await this.$router.push({
-        name: 'products.view',
-        params: {
-          id: this.liveId
-        }
-      })
-      this.load(this.liveId)
+      try {
+        await this.$store.dispatch('product/discard', {
+          id: this.product.id,
+          $nuxt: this.$nuxt,
+          liveId: this.liveId
+        })
+        await this.$fetch()
+      } catch (e) {
+        this.$notify.queue('error', this.$t('Unable to discard draft'))
+      }
     },
     async publish () {
-      await this.$store.dispatch('product/publish', {
-        productId: this.product.id,
-        context: this.$getcandy
-      })
+      try {
+        await this.$store.dispatch('product/publish', {
+          id: this.product.id,
+          $nuxt: this.$nuxt
+        })
+      } catch (error) {
+        this.$notify.queue('error', this.$t('Unable to publish draft'))
+      }
     },
     async restore (versionId) {
-      const response = await this.$gc.versions.restore(versionId);
+      const response = await this.$gc.versions.restore(versionId)
       this.loading = true
       await this.$router.replace({
         name: 'products.view',
@@ -208,8 +194,13 @@ export default {
           id: response.data.id
         }
       })
-      this.load(response.data.id);
+      this.load(response.data.id)
+    }
+  },
+  head () {
+    return {
+      title: this.title
     }
   }
-};
+}
 </script>
