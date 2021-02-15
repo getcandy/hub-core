@@ -84,7 +84,8 @@ export default {
   ],
   props: {
     category: {
-      type: Object
+      type: Object,
+      default: () => {}
     }
   },
   data () {
@@ -118,12 +119,12 @@ export default {
         sibling = this.nodes[newIndex + 1]
       }
 
-      this.$gc.categories.reorder(sibling.id, movedItem.id, action).then((response) => {
+      this.$gc.categories.reorder(sibling.id, movedItem.id, action).then(() => {
         this.$buefy.toast.open({
           message: 'Categories Reordered',
           type: 'is-success'
         })
-      }).catch((e) => {
+      }).catch(() => {
         this.$buefy.toast.open({
           duration: 5000,
           message: 'Unable to reorder categories',

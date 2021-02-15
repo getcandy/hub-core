@@ -7,7 +7,7 @@
       v-sortable="{
         handle: '.sorter',
         group: 'root',
-        onEnd: this.reorder,
+        onEnd: reorder,
         animation: 150,
       }"
       class="m-4"
@@ -44,9 +44,9 @@ export default {
     })
   },
   methods: {
-    handleExpanded (parent, child) {
+    handleExpanded () {
     },
-    handleClosed (id) {
+    handleClosed () {
 
     },
     reorder ({ newIndex, oldIndex }) {
@@ -54,7 +54,7 @@ export default {
       const moved = this.categories[oldIndex]
       const node = this.categories[newIndex]
 
-      this.categories.splice(oldIndex, 1)[0]
+      this.categories.splice(oldIndex, 1)
       this.categories.splice(newIndex, 0, moved)
 
       let type = 'before'
@@ -62,12 +62,12 @@ export default {
         type = 'after'
       }
 
-      this.$gc.categories.reorder(node.id, moved.id, type).then((response) => {
+      this.$gc.categories.reorder(node.id, moved.id, type).then(() => {
         this.$buefy.toast.open({
           message: 'Categories Reordered',
           type: 'is-success'
         })
-      }).catch((e) => {
+      }).catch(() => {
         this.$buefy.toast.open({
           duration: 5000,
           message: 'Unable to reorder categories',

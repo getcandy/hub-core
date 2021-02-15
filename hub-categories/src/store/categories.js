@@ -143,9 +143,8 @@ export const actions = {
     commit('setIsDraft', false)
     return response
   },
-  save ({ commit, state }, payload) {
+  async save ({ state }, payload) {
     const { context, data } = payload
-    context.categories.update(state.model.id, data).then((response) => {
-    })
+    await context.categories.update(state.model.id, data)
   }
 }

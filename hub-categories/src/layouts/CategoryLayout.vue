@@ -174,7 +174,6 @@ export default {
           $nuxt: this.$nuxt
         })
       } catch (error) {
-        console.log(error)
         this.$notify.queue('error', this.$t('Unable to publish draft'))
       }
     },

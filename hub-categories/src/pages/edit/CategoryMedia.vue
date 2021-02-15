@@ -17,6 +17,7 @@
 <script>
 import NormalizesObjects from '@getcandy/hub-core/src/mixins/NormalizesObjects.js'
 import HasDrafts from '@getcandy/hub-core/src/mixins/HasDrafts.js'
+const filter = require('lodash/filter')
 
 export default {
   layout: 'category',
@@ -44,45 +45,44 @@ export default {
     storeUploaderInstance (instance) {
       this.instance = instance
     },
-    async handleFileAdded (file) {
+    async handleFileAdded () {
       this.pendingDraftCreation = true
       await this.createDraft('categories', this.category.id, {
-        beforeRedirect: async (draft) => {
+        beforeRedirect: (draft) => {
           this.category.id = draft.id
         }
       }, this.$getcandy)
       this.pendingDraftCreation = false
     },
     async handleChange (assets, done) {
-      console.log('Here')
-      // await this.createDraft('categories', this.category.id, {
-      //   afterRedirect: async (category) => {
-      //     this.category.id = category.id
-      //     done()
-      //   },
-      //   alreadyDrafted: async () => {
-      //     done()
-      //   }
-      // }, this.$getcandy);
+      await this.createDraft('categories', this.category.id, {
+        afterRedirect: (category) => {
+          this.category.id = category.id
+          done()
+        },
+        alreadyDrafted: () => {
+          done()
+        }
+      })
+      return assets
     },
     async handleExternalAssetUpload (asset) {
-      console.log('Que?')
-      // try {
-      //   await this.createDraft('product', this.product.id, {
-      //     beforeRedirect: async (draft) => {
-      //       this.product.id = draft.id
-      //     }
-      //   }, this.$getcandy)
-      //   const response = await this.$gc.products.attachAsset(this.product.id, asset.data.id)
-      // } catch (err) {
+      try {
+        await this.createDraft('product', this.product.id, {
+          beforeRedirect: (draft) => {
+            this.product.id = draft.id
+          }
+        }, this.$getcandy)
+        await this.$gc.products.attachAsset(this.product.id, asset.data.id)
+      } catch (err) {
 
-      // }
+      }
     },
     handleFileUploaded (file) {
       const pending = this.files
 
       const remaining = filter(pending, (existing) => {
-        return existing.id != file.id
+        return existing.id !== file.id
       })
 
       this.$store.commit('categories/setPendingAssets', remaining)

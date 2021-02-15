@@ -68,7 +68,7 @@
         handle: '.sorter',
         group: category.id,
         animation: 150,
-        onEnd: this.reorder,
+        onEnd: reorder,
       }"
       class="pl-8"
     >
@@ -157,7 +157,7 @@ export default {
       const moved = this.children[oldIndex]
       const node = this.children[newIndex]
 
-      this.children.splice(oldIndex, 1)[0]
+      this.children.splice(oldIndex, 1)
       this.children.splice(newIndex, 0, moved)
 
       let type = 'before'
@@ -165,9 +165,9 @@ export default {
         type = 'after'
       }
 
-      this.$gc.categories.reorder(node.id, moved.id, type).then((response) => {
+      this.$gc.categories.reorder(node.id, moved.id, type).then(() => {
         this.$notify.queue('success', this.$t('Category tree updated'))
-      }).catch((e) => {
+      }).catch(() => {
         this.$notify.queue('error', this.$t('Unable to reorder categories'))
       })
     }
