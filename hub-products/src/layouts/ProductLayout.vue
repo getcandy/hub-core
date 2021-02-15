@@ -7,6 +7,9 @@
       </div>
     </div>
     <div v-else>
+      <div v-if="isDraft" class="bg-orange-100 text-orange-700 p-2 text-sm border-b border-orange-300 text-center">
+        {{ $t("You are viewing a draft, changes below won't be reflected until published") }}
+      </div>
       <toolbar heading="Products" :sub-heading="title">
         <div class="flex items-center">
           <div>
