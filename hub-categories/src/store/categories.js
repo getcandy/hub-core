@@ -1,9 +1,24 @@
+const defaultIncludes = Array([
+  'assets.tags',
+  'assets.transforms',
+  'attributes.group.attributes',
+  'channels',
+  'draft',
+  'publishedParent',
+  'children',
+  'customerGroups',
+  'layout',
+  'versions.user',
+  'routes'
+]).join(',')
+
 export const state = () => ({
-  model: null,
+  model: {},
   liveId: null,
   isDraft: false,
   state: 'idle',
   createDraft: false,
+  creatingDraft: false,
   pendingAssets: [],
   assets: [],
   config: {}
@@ -14,6 +29,9 @@ export const mutations = {
   },
   setOnModel (state, conf) {
     state.model[conf.field] = conf.value
+  },
+  setCreatingDraft (state, val) {
+    state.creatingDraft = val
   },
   setIsDraft (state, val) {
     state.isDraft = val
@@ -34,67 +52,62 @@ export const mutations = {
     state.pendingAssets = assets
   },
   setAssets (state, assets) {
-      state.assets = assets
+    state.assets = assets
   },
   addPendingAsset (state, asset) {
-      const pending = state.pendingAssets
-      pending.push(asset)
-      state.pendingAssets = pending
+    const pending = state.pendingAssets
+    pending.push(asset)
+    state.pendingAssets = pending
   }
 }
 
 export const actions = {
-  resetState ({ commit }) {
-    commit('setModel', null)
-    commit('setIsDraft', false)
+  async createDraft ({ commit }, { id, $nuxt }) {
+    commit('setCreatingDraft', true)
+    const response = await $nuxt.$getcandy.on('categories', 'postCategoriesCategoryIdDrafts', id, defaultIncludes)
+    commit('setIsDraft', true)
+    commit('setModel', response.data.data)
+    commit('setLiveId', id)
+    commit('setCreatingDraft', false)
+    return response
   },
-  async createDraft ({ commit }, { context, id }) {
-    return context.on('categories', 'postCategoriesCategoryIdDrafts', id, [
-        'layout',
-        'attributes.group.attributes',
-        'assets.transforms',
-        'routes',
-        'assets.tags',
-        'channels',
-        'customerGroups',
-        'children'
-      ])
-  },
-  async fetch ({ commit, state }, { context, id }) {
-
-    const includes = Array([
-      'assets.tags',
-      'assets.transforms',
-      'attributes.group.attributes',
-      'channels',
-      'draft',
-      'publishedParent',
-      'children',
-      'customerGroups',
-      'layout',
-      'versions.user',
-      'routes'
-    ]).join(',')
-
-    const response = await context.on('categories', 'getCategoriesCategoryId',
+  async fetch ({ commit, dispatch }, { $nuxt, id }) {
+    const response = await $nuxt.$getcandy.on('categories', 'getCategoriesCategoryId',
       id,
-      includes,
+      defaultIncludes,
       {
         query: {
           full_response: true,
           draft: 1,
-          include: includes
+          include: defaultIncludes
         }
       }
     )
 
     const category = response.data.data
     const isDraft = !!category.drafted_at
+    const draftModel = category.draft.data
+
+    if (draftModel) {
+      await $nuxt.$router.replace({
+        name: 'categories.edit.details',
+        params: {
+          id: draftModel.id
+        }
+      })
+      await dispatch('fetch', {
+        $nuxt,
+        id: draftModel.id
+      })
+      return
+    }
+
+    commit('setModel', category)
 
     if (!isDraft) {
-        commit('setLiveId', category.id)
+      commit('setLiveId', category.id)
     } else {
-        commit('setLiveId', category.published_parent.data.id)
+      commit('setLiveId', category.published_parent.data.id)
     }
 
     commit('setIsDraft', isDraft)
@@ -102,18 +115,37 @@ export const actions = {
     return category
   },
   resetState ({ commit }) {
-    commit('setModel', null)
+    commit('setModel', {})
     commit('setIsDraft', false)
     commit('setCreateDraft', false)
   },
-  async publish ( { commit, state }, { categoryId, context }) {
-    const { data } = await context.categories.publish(categoryId);
-    commit('setLiveId', data.data.id)
-    commit('setIsDraft', false)
-  },
-  save ( { commit, state }, payload) {
-    const { context, data } = payload;
-    context.categories.update(state.model.id, data).then(response => {
+  async publish ({ commit }, { id, $nuxt }) {
+    const response = await $nuxt.$getcandy.on('categories', 'publishCategoryDraft', id, defaultIncludes, {
+      query: {
+        full_response: true
+      }
     })
-},
+
+    const { params } = $nuxt.$route
+    const publishedId = response.data.data.id
+
+    // Only try and redirect if the ID for the current route
+    // is different, otherwise we get an error.
+    if (params.id !== publishedId) {
+      await this.$router.replace({
+        name: 'categories.edit.details',
+        params: {
+          id: publishedId
+        }
+      })
+    }
+    commit('setModel', response.data.data)
+    commit('setIsDraft', false)
+    return response
+  },
+  save ({ commit, state }, payload) {
+    const { context, data } = payload
+    context.categories.update(state.model.id, data).then((response) => {
+    })
+  }
 }

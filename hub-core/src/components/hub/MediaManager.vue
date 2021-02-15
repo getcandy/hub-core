@@ -11,6 +11,7 @@
             :process-on-add="processOnAdd"
             :assetable="assetable"
             :parent-id="parent.id"
+            :refreshing="refreshing"
           />
       </quick-view-panel>
       <quick-view-panel :heading="$t('Upload YouTube video')" :open="showYoutubeUpload" @close="showYoutubeUpload = false">
@@ -135,6 +136,10 @@ export default {
     assetable: {
       type: String,
       default: () => {}
+    },
+    refreshing: {
+      type: Boolean,
+      default: false,
     },
     parent: {
       type: Object,

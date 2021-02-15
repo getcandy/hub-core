@@ -1,8 +1,12 @@
 <template>
   <div>
-    <div class="flex items-center">
+    <div v-if="creatingDraft" class="flex items-center">
+      <gc-loading-spinner class="w-3 h-3 mr-3 -ml-1 text-gray-500" />
+      <span class="text-xs font-medium text-gray-500 uppercase">{{ $t('Creating Draft') }}</span>
+    </div>
+    <div class="flex items-center" v-else>
       <div class="mr-2" v-if="previewUrl && isDraft">
-        <a class="border border-gray-300 text-gray-700 bg-white hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 px-4 py-2 text-sm leading-6 border border-gray-300 text-gray-700 bg-white hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 disabled:cursor-not-allowed inline-flex items-center border border-transparent font-medium rounded-md  focus:outline-none transition ease-in-out duration-150" :href="previewUrl" target="_blank" rel="noopener noreferrer">
+        <a class="inline-flex items-center px-4 py-2 text-sm font-medium leading-6 text-gray-700 transition duration-150 ease-in-out bg-white border border-transparent border-gray-300 rounded-md hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 disabled:cursor-not-allowed focus:outline-none" :href="previewUrl" target="_blank" rel="noopener noreferrer">
           {{ $t('Live preview') }}
         </a>
       </div>
@@ -25,7 +29,7 @@
           </gc-button>
         </div>
       </template>
-      <div class="border-l ml-2 pl-2" v-if="!isDraft">
+      <div class="pl-2 ml-2 border-l" v-if="!isDraft">
         <gc-button @click="showHistoryModal = true" theme="gray" size="small">
           <gc-icon icon="clock" />
         </gc-button>
@@ -59,7 +63,7 @@
       heading="Version History"
       bg="bg-gray-100"
     >
-      <div class="bg-white flex py-4">
+      <div class="flex py-4 bg-white">
           <div class="px-3" v-if="createdAt">
             <h6 class="text-xs font-bold">{{ $t('Created at') }}</h6>
             {{ $format.date(createdAt) }}
@@ -81,6 +85,10 @@
 <script>
   export default {
     props: {
+      creatingDraft: {
+        type: Boolean,
+        default: false
+      },
       createdAt: {
         type: String,
         default: null

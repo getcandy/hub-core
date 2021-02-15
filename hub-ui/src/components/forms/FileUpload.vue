@@ -81,6 +81,10 @@ export default {
       type: String,
       default: null
     },
+    refreshing: {
+      type: Boolean,
+      default: false
+    },
     assetable: {
       type: String,
       default: null
@@ -89,7 +93,6 @@ export default {
   data () {
     return {
       uploader: null,
-      refreshing: false,
       errors: [],
       files: [],
       uploading: false
@@ -103,11 +106,9 @@ export default {
       // Looks like the parentId has changed, so we need to make sure we
       // add the files that got uploaded back into the instance.
       let filesToPreserve = []
-      this.refreshing = true
       if (this.uploader) {
         filesToPreserve = this.uploader.getFiles()
       }
-
       this.init(filesToPreserve)
     }
   },
@@ -183,7 +184,7 @@ export default {
       if (files) {
         this.uploader.addFiles(files)
       }
-      this.refreshing = false
+
       this.$emit('built', this.uploader)
     },
     getFileErrors (fileId) {

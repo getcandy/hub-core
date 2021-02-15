@@ -1,6 +1,7 @@
 <template>
   <div v-if="category">
     <media-manager
+      :refreshing="pendingDraftCreation"
       assetable="categories"
       :parent="category"
       :process-on-add="false"
@@ -25,6 +26,7 @@
     ],
     data() {
       return {
+        pendingDraftCreation: false,
         category: null,
         uploader: null,
         storeHandle: 'categories'
@@ -38,11 +40,13 @@
         this.instance = instance
       },
       async handleFileAdded (file) {
+        this.pendingDraftCreation = true
         await this.createDraft('categories', this.category.id, {
           beforeRedirect: async (draft) => {
             this.category.id = draft.id
           }
         }, this.$getcandy)
+        this.pendingDraftCreation = false
       },
       async handleChange (assets, done) {
         console.log('Here')
