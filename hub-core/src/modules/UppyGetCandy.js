@@ -26,7 +26,6 @@ class UppyGetcandy extends Plugin {
       }).then((response) => {
         const body = response.data
         const uploadURL = body.thumbnail
-        console.log(this.uppy.getFile(fileId))
         this.uppy.emit('upload-success', file, {
           status: response.status,
           body,
