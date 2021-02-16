@@ -16,7 +16,7 @@
           </div>
         </div>
       </toolbar>
-      <div  class="bg-white shadow  px-6 py-8">
+      <div  class="px-6 py-8 bg-white shadow">
       <div class="flex">
         <div class="w-1/5">
           <h3>Personal Details</h3>
@@ -41,17 +41,17 @@
         <div class="w-full">
           <div>
             <div class="flex w-full">
-              <div class="mr-2 w-1/3">
+              <div class="w-1/3 mr-2">
                 <gc-form-field :label="$t('Current password')">
                   <gc-input v-model="currentPassword" type="password" />
                 </gc-form-field>
               </div>
-              <div class="ml-2 w-1/3">
+              <div class="w-1/3 ml-2">
                 <gc-form-field :label="$t('New password')">
                   <gc-input v-model="newPassword" type="password" />
                 </gc-form-field>
               </div>
-              <div class="ml-2 w-1/3">
+              <div class="w-1/3 ml-2">
                 <gc-form-field :label="$t('New password confirmation')">
                   <gc-input v-model="newPasswordConfirm" type="password" />
                 </gc-form-field>
@@ -84,13 +84,18 @@ export default {
     };
   },
   async asyncData({ app }) {
-    const response = await app.$gc.users.current();
+    const response = await app.$getcandy.on('users', 'getUsersCurrent', {
+      query: {
+        include: 'customer'
+      }
+    })
 
     const user = response.data.data
 
+    console.log(user)
     return {
       user,
-      details: user.customer.data || {}
+      details: {}
     };
   },
   methods: {
