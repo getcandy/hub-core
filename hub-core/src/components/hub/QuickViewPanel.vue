@@ -16,11 +16,11 @@
     </transition>
     <transition
       enter-to-class="translate-x-0"
-      enter-active-class="transition duration-300 ease-in-out transform sm:duration-700"
+      enter-active-class="transition duration-200 ease-in-out transform sm:duration-700"
       enter-class="translate-x-full"
       leave-to-class="translate-x-full"
       leave-class="translate-x-0"
-      leave-active-class="transition duration-300 ease-in-out transform sm:duration-700"
+      leave-active-class="transition duration-200 ease-in-out transform sm:duration-700"
     >
     <div class="fixed top-0 right-0 z-50 h-full bg-white shadow-2xl" :class="`${width}`" v-show="open">
       <header class="px-3 py-4 border-b shadow-sm" v-if="heading">
@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import anime from 'animejs/lib/anime.es.js';
 
 export default {
   props: {
@@ -64,50 +63,6 @@ export default {
     open: {
       type: Boolean,
       default: false
-    }
-  },
-  methods: {
-    overlayEnter (element, done) {
-      anime({
-        targets: element,
-        opacity: .75,
-        easing: 'linear',
-        duration: 200,
-        complete: () => done()
-      });
-    },
-    overlayLeave (element, done) {
-      anime({
-        targets: element,
-        opacity: 0,
-        easing: 'linear',
-        duration: 200,
-        complete: () => done()
-      });
-    },
-    panelLeave (element, done) {
-      anime({
-        targets: element,
-        translateX: '100%',
-        easing: 'easeOutQuint',
-        duration: 350,
-        complete: () => done()
-      });
-    },
-    panelEnter (element, done) {
-      var tl = anime.timeline({
-        targets: element,
-        easing: 'linear',
-        duration: 350
-      })
-      tl.add({
-        translateX: '100%',
-        duration: 0
-      })
-      tl.add({
-        translateX: 0,
-        easing: 'easeOutQuint'
-      })
     }
   }
 }
