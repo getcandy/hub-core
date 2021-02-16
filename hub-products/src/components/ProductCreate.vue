@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    <form @submit.prevent="save" v-if="product">
+    <form v-if="product" @submit.prevent="save">
       <form-field :label="$t('Product name')" :error="getFirstFormError('name')" required>
         <gc-input v-model="product.name[locale]" />
       </form-field>
@@ -25,12 +25,14 @@
         <price-input v-model="product.price" :is-cents="false" />
       </form-field>
       <form-field :label="$t('Stock')">
-        <gc-input v-model="product.stock" type="number" steps="1"  />
+        <gc-input v-model="product.stock" type="number" steps="1" />
       </form-field>
       <form-field :label="$t('Slug')" :error="getFirstFormError('url')" required>
         <gc-input v-model="product.url" />
       </form-field>
-        <p class="text-info" v-if="product.url">Your url will be sanitized to: <code>{{ slug }}</code></p>
+      <p v-if="product.url" class="text-info">
+        Your url will be sanitized to: <code>{{ slug }}</code>
+      </p>
 
       <gc-button :disabled="processing" :loading="processing" type="submit">
         {{ $t('Create product') }}
@@ -48,28 +50,28 @@ export default {
     HasAttributes,
     HandlesForms
   ],
-  data() {
+  data () {
     return {
-      request : null,
+      request: null,
       selectedFamily: null,
       createProduct: false,
       product: null,
       families: [],
       isFetching: false,
       processing: false,
-      page: 1,
+      page: 1
     }
   },
   computed: {
     productName () {
-      return this.product.name[this.locale];
+      return this.product.name[this.locale]
     },
     slug () {
       return this.$format.slug(this.product.url)
     },
     productUrl: {
-      get() {
-        return this.product.url.slugify();
+      get () {
+        return this.product.url.slugify()
       }
     }
   },
@@ -77,7 +79,7 @@ export default {
     this.product = this.baseProduct()
   },
   methods: {
-    async save() {
+    async save () {
       this.clearFormErrors()
       this.processing = true
       try {
@@ -89,7 +91,6 @@ export default {
             id: response.data.data.id
           }
         })
-
       } catch (e) {
         this.setFormErrors(e.response.data)
       }
@@ -106,10 +107,10 @@ export default {
       })
       this.families = response.data.data
     },
-    baseProduct() {
+    baseProduct () {
       return {
         name: {
-          [this.locale] : ''
+          [this.locale]: ''
         },
         family_id: null,
         sku: '',

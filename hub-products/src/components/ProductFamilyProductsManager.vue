@@ -9,15 +9,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(product, index) in value" :key="product.id">
+            <tr v-for="product in value" :key="product.id">
               <td>
-                <nuxt-link :to="{
-                  name: 'products.view',
-                  params: {
+                <nuxt-link
+                  :to="{
+                    name: 'products.view',
+                    params: {
                       id: product.id
-                  }
-                }">
-                {{ attribute(product.attribute_data, 'name') }}
+                    }
+                  }"
+                >
+                  {{ attribute(product.attribute_data, 'name') }}
                 </nuxt-link>
               </td>
             </tr>

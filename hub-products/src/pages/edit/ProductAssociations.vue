@@ -5,9 +5,9 @@
       <button
         v-for="(tab, tabIndex) in tabs"
         :key="tabIndex"
-        @click="activeTab = tabIndex"
         :class="activeTab == tabIndex ? 'bg-white text-gray-800' : 'hover:bg-gray-700'"
         class="px-6 py-4 text-sm border-none outline-none focus:border-none focus:outline-none "
+        @click="activeTab = tabIndex"
       >
         {{ tab.title }}
       </button>
@@ -22,50 +22,50 @@
 </template>
 
 <script>
-  import ProductAssociation from '../../components/ProductAssociation'
-  import HubPage from '@getcandy/hub-core/src/mixins/HubPage'
-  import HasDrafts from '@getcandy/hub-core/src/mixins/HasDrafts.js'
-  import NormalizesObjects from '@getcandy/hub-core/src/mixins/NormalizesObjects.js'
+import HubPage from '@getcandy/hub-core/src/mixins/HubPage'
+import HasDrafts from '@getcandy/hub-core/src/mixins/HasDrafts.js'
+import NormalizesObjects from '@getcandy/hub-core/src/mixins/NormalizesObjects.js'
+import ProductAssociation from '../../components/ProductAssociation'
 
-  export default {
-    layout: 'product',
-    mixins: [
-      HubPage,
-      HasDrafts,
-      NormalizesObjects
-    ],
-    data() {
-      return {
-        product: null,
-        activeTab: 0,
-        tabs: [{
-          title: 'Products',
-          component: ProductAssociation
-        }]
-      }
-    },
-    mounted() {
-      this.product = this.normalize(this.$store.state.product.model)
-      this.$nextTick(async () => {
-        await this.$nuxt.context.app.$hooks.callHook('products.associations.tabs', this.tabs);
-      })
-    },
-    computed: {
-      tab () {
-        return this.tabs[this.activeTab].component
-      }
-    },
-    methods: {
-      async handleChanged (callback) {
-        const product = await this.createDraft('product', this.product.id, {
-          afterRedirect:  async (draft) => {
-            this.product.id = draft.id
-          }
-        }, this.$getcandy)
-        if (callback) {
-          callback()
+export default {
+  layout: 'product',
+  mixins: [
+    HubPage,
+    HasDrafts,
+    NormalizesObjects
+  ],
+  data () {
+    return {
+      product: null,
+      activeTab: 0,
+      tabs: [{
+        title: 'Products',
+        component: ProductAssociation
+      }]
+    }
+  },
+  computed: {
+    tab () {
+      return this.tabs[this.activeTab].component
+    }
+  },
+  mounted () {
+    this.product = this.normalize(this.$store.state.product.model)
+    this.$nextTick(async () => {
+      await this.$nuxt.context.app.$hooks.callHook('products.associations.tabs', this.tabs)
+    })
+  },
+  methods: {
+    async handleChanged (callback) {
+      const product = await this.createDraft('product', this.product.id, {
+        afterRedirect: async (draft) => {
+          this.product.id = draft.id
         }
+      }, this.$getcandy)
+      if (callback) {
+        callback()
       }
     }
   }
+}
 </script>

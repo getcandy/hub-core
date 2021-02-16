@@ -1,18 +1,9 @@
 import path from 'path'
 
-
 export default function (moduleOptions) {
   const templates = [
-    'mixins/CurrencyMixin.js',
-    'mixins/HasAssets.js',
-    'mixins/HasAttributes.js',
     'mixins/HasGroups.js',
-    'mixins/OrderMixin.js',
-    'mixins/UserMixin.js',
-    'components/ProductListing.vue',
     'components/ThumbnailLoader.vue',
-    'components/ProductView.vue',
-    'components/ProductCard.vue',
     'components/EditStock.vue',
     'components/ProductSettings.vue',
 
@@ -48,8 +39,8 @@ export default function (moduleOptions) {
 
     // Locales!
     'locales/en.json',
-    'locales/fr.json',
-  ];
+    'locales/fr.json'
+  ]
 
   templates.forEach((template) => {
     this.addTemplate({
@@ -65,7 +56,6 @@ export default function (moduleOptions) {
     src: path.resolve(__dirname, 'plugin.js'),
     options: moduleOptions
   })
-
 }
 
 module.exports.meta = require('../package.json')

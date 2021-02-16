@@ -7,8 +7,7 @@
     :checkable="checkable"
     class="has-round-edge"
     includes="channels,customer_groups,family,variants,assets.transforms"
-    :hideSearch="hideSearch"
-    @loaded="(e) => $emit('loaded', e)"
+    :hide-search="hideSearch"
     :columns="[
       {label: '', field: 'thumbnail'},
       {label: $t('Name'), field: 'name'},
@@ -17,24 +16,29 @@
       {label: $t('Customer Groups'), field: 'customer-groups'},
       {label: $t('Purchasable'), field: 'customer-groups'},
     ]"
+    @loaded="(e) => $emit('loaded', e)"
   >
     <template v-slot:thumbnail="{ row }">
-      <nuxt-link :to="{
+      <nuxt-link
+        :to="{
           name: 'products.view',
           params: {
-              id: row.id
+            id: row.id
           }
-        }">
-        <thumbnail-loader width="30px" :asset="row.assets.data[0]"></thumbnail-loader>
+        }"
+      >
+        <thumbnail-loader width="30px" :asset="row.assets.data[0]" />
       </nuxt-link>
     </template>
     <template v-slot:name="{ row }">
-      <nuxt-link :to="{
-        name: 'products.view',
-        params: {
+      <nuxt-link
+        :to="{
+          name: 'products.view',
+          params: {
             id: row.id
-        }
-      }">
+          }
+        }"
+      >
         {{ attribute(row.attribute_data, 'name') }}
       </nuxt-link>
     </template>
@@ -54,13 +58,9 @@
 </template>
 
 <script>
-const get = require('lodash/get')
-const map = require('lodash/map')
-const debounce = require('lodash/debounce')
-const first = require('lodash/first')
+import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes.js'
 import HasGroups from '../mixins/HasGroups.js'
 import EditStock from './EditStock.vue'
-import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes.js'
 
 export default {
   components: {
@@ -73,7 +73,7 @@ export default {
   props: {
     limit: {
       type: Number,
-      default: 30,
+      default: 30
     },
     hideSearch: {
       type: Boolean,
@@ -87,7 +87,7 @@ export default {
       type: String,
       default: null
     }
-  },
+  }
 }
 </script>
 

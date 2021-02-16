@@ -140,7 +140,7 @@ export default {
       this.$getcandy.on('products', 'putProductsProductId', this.product.id, {
         familyId,
         attribute_data: this.product.attribute_data
-      }).then((response) => {
+      }).then(() => {
         this.load(this.product.id)
         this.showSettingsPanel = false
         this.$notify.queue('success', 'Product settings saved')

@@ -39,7 +39,7 @@ export default {
       })
       return response.data.data
     },
-    save ( { commit, state }, payload) {
+    save ({ commit, state }, payload) {
     }
   }
 }

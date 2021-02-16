@@ -22,9 +22,9 @@
   </div>
 </template>
 <script>
-const each = require('lodash/each')
 import HasLocalisedValues from '@getcandy/hub-core/src/mixins/HasLocalisedValues.js'
 import HandlesForms from '@getcandy/hub-core/src/mixins/HandlesForms.js'
+const each = require('lodash/each')
 
 export default {
   mixins: [
@@ -45,6 +45,22 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      fields: {
+        sku: '',
+        options: {},
+        price: '',
+        stock: '',
+        inventory: ''
+      }
+    }
+  },
+  computed: {
+    locale () {
+      return this.$store.state.core.locale
+    }
+  },
   created () {
     each(this.options, (option, handle) => {
       this.$set(this.fields.options, handle, {})
@@ -63,25 +79,9 @@ export default {
   mounted () {
     this.setFormErrors(this.errors)
   },
-  data () {
-    return {
-      fields: {
-        sku: '',
-        options: {},
-        price: '',
-        stock: '',
-        inventory: ''
-      }
-    }
-  },
   methods: {
-    async create() {
+    async create () {
       this.$emit('saved', this.fields)
-    }
-  },
-  computed: {
-    locale () {
-      return this.$store.state.core.locale
     }
   }
 }

@@ -2,9 +2,9 @@
   <div>
     <toolbar heading="Products">
       <template v-slot:search>
-        <b-input icon="search-line" v-model="searchTerm" placeholder="Search Products"></b-input>
+        <b-input v-model="searchTerm" icon="search-line" placeholder="Search Products" />
       </template>
-        <!--
+      <!--
         <b-field>
           <p class="control">
             <b-button class="icon-only">
@@ -13,9 +13,9 @@
           </p>
         </b-field>
         -->
-          <gc-button @click="showCreatePanel = true" >
-            {{ $t('Create product') }}
-          </gc-button>
+      <gc-button @click="showCreatePanel = true">
+        {{ $t('Create product') }}
+      </gc-button>
     </toolbar>
     <quick-view-panel heading="Create a product" :open="showCreatePanel" @close="showCreatePanel = false">
       <div class="p-6">
@@ -23,7 +23,6 @@
       </div>
     </quick-view-panel>
     <product-table :search-term="searchTerm" />
-
   </div>
 </template>
 
@@ -35,16 +34,6 @@ export default {
     ProductTable,
     ProductCreate
   },
-  head () {
-    return {
-      title: this.$t('Products'),
-    }
-  },
-  computed: {
-    locale () {
-      return this.$store.state.core.locale
-    }
-  },
   data () {
     return {
       showCreatePanel: false,
@@ -52,14 +41,24 @@ export default {
       families: []
     }
   },
+  computed: {
+    locale () {
+      return this.$store.state.core.locale
+    }
+  },
   async mounted () {
     const response = await this.$gc.products.families.get({
       per_page: 200
     })
 
-    const query = this.$route.query;
+    const query = this.$route.query
     this.searchTerm = query.keywords || null
     this.families = response.data.data
+  },
+  head () {
+    return {
+      title: this.$t('Products')
+    }
   }
 }
 </script>

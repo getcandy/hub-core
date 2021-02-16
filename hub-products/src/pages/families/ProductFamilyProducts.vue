@@ -5,19 +5,19 @@
 </template>
 
 <script>
-  const orderBy = require('lodash/orderBy')
+import ProductFamilyProductsManager from '../../components/ProductFamilyProductsManager.vue'
 
-  import ProductFamilyProductsManager from '../../components/ProductFamilyProductsManager.vue'
+const orderBy = require('lodash/orderBy')
 
-  export default {
-    layout: 'product-family',
-    components: {
-      ProductFamilyProductsManager
-    },
-    computed: {
-      family () {
-        return this.$store.state.productFamily.model
-      }
+export default {
+  layout: 'product-family',
+  components: {
+    ProductFamilyProductsManager
+  },
+  computed: {
+    family () {
+      return this.$store.state.productFamily.model
     }
   }
+}
 </script>

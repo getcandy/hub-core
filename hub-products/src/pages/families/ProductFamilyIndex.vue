@@ -1,21 +1,22 @@
 <template>
   <div>
-    <toolbar heading="Product Families">
-    </toolbar>
+    <toolbar heading="Product Families" />
     <gc-table
       :columns="tableColumns"
       :data="families"
     >
-    <template v-slot:name="{ row }">
-      <nuxt-link :to="{
-        name: 'product-families.edit',
-        params: {
-          id: row.id
-        }
-      }">
-        {{ row.name }}
-      </nuxt-link>
-    </template>
+      <template v-slot:name="{ row }">
+        <nuxt-link
+          :to="{
+            name: 'product-families.edit',
+            params: {
+              id: row.id
+            }
+          }"
+        >
+          {{ row.name }}
+        </nuxt-link>
+      </template>
     </gc-table>
   </div>
 </template>
@@ -27,16 +28,6 @@ export default {
   mixins: [
     HasAttributes
   ],
-  head () {
-    return {
-      title: this.$t('Product Families'),
-    }
-  },
-  computed: {
-    locale () {
-      return this.$store.state.core.locale
-    }
-  },
   data () {
     return {
       searchTerm: null,
@@ -46,27 +37,39 @@ export default {
       families: []
     }
   },
+  computed: {
+    locale () {
+      return this.$store.state.core.locale
+    }
+  },
+  computed: {
+    tableColumns () {
+      return [
+        { label: this.$t('Name'), field: 'name' }
+      ]
+    }
+  },
   async mounted () {
-    const query = this.$route.query;
+    const query = this.$route.query
     this.page = parseInt(query.page || 1)
     this.searchTerm = query.keywords || null
     this.fetch()
   },
   methods: {
-    changePage(val) {
-      this.page = val;
+    changePage (val) {
+      this.page = val
       this.fetch()
     },
     async fetch () {
       const response = await this.$gc.products.families.get({
         page: this.page,
         per_page: this.perPage
-      });
-      const { data } = response;
+      })
+      const { data } = response
       const meta = data.meta
       const pagination = meta
       this.total = pagination.total
-      this.families = data.data;
+      this.families = data.data
       this.$router.push({
         path: this.$route.path,
         query: {
@@ -76,11 +79,9 @@ export default {
       })
     }
   },
-  computed: {
-    tableColumns() {
-      return [
-        {label: this.$t('Name'), field: 'name'},
-      ]
+  head () {
+    return {
+      title: this.$t('Product Families')
     }
   }
 }
