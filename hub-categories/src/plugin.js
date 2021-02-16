@@ -66,13 +66,12 @@ export default ({ app }, inject) => {
     actions
   })
 
-  app.store.commit('addSection', {
-    title: 'Catalogue Manager',
-    handle: 'catalogue-manager',
-    icon: 'store-line',
+  app.store.dispatch('addNavItems', {
+    section: 'catalogue-manager',
     items: [
       {
-        title: 'Categories',
+        label: 'Categories',
+        position: 10,
         route: {
           name: 'categories'
         }

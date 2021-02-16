@@ -89,37 +89,40 @@ export default ({ app }, inject) => {
     }
   ])
 
-  app.store.commit('addSection', {
-    title: 'Reports',
-    icon: 'pie-chart-line',
-    handle: 'reports',
+  app.store.dispatch('addNavItems', {
+    section: 'reports',
     items: [
       {
-        title: 'Sales Report',
+        label: 'Sales Report',
+        position: 0,
         route: {
           name: 'reports.sales'
         }
       },
       {
-        title: 'Order totals Report',
+        label: 'Order totals Report',
+        position: 10,
         route: {
           name: 'reports.orders'
         }
       },
       {
-        title: 'New Vs Returning Customers',
+        label: 'New Vs Returning Customers',
+        position: 20,
         route: {
           name: 'reports.customers.new-vs-returning'
         }
       },
       {
-        title: 'Avg. Order Value',
+        label: 'Avg. Order Value',
+        position: 30,
         route: {
           name: 'reports.orders.avg-order-value'
         }
       },
       {
-        title: 'Best selling products',
+        label: 'Best selling products',
+        position: 40,
         route: {
           name:  'reports.products.best-sellers'
         }
@@ -134,20 +137,18 @@ export default ({ app }, inject) => {
 //     mutations
 //   })
 
-  app.store.commit('addSection', {
-    title: 'Order Processing',
-    handle: 'order-processing',
-    icon: 'shopping-basket-line',
-    dashboard: true,
-    items: [
-      {
-        title: 'Orders',
-        route: {
-          name: 'orders'
-        }
+app.store.dispatch('addNavItems', {
+  section: 'order-processing',
+  items: [
+    {
+      label: 'Orders',
+      position: 0,
+      route: {
+        name: 'orders'
       }
-    ]
-  })
+    }
+  ]
+})
 
 
   app.$hooks.hook('customers.edit.tabs', (tabs) => {

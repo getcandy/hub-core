@@ -24,20 +24,19 @@ export default ({ app }, inject) => {
     }
   ])
 
-
-  app.store.commit('addSection', {
-    title: 'Order Processing',
-    handle: 'order-processing',
-    icon: 'shopping-basket-line',
+  app.store.dispatch('addNavItems', {
+    section: 'order-processing',
     items: [
       {
-        title: 'Customers',
+        label: 'Customers',
+        position: 10,
         route: {
-            name: 'customers'
+          name: 'customers'
         }
       }
     ]
   })
+
 
   app.store.registerModule('customer', {
     namespaced: true,

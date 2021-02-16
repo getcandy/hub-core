@@ -71,14 +71,12 @@ export default ({ app }, inject) => {
 
   app.store.commit('collections/setConfig', options)
 
-  app.store.commit('addSection', {
-    title: 'Catalogue Manager',
-    handle: 'catalogue-manager',
-    icon: 'store-line',
+  app.store.dispatch('addNavItems', {
+    section: 'catalogue-manager',
     items: [
       {
-        icon: 'mdi-tshirt-crew',
-        title: 'Collections',
+        label: 'Collections',
+        position: 20,
         route: {
           name: 'collections'
         }

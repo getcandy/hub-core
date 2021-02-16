@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar class="nav-bar" spaced>
+    <!-- <b-navbar class="nav-bar" spaced>
       <template slot="brand">
         <b-navbar-item :to="{ path: '/' }" tag="router-link">
           <img src="/getcandy.png">
@@ -24,18 +24,6 @@
             </b-navbar-item>
           </b-navbar-dropdown>
         </template>
-        <!-- <b-navbar-item>
-              <div class="search-container ">
-                        <div class="search-icon-btn">
-                           <b-icon class="is-size-7" icon="search" :both="true" size="is-small" style="display: inline-block;"/>
-                        </div>
-                        <div class="search-input">
-                                <form action="" method="GET"><input type="search" class="search-bar"
-                                                          placeholder="Search in..">
-                                </form>
-                        </div>
-                    </div>
-            </b-navbar-item> -->
       </template>
       <template slot="end">
         <div class="columns">
@@ -65,19 +53,10 @@
                 {{ $t('Logout') }}
               </b-dropdown-item>
             </b-dropdown>
-            <!-- <b-navbar-item tag="div">
-              {{ user.email }}
-            </b-navbar-item>
-            <b-icon @click.native="logout" icon="lock" /> -->
           </div>
         </div>
       </template>
-    </b-navbar>
-    <!-- <div class="nav-section-links">
-      <div class="container">
-        <nuxt-link :to="route.route" v-for="(route, routeIndex) in currentRoutes" :key="routeIndex">{{ route.title }}</nuxt-link>
-      </div>
-    </div> -->
+    </b-navbar> -->
   </div>
 </template>
 

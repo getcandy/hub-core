@@ -26,6 +26,7 @@ export default function (moduleOptions) {
         'components/global/GetCandyLogo.vue',
         'components/global/GetCandyStamp.vue',
         'components/global/MainNav.vue',
+        'components/global/MainMenuLink.vue',
         // 'components/global/MainNavLinkItem.vue',
         'components/global/SideNav.vue',
         'components/global/TopBar.vue',

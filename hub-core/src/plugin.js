@@ -55,6 +55,7 @@ import LinkInput from './getcandyhub/components/forms/LinkInput.vue'
 import LoadingSpinner from './getcandyhub/components/hub/LoadingSpinner.vue'
 import LocalisedAttributes from './getcandyhub/components/hub/LocalisedAttributes.vue'
 import MainNav from './getcandyhub/components/global/MainNav.vue'
+import MainMenuLink from './getcandyhub/components/global/MainMenuLink.vue'
 import MediaManager from './getcandyhub/components/hub/MediaManager.vue'
 import PriceField from './getcandyhub/components/forms/PriceField.vue'
 import PriceInput from './getcandyhub/components/forms/PriceInput.vue'
@@ -109,6 +110,7 @@ Vue.component('link-input', LinkInput)
 Vue.component('loading-spinner', LoadingSpinner)
 Vue.component('localised-attributes', LocalisedAttributes)
 Vue.component('main-nav', MainNav)
+Vue.component('main-menu-link', MainMenuLink)
 Vue.component('media-manager', MediaManager)
 Vue.component('price-field', PriceField)
 Vue.component('price-input', PriceInput)
@@ -266,13 +268,12 @@ export default async ({ app }, inject) => {
         UserStore
       })
 
-      app.store.commit('addSection', {
-        title: 'Order Processing',
-        handle: 'order-processing',
-        icon: 'shopping-basket-line',
+      app.store.dispatch('addNavItems', {
+        section: "order-processing",
         items: [
           {
-            title: 'Users',
+            label: 'Users',
+            position: 50,
             route: {
                 name: 'users'
             }

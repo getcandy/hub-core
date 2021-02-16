@@ -1,5 +1,5 @@
 <template>
-  <div class="flex bg-white border-b items-center">
+  <div class="items-center bg-white border-b md:flex">
     <div class="w-full px-6 py-3">
       <div class="flex items-center">
         <div v-if="heading" :class="{
@@ -7,14 +7,14 @@
           'w-1/4': !!$slots.search
         }">
           <div class="flex items-center">
-              <h1 class="text-gray-600 font-medium">{{ heading }}</h1>
+              <h1 class="font-medium text-gray-600">{{ heading }}</h1>
               <template v-if="subHeading">
                 <b-icon class="text-gray-300" icon="arrow-right-s-line" />
                 <span >{{ truncate(subHeading) }}</span>
               </template>
           </div>
         </div>
-        <div class="flex flex-grow w-3/4 items-center">
+        <div class="flex items-center flex-grow w-3/4">
           <div class="w-1/2" v-if="$slots.search">
             <slot name="search" />
           </div>

@@ -104,19 +104,19 @@ export default ({ app }, inject) => {
 
   app.store.commit('product/setConfig', options)
 
-  app.store.commit('addSection', {
-    title: 'Catalogue Manager',
-    handle: 'catalogue-manager',
-    icon: 'store-line',
+  app.store.dispatch('addNavItems', {
+    section: 'catalogue-manager',
     items: [
       {
-        title: 'Products',
+        label: 'Products',
+        position: 0,
         route: {
           name: 'products'
         }
       },
       {
-        title: 'Product Families',
+        label: 'Product Families',
+        position: 10,
         route: {
           name: 'product-families'
         }

@@ -1,3 +1,5 @@
+const sortBy = require('lodash/sortBy')
+
 export const state = () => ({
     apiVersion: null,
     storename: null,
@@ -7,7 +9,33 @@ export const state = () => ({
     settings: {},
     currency: null,
     currencies: [],
-    sections: {},
+    sections: {
+      "catalogue-manager": {
+        label: "Catalogue Manager",
+        icon: "building-store",
+        position: 0,
+        items: []
+      },
+      "order-processing": {
+        label: "Order Processing",
+        icon: "credit-card",
+        position: 10,
+        items: []
+      },
+      "reports": {
+        label: "Reports",
+        icon: "chart-bar",
+        position: 10,
+        items: []
+      },
+      "marketing-suite": {
+        label: "Marketing Suite",
+        icon: "speakerphone",
+        position: 10,
+        items: []
+      },
+
+    },
     languages: [],
     channels: [],
     taxes: [],
@@ -47,6 +75,9 @@ export const state = () => ({
     setCurrencies (state, currencies) {
       state.currencies = currencies
     },
+    setSections (state, sections) {
+      state.sections = sections
+    },
     setTaxes (state, taxes) {
       state.taxes = taxes
     },
@@ -59,43 +90,54 @@ export const state = () => ({
     setChannels (state, channels) {
       state.channels = channels
     },
-    addSection (state, options) {
-      const { sections } = state
-      const { handle, items } = options
-      if (handle) {
-        if (sections[handle] !== undefined) {
-          if (options.dashboard) {
-            sections[handle].dashboard = true
-          }
-          if (items && sections[handle].items) {
-            sections[handle].items = [...sections[handle].items, ...items]
-          }
-        } else {
-          sections[handle] = options
-        }
-      }
+    addSection (state, { section, items }) {
+      // Deprecated...
+
+
+
+      // const { sections } = state
+      // const { handle, items } = options
+      // if (handle) {
+      //   if (sections[handle] !== undefined) {
+      //     if (options.dashboard) {
+      //       sections[handle].dashboard = true
+      //     }
+      //     if (items && sections[handle].items) {
+      //       sections[handle].items = [...sections[handle].items, ...items]
+      //     }
+      //   } else {
+      //     sections[handle] = options
+      //   }
+      // }
     },
-    addNavItem (state, data) {
+    addNavItems (state, { section, items }) {
       const { sections } = state
-      const { section, item } = data
       if (!sections[section]) {
         throw new Error(`Section "${section}" doesn't exist`)
       }
-      sections[section].items.push(item)
-    }
 
+      const existingItems = sections[section].items
+
+      state.sections[section].items = [
+        ...existingItems,
+        ...items
+      ]
+    }
   }
 
   export const actions = {
+    addSection ({ commit, state} ) {
+      const { sections } = state
+      if (sections[section.handle]) {
+        throw Error(`Section with ${handle} already exists`)
+      }
+      const newSections = sections[section.handle] = {
+        ...section,
+        items
+      }
+      commit('setSections', sortBy(newSections, section => section.position || 1))
+    },
     addNavItems ({ commit, state }, { section, items }) {
-      // const { sections } = state
-      // const { section, items } = data
-      items.forEach(item => {
-        commit('addNavItem', {
-          section,
-          item
-        })
-      })
-
+      commit('addNavItems', { section, items })
     }
   }
