@@ -1,11 +1,11 @@
 <template>
   <div>
     <div>
-      <div class="bg-gray-200 border-b">
+      <div class="bg-gray-100 border-b">
         <div ref="uploader">&nbsp;</div>
       </div>
       <div>
-        <span class="block p-4 text-sm text-center text-gray-500" v-if="!files.length">Files pending upload will appear here.</span>
+        <span class="block p-4 text-sm text-center text-gray-500" v-if="!files.length && !processOnAdd">Files pending upload will appear here.</span>
         <div v-for="file in files" :key="file.id" class="p-4 border-b">
           <div class="flex">
               <img :src="file.src" width="50" class="mr-4">
@@ -20,36 +20,16 @@
           <div v-if="!getFileErrors(file.id)">
           </div>
         </div>
-        <div class="p-4">
+        <div v-if="errors.length && !files.length">
+          <div v-for="(error, errorIndex) in errors" :key="errorIndex">
+            <span class="text-sm text-red-600">{{ error.message }}</span>
+          </div>
+        </div>
+        <div class="p-4" v-if="!processOnAdd">
           <gc-button @click="startUpload"  :loading="refreshing" v-if="!refreshing && files.length">Start Upload</gc-button>
         </div>
       </div>
     </div>
-
-    <!-- <div v-if="errors.length && !files.length">
-      <div v-for="(error, errorIndex) in errors" :key="errorIndex">
-        <span class="text-sm text-red-600">{{ error.message }}</span>
-      </div>
-    </div>
-
-    <div v-for="file in files" :key="file.id" class="flex items-center px-4 py-4">
-
-      <div class="mr-4">
-        <div class="flex">
-          <img :src="file.src" width="100" height="100">
-          <div class="ml-4">
-            <span class="block text-sm font-bold">{{ file.name }}</span>
-            <span class="text-xs font-bold text-gray-500 uppercase">{{ $format.number(file.size / 1000) }}kb</span>
-          </div>
-        </div>
-      </div>
-      <div v-if="!!getFileErrors(file.id)">
-        <span class="text-sm text-red-600">{{ getFileErrors(file.id).join(',') }}</span>
-      </div>
-
-      <div v-if="!getFileErrors(file.id)">
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -80,6 +60,10 @@ export default {
     parentId: {
       type: String,
       default: null
+    },
+    processOnAdd: {
+      type: Boolean,
+      default: false
     },
     refreshing: {
       type: Boolean,
@@ -165,6 +149,7 @@ export default {
           this.errors.push(error)
         }).on('upload-error', (file, error, response) => {
           this.errors.push(response)
+          console.log('hi')
           setTimeout(() => {
             this.uploader.removeFile(file.id)
           }, 2000)
@@ -201,6 +186,10 @@ export default {
       }
       this.$emit('file-added', file)
       reader.readAsDataURL(file.data)
+
+      if (this.processOnAdd) {
+        this.startUpload()
+      }
     },
     removeFileFromStack (oldFile) {
       this.files = filter(this.files, (file) => {

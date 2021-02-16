@@ -1,5 +1,5 @@
 <template>
-  <div @mouseover="clearTimeout" @mouseleave="startCountdown" class="bg-gray-800 text-gray-300 text-sm py-4 shadow rounded-md mb-4 border-l-4" :class="{
+  <div @mouseover="clearTimeout" @mouseleave="startCountdown" class="py-4 mb-4 text-sm text-gray-300 bg-gray-800 border-l-4 rounded-md shadow" :class="{
     'border-blue-500' : level == 'info',
     'border-green-500' : level == 'success',
     'border-red-500' : level == 'error'
