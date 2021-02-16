@@ -1,7 +1,37 @@
 import moment from 'moment'
+const get = require('lodash/get')
 
 export default {
   methods: {
+    visibilityStatus (collection) {
+      const draft = get(collection, 'draft.data', null)
+
+      if (draft) {
+        return {
+          status: 'draft',
+          label: 'Draft'
+        }
+      }
+
+      if (this.visibility(collection, 'channels') === 'None' || this.visibility(collection, 'customer_groups') === 'None') {
+        return {
+          status: 'unpublished',
+          label: 'Unpublished'
+        }
+      }
+
+      if (this.visibility(collection, 'channels') !== 'All' || this.visibility(collection, 'customer_groups') !== 'All') {
+        return {
+          status: 'limited',
+          label: 'Limited Visibility'
+        }
+      }
+
+      return {
+        status: 'live',
+        label: 'Live'
+      }
+    },
     visibility (collection, ref) {
       let groups
       const visible = []

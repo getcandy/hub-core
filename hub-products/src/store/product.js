@@ -175,7 +175,7 @@ export const actions = {
     const { context, data } = payload
     commit('setState', 'saving')
     commit('setErrors', {})
-    context.on('products', 'putProductsProductId', state.model.id, data).then((response) => {
+    context.on('products', 'putProductsProductId', state.model.id, data).then(() => {
       commit('setState', 'saved')
     }).catch((error) => {
       commit('setErrors', error.body)
@@ -196,7 +196,7 @@ export const actions = {
     // Only try and redirect if the ID for the current route
     // is different, otherwise we get an error.
     if (params.id !== publishedId) {
-      await this.$router.replace({
+      await $nuxt.$router.push({
         name: 'products.view',
         params: {
           id: publishedId
@@ -205,6 +205,7 @@ export const actions = {
     }
 
     commit('setModel', response.data.data)
+    commit('setLiveId', publishedId)
     commit('setIsDraft', false)
     return response
   },
@@ -225,10 +226,6 @@ export const actions = {
       params: {
         id: liveId
       }
-    })
-    dispatch('fetch', {
-      id: liveId,
-      $nuxt
     })
   },
 

@@ -6,10 +6,10 @@
     type="products"
     :checkable="checkable"
     class="has-round-edge"
-    includes="channels,customer_groups,family,variants,assets.transforms"
+    includes="channels,customer_groups,family,variants,assets.transforms,draft"
     :hide-search="hideSearch"
     :columns="[
-      {label: '', field: 'thumbnail'},
+      {label: 'Status', field: 'status'},
       {label: $t('Name'), field: 'name'},
       {label: $t('Stock'), field: 'stock'},
       {label: $t('Channels'), field: 'channels'},
@@ -18,8 +18,24 @@
     ]"
     @loaded="(e) => $emit('loaded', e)"
   >
-    <template v-slot:thumbnail="{ row }">
+    <template v-slot:status="{ row }">
+      <span
+        class="px-2 py-1 text-xs border rounded"
+        :class="{
+          'bg-green-50 text-green-500 border-green-300': visibilityStatus(row).status === 'live',
+          'bg-blue-50 text-blue-500 border-blue-300': visibilityStatus(row).status === 'limited',
+          'bg-red-50 text-red-500 border-red-300': visibilityStatus(row).status === 'unpublished'
+        }"
+      >
+        <span>{{ visibilityStatus(row).label }}</span>
+        <!-- <span v-else-if="visibility(row, 'channels') == 'None' || visibility(row, 'customer_groups') == 'None'">Unpublished</span>
+        <span v-else-if="visibility(row, 'channels') != 'All' || visibility(row, 'customer_groups') != 'All'">Limited</span>
+        <span v-else>Active</span> -->
+      </span>
+    </template>
+    <template v-slot:name="{ row }">
       <nuxt-link
+        class="flex items-center block"
         :to="{
           name: 'products.view',
           params: {
@@ -28,18 +44,7 @@
         }"
       >
         <thumbnail-loader width="30px" :asset="row.assets.data[0]" />
-      </nuxt-link>
-    </template>
-    <template v-slot:name="{ row }">
-      <nuxt-link
-        :to="{
-          name: 'products.view',
-          params: {
-            id: row.id
-          }
-        }"
-      >
-        {{ attribute(row.attribute_data, 'name') }}
+        <span class="ml-4">{{ attribute(row.attribute_data, 'name') }}</span>
       </nuxt-link>
     </template>
     <template v-slot:stock="{ row }">
@@ -61,6 +66,7 @@
 import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes.js'
 import HasGroups from '../mixins/HasGroups.js'
 import EditStock from './EditStock.vue'
+const get = require('lodash/get')
 
 export default {
   components: {
@@ -86,6 +92,11 @@ export default {
     searchTerm: {
       type: String,
       default: null
+    }
+  },
+  methods: {
+    hasDraft (row) {
+      return get(row, 'draft.data', null)
     }
   }
 }

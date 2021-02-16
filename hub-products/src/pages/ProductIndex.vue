@@ -4,15 +4,6 @@
       <template v-slot:search>
         <b-input v-model="searchTerm" icon="search-line" placeholder="Search Products" />
       </template>
-      <!--
-        <b-field>
-          <p class="control">
-            <b-button class="icon-only">
-              <b-icon icon="equalizer-line" />
-            </b-button>
-          </p>
-        </b-field>
-        -->
       <gc-button @click="showCreatePanel = true">
         {{ $t('Create product') }}
       </gc-button>

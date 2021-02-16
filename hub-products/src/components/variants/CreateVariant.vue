@@ -33,7 +33,7 @@ export default {
   ],
   props: {
     options: {
-      type: Object,
+      type: [Object, Array],
       required: true
     },
     errors: {

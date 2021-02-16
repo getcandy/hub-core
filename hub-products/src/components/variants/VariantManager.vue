@@ -1,7 +1,7 @@
 <template>
   <div v-if="current">
     <quick-view-panel :open="showCreatePanel" :heading="$t('Add variant option')" @close="showCreatePanel = false">
-      <create-variant :options="product.option_data" :product-id="product.id" :errors="createErrors" @saved="handleOptionCreate" />
+      <create-variant :options="product.option_data || {}" :product-id="product.id" :errors="createErrors" @saved="handleOptionCreate" />
     </quick-view-panel>
     <div class="flex">
       <div v-if="variants.length > 1" class="w-1/5">

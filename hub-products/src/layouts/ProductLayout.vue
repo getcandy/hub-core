@@ -1,13 +1,13 @@
 <template>
   <default-layout>
-    <div v-if="$fetchState.pending" class="h-screen flex w-full items-center justify-center">
+    <div v-if="$fetchState.pending" class="flex items-center justify-center w-full h-screen">
       <div class="flex items-center text-gray-500">
         <loading-spinner class="mr-2" />
-        <span class="text-xs uppercase font-medium">{{ $t('Fetching Product') }}</span>
+        <span class="text-xs font-medium uppercase">{{ $t('Fetching Product') }}</span>
       </div>
     </div>
     <div v-else>
-      <div v-if="isDraft" class="bg-orange-100 text-orange-700 p-2 text-sm border-b border-orange-300 text-center">
+      <div v-if="isDraft" class="p-2 text-sm text-center text-orange-700 bg-orange-100 border-b border-orange-300">
         {{ $t("You are viewing a draft, changes below won't be reflected until published") }}
       </div>
       <toolbar heading="Products" :sub-heading="title">
@@ -66,7 +66,7 @@ export default {
     HasDrafts
   ],
   async fetch () {
-    await this.load()
+    await this.load(this.$route.params.id)
     const items = [
       {
         route: 'products.view',
@@ -129,6 +129,9 @@ export default {
       return this.$store.state.product.config
     }
   },
+  watch: {
+    '$route.params': '$fetch'
+  },
   destroyed () {
     this.$store.dispatch('product/resetState')
   },
@@ -150,7 +153,7 @@ export default {
       try {
         await this.$store.dispatch('product/fetch', {
           $nuxt: this.$nuxt,
-          id: id || this.$route.params.id
+          id
         })
       } catch (e) {
         return this.$nuxt.error({
@@ -173,7 +176,10 @@ export default {
           $nuxt: this.$nuxt,
           liveId: this.liveId
         })
-        await this.$fetch()
+
+        if (this.$route.params.id === this.liveId) {
+          await this.$fetch()
+        }
       } catch (e) {
         this.$notify.queue('error', this.$t('Unable to discard draft'))
       }
