@@ -20,7 +20,7 @@ export default ({ app }, inject) => {
       name: 'categories',
       component: CategoryIndex,
       meta: {
-        permissions: ['manage_catalogue']
+        permissions: ['manage-categories', 'manage-catalogue']
       }
     },
     {
@@ -28,33 +28,48 @@ export default ({ app }, inject) => {
         name: 'categories.edit.details',
         component: CategoryDetails,
         meta: {
-          permissions: ['manage_catalogue']
+          permissions: ['manage-categories', 'manage-catalogue']
         }
     },
     {
       path: '/catalogue-manager/categories/:id/media',
       name: 'categories.edit.media',
       component: CategoryMedia,
+      meta: {
+        permissions: ['manage-categories', 'manage-catalogue']
+      }
     },
     {
         path: '/catalogue-manager/categories/:id/availability',
         name: 'categories.edit.availability',
         component: CategoryAvailability,
+        meta: {
+          permissions: ['manage-categories', 'manage-catalogue']
+        }
     },
     {
         path: '/catalogue-manager/categories/:id/associations',
         name: 'categories.edit.associations',
         component: CategoryAssociationsPage,
+        meta: {
+          permissions: ['manage-categories', 'manage-catalogue']
+        }
     },
     {
         path: '/catalogue-manager/categories/:id/display',
         name: 'categories.edit.display',
         component: CategoryDisplay,
+        meta: {
+          permissions: ['manage-categories', 'manage-catalogue']
+        }
     },
     {
         path: '/catalogue-manager/categories/:id/routes',
         name: 'categories.edit.routes',
         component: CategoryRoutes,
+        meta: {
+          permissions: ['manage-categories', 'manage-catalogue']
+        }
     }
   ])
 
@@ -72,6 +87,7 @@ export default ({ app }, inject) => {
       {
         label: 'Categories',
         position: 10,
+        access: ['manage-categories', 'manage-catalogue'],
         route: {
           name: 'categories'
         }

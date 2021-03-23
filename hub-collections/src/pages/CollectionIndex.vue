@@ -30,42 +30,6 @@
         </nuxt-link>
       </template>
     </gc-table>
-      <!-- <div class="search-table"> -->
-        <!-- <b-table
-          :data="collections"
-          :total="total"
-          :per-page="perPage"
-          :striped="true"
-          backend-sorting
-          paginated
-          backend-pagination
-          @page-change="changePage"
-        >
-          <template slot-scope="props">
-            <b-table-column field="thumbnail" label="">
-              <nuxt-link :to="{
-                name: 'collections.edit.details',
-                params: {
-                    id: props.row.id
-                }
-              }">
-                <thumbnail-loader width="30px" :item="props.row"></thumbnail-loader>
-              </nuxt-link>
-            </b-table-column>
-            <b-table-column field="name" :label="$t('Name')">
-              <nuxt-link :to="{
-                name: 'collections.edit.details',
-                params: {
-                    id: props.row.id
-                }
-              }">
-              {{ attribute(props.row.attribute_data, 'name') }}
-              </nuxt-link>
-            </b-table-column>
-          </template>
-        </b-table> -->
-      <!-- </div> -->
-
   </div>
 </template>
 
@@ -85,6 +49,11 @@
         collections: []
       }
     },
+    head () {
+      return {
+        title: 'Collections'
+      }
+    },
     mounted() {
       this.loadData()
     },
@@ -94,7 +63,7 @@
         this.loadData()
       },
       loadData() {
-        this.$getcandy.on('collections', 'getCollections', 
+        this.$getcandy.on('collections', 'getCollections',
           'assets.transforms',
           this.perPage,
           true,

@@ -15,12 +15,14 @@ const defaultIncludes = Array([
   'family.attributes.group',
   'layout',
   'routes',
+  'routes.language',
   'variants.customerPricing.group',
   'variants.customerPricing.tax',
   'variants.image.transforms',
   'variants.tax',
   'variants.tiers.group',
-  'versions.user'
+  'versions.user',
+  'versions.relations'
 ]).join(',')
 
 export const state = () => ({
@@ -229,14 +231,12 @@ export const actions = {
     })
   },
 
-  async createVariants ({ commit, dispatch }, { variants, $gc, $getcandy, productId }) {
-    await $gc.products.variants.create(productId, variants)
-    const response = await dispatch('fetch', {
-      context: $getcandy,
+  async createVariants ({ dispatch }, { variants, $nuxt, productId }) {
+    await $nuxt.$getcandy.on('product-variants', 'postProductVariants', productId, null, variants)
+
+    await dispatch('fetch', {
+      $nuxt,
       id: productId
     })
-    commit('setModel', response)
-
-    return response
   }
 }

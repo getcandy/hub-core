@@ -6,10 +6,10 @@
     </div>
     <form @submit.prevent="save">
       <form-field :label="$t('Category name')" :error="getFirstFormError('name')" required>
-        <b-input v-model="model.name[locale]" @input="setUrl" />
+        <gc-input v-model="model.name[locale]" @input="setUrl" />
       </form-field>
       <form-field :label="$t('Category URL')" :error="getFirstFormError('url')" required>
-        <b-input v-model="model.url" @input="handleManualUrl" />
+        <gc-slug-input v-model="model.url" :initial="model.name[locale]" />
       </form-field>
       <gc-button type="submit" :disabled="processing">
         {{ $t('Create Category') }}

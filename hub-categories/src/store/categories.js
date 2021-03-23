@@ -9,7 +9,7 @@ const defaultIncludes = Array([
   'customerGroups',
   'layout',
   'versions.user',
-  'routes'
+  'routes.language'
 ]).join(',')
 
 export const state = () => ({

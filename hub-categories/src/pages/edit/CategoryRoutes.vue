@@ -3,6 +3,9 @@
     <url-manager
       :routes="routes"
       :errors="formErrors"
+      element-type="category"
+      :element-id="category.id"
+      @created="handleCreated"
       @added="handleAdded"
       @updated="handleUpdated"
       @deleted="handleDeleted"
@@ -13,8 +16,8 @@
 <script>
 import HandlesForms from '@getcandy/hub-core/src/mixins/HandlesForms.js'
 import HasDrafts from '@getcandy/hub-core/src/mixins/HasDrafts'
-const filter = require('lodash/filter')
 const each = require('lodash/each')
+const get = require('lodash/get')
 const first = require('lodash/first')
 
 export default {
@@ -26,7 +29,6 @@ export default {
   data () {
     return {
       routes: [],
-      redirects: [],
       storeHandle: 'categories'
     }
   },
@@ -39,44 +41,19 @@ export default {
     }
   },
   mounted () {
-    const allRoutes = this.category.routes.data
-    this.routes = filter(allRoutes, route => !route.redirect) || []
-    this.redirects = filter(allRoutes, route => route.redirect) || []
+    this.routes = this.category.routes.data
   },
   methods: {
-    setDefault (items, index) {
-      each(items, (item, itemIndex) => {
-        if (itemIndex !== index) {
-          item.default = false
-        }
-      })
-    },
-    add (items) {
-      items.push({
-        path: null,
-        slug: null,
-        locale: first(this.languages).lang,
-        default: false
-      })
-    },
-    cancel (items, index) {
-      items.splice(index, 1)
-      if (items.length === 1) {
-        first(items).default = true
-      }
-    },
-    async handleAdded (route) {
+    async handleCreated (callback) {
       await this.createDraft('categories', this.category.id, {
         afterRedirect: (draft) => {
           this.category.id = draft.id
         }
       })
-      try {
-        const response = await this.$gc.categories.addRoute(this.category.id, route)
-        this.routes.push(response.data.data)
-      } catch (e) {
-        // this.setFormErrors(e.response.data)
-      }
+      callback()
+    },
+    handleAdded (route) {
+      this.routes.push(route)
     },
     async handleUpdated (route) {
       await this.createDraft('categories', this.category.id, {
@@ -87,8 +64,15 @@ export default {
 
       try {
         await this.$gc.routes.put(route.id, route)
+        this.$notify.queue('success', this.$t('URLs updated'))
       } catch (e) {
-        this.$notify.queue('error', this.$t('Unable to add route'))
+        const errors = get(e, 'response.data.errors', [])
+
+        each(errors, (error) => {
+          each(error, (e) => {
+            this.$notify.queue('error', this.$t(e))
+          })
+        })
       }
     },
     async handleDeleted (index) {

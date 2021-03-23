@@ -5,19 +5,23 @@
       <orders-report
         :show-controls="true"
         :show-graph="true"
-      >
-          </orders-report>
+      />
     </div>
   </div>
 </template>
 
 <script>
-  import OrdersReport from '../../components/OrdersReport.vue'
-  export default {
-    components: {
-      OrdersReport
+import OrdersReport from '../../components/OrdersReport.vue'
+export default {
+  components: {
+    OrdersReport
+  },
+  head () {
+    return {
+      title: 'Order Total Report'
     }
   }
+}
 </script>
 
 <style scoped>

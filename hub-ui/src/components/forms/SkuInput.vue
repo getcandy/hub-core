@@ -1,6 +1,6 @@
 <template>
   <div>
-    <gc-input v-model="text" @input="update" />
+    <gc-input :value="value" @input="update" />
   </div>
 </template>
 
@@ -13,15 +13,9 @@ export default {
       type: String,
     }
   },
-  data () {
-    return {
-      text: null
-    }
-  },
   methods: {
-    update () {
-      this.text = kebabCase(this.text)
-      this.$emit('input', this.text)
+    update (value) {
+      this.$emit('input', kebabCase(value.trim()))
     }
   }
 }

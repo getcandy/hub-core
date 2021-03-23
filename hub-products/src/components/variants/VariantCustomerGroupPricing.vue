@@ -2,7 +2,7 @@
   <div>
     <div v-for="price in pricing" :key="price.customer_group_id" class="md:grid md:grid-cols-2 md:gap-6">
       <form-field :label="$t('{group_name} Price', { group_name: price.group_name })">
-        <price-input v-model="price.price" :is-cents="false" @input="handleChange" />
+        <gc-price-input v-model="price.price" :is-cents="false" @input="handleChange" />
       </form-field>
       <form-field :label="$t('Tax')">
         <select-input v-model="price.tax_id" @input="handleChange">
@@ -59,7 +59,9 @@ export default {
     }
   },
   mounted () {
-    this.setUpGroupPrices()
+    this.$nextTick(() => {
+      this.setUpGroupPrices()
+    })
   },
   methods: {
     handleChange () {
@@ -67,8 +69,6 @@ export default {
     },
     setUpGroupPrices () {
       this.pricing = this.initialPricing
-
-      const hasInitialPricing = !!this.pricing.length
 
       const pricingGroups = map(this.pricing, (price) => {
         return price.customer_group_id
@@ -83,10 +83,11 @@ export default {
           customer_group_id: group.id,
           group_name: group.name,
           price: this.newPrice,
-          tax_id: this.newTaxId || first(taxes).id
+          tax_id: this.newTaxId || first(this.taxes).id
         })
       })
-      if (!hasInitialPricing || remaining.length) {
+
+      if (remaining.length) {
         this.$emit('input', this.pricing)
       }
     }

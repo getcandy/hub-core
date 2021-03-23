@@ -59,9 +59,9 @@ class UppyGetcandy extends Plugin {
         const { naturalWidth: width, naturalHeight: height } = img
         resolve({ width, height })
       }
-       // and this handler will fire if there was an error with the image (like if it's not really an image or a corrupted one)
+      // and this handler will fire if there was an error with the image (like if it's not really an image or a corrupted one)
       img.onerror = () => {
-          reject('There was some problem with the image.')
+        reject('There was some problem with the image.')
       }
 
       img.src = data
@@ -78,19 +78,23 @@ class UppyGetcandy extends Plugin {
     })
   }
 
-  async validateFiles (fileIDs) {
-    return new Promise(async (resolve, reject) => {
-      const { width, height } = this.validation
+  validateFiles (fileIDs) {
+    return new Promise((resolve, reject) => {
+      const { width, height, size } = this.validation
 
-      if (!width || !height) {
-        return resolve()
-      }
-      fileIDs.forEach(async element => {
+      fileIDs.forEach(async (element) => {
         const file = this.uppy.getFile(element)
-
+        if (size && (file.size / 1000) > size) {
+          // eslint-disable-next-line
+          reject({
+            file: file.id,
+            message: `File can only be a maximum of ${size / 1000}mb`
+          })
+        }
         try {
           const dimensions = await this.getImageDimensions(file)
-          if (dimensions.height != height || dimensions.width != width) {
+          if ((height && dimensions.height !== height) || (width && dimensions.width !== width)) {
+            // eslint-disable-next-line
             reject({
               file: file.id,
               message: `Image dimensions must be ${width}px by ${height}px`
@@ -100,7 +104,7 @@ class UppyGetcandy extends Plugin {
         }
         resolve()
       })
-    });
+    })
   }
 }
 

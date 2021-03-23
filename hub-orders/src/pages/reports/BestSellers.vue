@@ -1,18 +1,23 @@
 <template>
   <div>
     <toolbar heading="Best Sellers" />
-      <best-sellers-report />
+    <best-sellers-report />
   </div>
 </template>
 
 <script>
-  import BestSellersReport from '../../components/BestSellersReport.vue'
+import BestSellersReport from '../../components/BestSellersReport.vue'
 
-  export default {
-    components: {
-      BestSellersReport
+export default {
+  components: {
+    BestSellersReport
+  },
+  head () {
+    return {
+      title: 'Best Selling Products'
     }
   }
+}
 </script>
 
 <style scoped>

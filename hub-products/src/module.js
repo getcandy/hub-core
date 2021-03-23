@@ -3,7 +3,6 @@ import path from 'path'
 export default function (moduleOptions) {
   const templates = [
     'mixins/HasGroups.js',
-    'components/ThumbnailLoader.vue',
     'components/EditStock.vue',
     'components/ProductSettings.vue',
 

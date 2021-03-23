@@ -1,5 +1,5 @@
 <template>
-  <!-- <b-input
+  <!-- <gc-input
     :value="formattedValue"
     @input="input"
     type="number"
@@ -11,7 +11,7 @@
         {{ currency.format.replace('{price}', '') }}
       </span>
     </div>
-    <input :value="formattedValue" @blur="input" class="block w-full pr-12 form-input pl-7 sm:text-sm sm:leading-5" placeholder="0.00" aria-describedby="price-currency" />
+    <input :value="formattedValue" @blur="input" class="block w-full pl-10 pr-12 form-input sm:text-sm sm:leading-5" placeholder="0.00" aria-describedby="price-currency" />
     <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
       <span class="text-gray-500 sm:text-sm sm:leading-5" id="price-currency">
         {{ currency.code }}
@@ -21,8 +21,9 @@
 </template>
 
 <script>
-import { debounce } from 'lodash'
 import HasCurrencies from '@getcandy/hub-core/src/mixins/HasCurrencies.js'
+import currency from 'currency.js'
+
 export default {
   mixins: [
     HasCurrencies
@@ -39,7 +40,13 @@ export default {
   },
   methods: {
     input(event) {
-      this.$emit('input', this.isCents ? event.target.value * 100 : event.target.value)
+      let value = event.target.value
+      const unformatted = currency(this.isCents ? value / 100 : value, {
+        decimal: this.currency.decimal || this.currency.decimal_point,
+        separator: this.currency.thousand_point || ','
+      }).value
+
+      this.$emit('input', unformatted)
     }
   },
   computed: {

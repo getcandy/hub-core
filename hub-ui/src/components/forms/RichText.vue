@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
     <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
-      <div class="flex bg-white border border-gray-400 border-b-0 p-2 rounded-t">
+      <div class="flex p-2 bg-white border border-b-0 border-gray-300 rounded-t">
 
         <button
           class="text-editor-control"
@@ -107,7 +107,7 @@
 
       </div>
     </editor-menu-bar>
-    <editor-content :editor="editor" />
+    <editor-content :editor="editor" class="text-sm" />
   </div>
 </template>
 

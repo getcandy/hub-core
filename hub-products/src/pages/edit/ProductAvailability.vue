@@ -27,9 +27,7 @@ import { HubPage, NormalizesObjects, HasDrafts } from '@getcandy/hub-core/src/mi
 import VariantManager from '../../components/variants/VariantManager.vue'
 import VariantOptions from '../../components/variants/VariantOptions.vue'
 
-const merge = require('lodash/merge')
 const find = require('lodash/find')
-const each = require('lodash/each')
 const debounce = require('lodash/debounce')
 const map = require('lodash/map')
 
@@ -73,42 +71,52 @@ export default {
     },
     handleCustomerGroupsChange: debounce(async function (groups) {
       await this.createDraft('product', this.product.id, {
-        afterRedirect: async (product) => {
+        afterRedirect: (product) => {
           this.product.id = product.id
         }
       }, this.$getcandy)
-      this.$gc.products.updateCustomerGroups(this.product.id, {
-        groups
-      })
+      try {
+        this.$gc.products.updateCustomerGroups(this.product.id, {
+          groups
+        })
+        this.$notify.queue('success', this.$t('Product customer groups updated'))
+      } catch (e) {
+        this.$notify.queue('error', this.$t('Unable to save customer groups'))
+      }
     }, 300),
     handleChannelChange: debounce(async function (channels) {
       await this.createDraft('product', this.product.id, {
-        afterRedirect: async (product) => {
+        afterRedirect: (product) => {
           this.product.id = product.id
         }
-      }, this.$getcandy)
-      this.$gc.products.updateChannels(this.product.id, {
-        channels
       })
+      try {
+        await this.$gc.products.updateChannels(this.product.id, {
+          channels
+        })
+        this.$notify.queue('success', this.$t('Product channels updated'))
+      } catch (e) {
+        this.$notify.queue('error', this.$t('Unable to save channels'))
+      }
     }, 300),
     async saveVariants (event) {
       this.showVariantOptions = false
       await this.createDraft('product', this.product.id, {
-        afterRedirect: async (product) => {
+        afterRedirect: (product) => {
           this.product.id = product.id
         }
-      }, this.$getcandy)
+      })
       await this.$store.dispatch('product/createVariants', {
         productId: this.product.id,
-        $getcandy: this.$getcandy,
-        $gc: this.$gc,
+        $nuxt: this.$nuxt,
         variants: event
       })
+      this.$notify.queue('success', this.$t('Product updated'))
       this.syncModel()
     },
     handleVariantsChange: debounce(async function (variant, done) {
       await this.createDraft('product', this.product.id, {
-        afterRedirect: async (product) => {
+        afterRedirect: (product) => {
           this.product.id = product.id
 
           const variants = product.variants.data
@@ -118,12 +126,13 @@ export default {
               return v.published_parent.data.id === variant.id
             }
           })
-          variant.id = variantDraft.id
+          variant.id = variantDraft ? variantDraft.id : variant.id
         }
       }, this.$getcandy)
 
       const payload = {
         price: variant.price,
+        asset_id: variant.asset_id,
         tax_id: variant.tax.data.id,
         sku: variant.sku,
         weight: variant.weight,
@@ -135,6 +144,8 @@ export default {
         width: variant.width,
         volume: variant.volume,
         inventory: variant.inventory,
+        incoming: variant.incoming,
+        backorder: variant.backorder,
         pricing: variant.customer_pricing.data,
         tiers: [],
         options: variant.options
@@ -150,14 +161,17 @@ export default {
         })
       }
 
-      await this.$gc.products.variants.put(variant.id, payload)
+      try {
+        await this.$gc.products.variants.put(variant.id, payload)
+        this.$notify.queue('success', this.$t('Product updated'))
 
-      this.$notify.queue('success', this.$t('Variants updated'))
+        this.$store.commit('product/setState', 'saved')
 
-      this.$store.commit('product/setState', 'saved')
-
-      if (done) {
-        done()
+        if (done) {
+          done()
+        }
+      } catch (e) {
+        this.$notify.queue('error', this.$t('Unable to save product'))
       }
     }, 300)
   }

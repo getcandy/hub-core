@@ -2,11 +2,11 @@
 <template>
   <div>
     <form v-if="product" @submit.prevent="save">
-      <form-field :label="$t('Product name')" :error="getFirstFormError('name')" required>
-        <gc-input v-model="product.name[locale]" />
+      <form-field :label="$t('Product name')" for="name" :error="getFirstFormError('name')" required>
+        <gc-input id="name" v-model="product.name[locale]" />
       </form-field>
-      <form-field :label="$t('SKU')" :error="getFirstFormError('sku')" required>
-        <gc-sku-input v-model="product.sku" />
+      <form-field :label="$t('SKU')" :error="getFirstFormError('sku')" for="sku" required>
+        <gc-sku-input id="sku" v-model="product.sku" />
       </form-field>
       <div class="mb-4">
         <header class="mb-2 text-sm">
@@ -21,18 +21,15 @@
           />
         </div>
       </div>
-      <form-field :label="$t('Price')" :error="getFirstFormError('price')" required>
-        <price-input v-model="product.price" :is-cents="false" />
+      <form-field :label="$t('Price')" :error="getFirstFormError('price')" for="price" required>
+        <price-input id="price" v-model="product.price" :is-cents="false" />
       </form-field>
-      <form-field :label="$t('Stock')">
-        <gc-input v-model="product.stock" type="number" steps="1" />
+      <form-field :label="$t('Stock')" for="stock">
+        <gc-input id="stock" v-model="product.stock" type="number" steps="1" />
       </form-field>
-      <form-field :label="$t('Slug')" :error="getFirstFormError('url')" required>
-        <gc-input v-model="product.url" />
+      <form-field :label="$t('Slug')" :error="getFirstFormError('url')" for="slug" required>
+        <gc-slug-input id="slug" v-model="product.url" :initial="product.name[locale]" />
       </form-field>
-      <p v-if="product.url" class="text-info">
-        Your url will be sanitized to: <code>{{ slug }}</code>
-      </p>
 
       <gc-button :disabled="processing" :loading="processing" type="submit">
         {{ $t('Create product') }}

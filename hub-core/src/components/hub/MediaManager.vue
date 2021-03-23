@@ -3,25 +3,27 @@
     <div>
       <quick-view-panel :open="showUploader" heading="Upload asset" :takeover="true" @close="showUploader = false">
         <gc-file-upload
-            @built="initUploader"
-            @file-added="handleFileAdded"
-            @file-uploaded="handleFileUploaded"
-            @finished="showUploader = false"
-            :initial-files="pending"
-            :process-on-add="processOnAdd"
-            :assetable="assetable"
-            :parent-id="parent.id"
-            :refreshing="refreshing"
-          />
+          :initial-files="pending"
+          :process-on-add="processOnAdd"
+          :assetable="assetable"
+          :parent-id="parent.id"
+          :refreshing="refreshing"
+          @built="initUploader"
+          @file-added="handleFileAdded"
+          @file-uploaded="handleFileUploaded"
+          @finished="showUploader = false"
+        />
       </quick-view-panel>
       <quick-view-panel :heading="$t('Upload YouTube video')" :open="showYoutubeUpload" @close="showYoutubeUpload = false">
         <div class="p-6">
-          <youtube-uploader type="youtube" @uploaded="handleExternalAssetUpload" :assetable="assetable" :parent-id="parent.id" />
+          <youtube-uploader type="youtube" :assetable="assetable" :parent-id="parent.id" @uploaded="handleExternalAssetUpload" />
         </div>
       </quick-view-panel>
       <div class="flex items-center px-6 py-4 bg-white">
         <div class="mr-4">
-          <gc-button @click="showUploader = true">Upload file</gc-button>
+          <gc-button @click="showUploader = true">
+            Upload file
+          </gc-button>
         </div>
         <div>
           <gc-button @click="showYoutubeUpload = true">
@@ -48,37 +50,37 @@
       </div> -->
     </div>
 
-    <div class="px-8 text-sm font-medium bg-gray-900">
+    <div class="px-8 text-sm font-medium bg-gray-200">
       <div class="flex">
         <button
-          class="px-8 py-3 text-gray-400 focus:outline-none"
-          :class="{
-            'text-gray-900 bg-white' : filter == type.handle,
-            'hover:bg-gray-800 hover:text-white' : filter != type.handle
-          }"
-          @click="filter = type.handle"
           v-for="(type, index) in types"
           :key="index"
+          class="px-8 py-3 text-gray-600 focus:outline-none"
+          :class="{
+            'bg-white' : filter === type.handle,
+            'hover:bg-gray-300' : filter != type.handle
+          }"
+          @click="filter = type.handle"
         >
-        {{ $t(type.label) }}
+          {{ $t(type.label) }}
         </button>
       </div>
     </div>
     <gc-table
-      :data="getFilteredResults"
+      :data="filteredAssets"
       :sortable="sortableOptions"
       :columns="[
-        {label: 'Primary', field: 'primary'},
-        {label: null, field: 'thumbnail'},
+        {label: 'Primary', field: 'primary', class: 'w-8 px-4'},
+        {label: null, field: 'thumbnail', class: 'w-36'},
         {label: 'Title/Alt Tag', field: 'title'},
         {label: 'Caption', field: 'caption'},
         {label: 'Tags', field: 'tags'},
         {label: 'Type', field: 'type'},
-        {label: null, field: 'actions'},
+        {label: null, field: 'actions', class: 'w-8'},
       ]"
     >
       <template v-slot:primary="{ row }">
-        <gc-toggle v-model="row.primary" v-if="getThumbnail(row)" @click="setPrimary(row)" />
+        <gc-toggle v-if="getThumbnail(row)" v-model="row.primary" @click="setPrimary(row)" />
       </template>
       <template v-slot:thumbnail="{ row }">
         <thumbnail-loader :asset="row" width="50px" />
@@ -91,26 +93,25 @@
       </template>
       <template v-slot:tags="{ row }">
         <b-taginput
-          @input="save"
-          :data="defaultTags"
           v-model="row.tags"
+          :data="defaultTags"
           :placeholder="$t('Asset tags')"
           icon="price-tag-3-line"
+          @input="save"
         />
       </template>
       <template v-slot:type="{ row }">
-        <span v-if="row.extension">.{{ row.extension }}</span><span v-else>-</span>
+        <span v-if="row.extension">.{{ row.extension }}</span><span v-else>{{ row.kind }}</span>
       </template>
       <template v-slot:actions="{ row }">
         <a :href="row.url" class="button is-text" target="_blank">
           <b-icon icon="download-line" size="is-small" />
         </a>
-        <gc-button size="x-small" @click="showDeleteModal(row)" theme="danger">
+        <gc-button size="x-small" theme="danger" @click="showDeleteModal(row)">
           <b-icon icon="delete-bin-line" size="is-small" />
         </gc-button>
       </template>
     </gc-table>
-
 
     <simple-modal heading="Permanent delete" :open="deleteModalOpen" @confirmed="deleteAsset" @close="deleteModalOpen = false">
       {{ $t('This action cannot be undone') }}
@@ -121,10 +122,9 @@
 <script>
 import QuickViewPanel from './QuickViewPanel.vue'
 const first = require('lodash/first')
-const find = require('lodash/find')
 const map = require('lodash/map')
+const sortBy = require('lodash/sortBy')
 const get = require('lodash/get')
-
 
 export default {
   components: { QuickViewPanel },
@@ -137,9 +137,17 @@ export default {
       type: String,
       default: () => {}
     },
+    assetableType: {
+      type: String,
+      default: 'product'
+    },
+    assetableId: {
+      type: String,
+      default: null
+    },
     refreshing: {
       type: Boolean,
-      default: false,
+      default: false
     },
     parent: {
       type: Object,
@@ -179,19 +187,19 @@ export default {
       types: [
         {
           label: 'All',
-          handle: null,
+          handle: null
         },
         {
           label: 'Images',
-          handle: 'images',
+          handle: 'images'
         },
         {
           label: 'Files',
-          handle: 'files',
+          handle: 'files'
         },
         {
           label: 'Videos',
-          handle: 'videos',
+          handle: 'videos'
         }
       ],
       mimeTypes: [
@@ -224,9 +232,11 @@ export default {
      * @param  {string} type
      * @return {Object}
      */
-    getFilteredResults () {
+    filteredAssets () {
+      let assets = this.assets
+
       if (this.filter) {
-        return this.assets.filter((asset) => {
+        assets = this.assets.filter((asset) => {
           if (this.filter === 'images') {
             return asset.kind === 'image'
           } else if (this.filter === 'videos') {
@@ -236,7 +246,9 @@ export default {
           }
         })
       }
-      return this.assets
+      return sortBy(assets, (asset) => {
+        return asset.position
+      })
     },
     parentId () {
       return this.parent.id
@@ -258,7 +270,7 @@ export default {
       this.assets = []
       this.parent.assets.data.forEach((asset) => {
         if (asset.tags.data) {
-          asset.tags = map(asset.tags.data, tag => {
+          asset.tags = map(asset.tags.data, (tag) => {
             return tag.name
           })
           delete asset.tags.data
@@ -269,7 +281,7 @@ export default {
       })
     },
     save () {
-      this.$emit('beforeSave', this.assets, (done) => {
+      this.$emit('beforeSave', this.assets, () => {
         this.saveAssets()
       })
     },
@@ -278,18 +290,17 @@ export default {
       formData.append('assets', this.assets)
       this.$gc.assets.put({
         assets: this.assets
-      }).then((response) => {
-        this.$buefy.toast.open({
-          message: 'Assets Saved',
-          position: 'is-bottom',
-          type: 'is-success'
-        })
+      }).then(() => {
+        this.$notify.queue('success', this.$t('Assets updated'))
       })
     },
     handleExternalAssetUpload (response) {
       const asset = response.data
       asset.tags = []
-      this.$emit('beforeSave', this.assets, (done) => {
+      this.$emit('beforeSave', this.assets, () => {
+        if (!this.assets.length) {
+          asset.primary = true
+        }
         this.assets.push(asset)
       })
       this.showYoutubeUpload = false
@@ -306,6 +317,9 @@ export default {
       this.$emit('file-uploaded', data.file)
       const response = data.response.body.data
       response.tags = get(response, 'tags', [])
+      if (!this.assets.length) {
+        response.primary = true
+      }
       this.assets.push(response)
     },
     getThumbnail (asset) {
@@ -317,11 +331,11 @@ export default {
       }
       return first(asset.transforms.data).url
     },
-    deleteAsset (event) {
-      const asset = this.assetToDelete;
+    deleteAsset () {
+      const asset = this.assetToDelete
       this.$getcandy.on('assets', 'postAssetsAssetIdDetachOwnerId', asset.id, this.parentId, {
-        type: asset.type
-      }).then(response => {
+        type: asset.type || this.assetableType
+      }).then(() => {
         this.assets.splice(this.deletedIndex, 1)
         this.assetToDelete = {}
         this.deletedIndex = null
@@ -329,19 +343,39 @@ export default {
         this.$notify.queue('success', 'Asset deleted')
       })
     },
+    async saveAssetables () {
+      await this.$getcandy.on('assets', 'reorderAssets', {
+        assets: map(this.assets, (asset) => {
+          return {
+            id: asset.id,
+            position: asset.position,
+            primary: asset.primary
+          }
+        }),
+        assetable_id: this.assetableId,
+        assetable_type: this.assetable
+      })
+
+      this.$notify.queue('success', this.$t('Assets updated'))
+    },
     reorder ({ oldIndex, newIndex }) {
-      this.$emit('changed', this.assets, (done) => {
+      this.$emit('changed', this.assets, async () => {
+        const assets = this.assets
+
         const movedItem = this.assets.splice(oldIndex, 1)[0]
-        this.assets.splice(newIndex, 0, movedItem)
+        assets.splice(newIndex, 0, movedItem)
         let pos = 1
-        this.assets.forEach((asset) => {
-          asset.position = pos
+        assets.forEach((asset) => {
+          this.$set(asset, 'position', pos)
           pos++
         })
-        this.save()
+
+        this.assets = assets
+
+        await this.saveAssetables()
       })
     },
-    setPrimary (newPrimary) {
+    async setPrimary (newPrimary) {
       this.assets.forEach((asset) => {
         if (asset.id === newPrimary.id) {
           asset.primary = 1
@@ -349,7 +383,7 @@ export default {
           asset.primary = 0
         }
       })
-      this.save()
+      await this.saveAssetables()
     },
     /**
      * Shows the delete modal for an asset

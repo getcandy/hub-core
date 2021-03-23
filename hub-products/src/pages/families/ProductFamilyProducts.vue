@@ -7,8 +7,6 @@
 <script>
 import ProductFamilyProductsManager from '../../components/ProductFamilyProductsManager.vue'
 
-const orderBy = require('lodash/orderBy')
-
 export default {
   layout: 'product-family',
   components: {

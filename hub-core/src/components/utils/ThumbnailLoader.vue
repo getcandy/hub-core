@@ -1,13 +1,20 @@
 <template>
   <div>
-    <img
-      :src="src"
-      :style="{
-        'max-width': '100%',
-        'width': width
-      }"
-      v-if="src"
-    >
+    <template v-if="asset">
+      <template v-if="asset.kind !== 'application'">
+        <img
+          v-if="src"
+          :src="src"
+          :width="width"
+        >
+        <template v-else>
+          <gc-icon icon="photo" />
+        </template>
+      </template>
+      <template v-else>
+        <gc-icon icon="file-text" class="text-gray-500" size="lg" />
+      </template>
+    </template>
     <template v-else>
       <gc-icon icon="photo" />
     </template>
@@ -40,7 +47,7 @@ export default {
       return this.transforms && this.transforms.length
     },
     src () {
-      let url;
+      let url
 
       if (this.asset) {
         if (this.asset.thumbnail) {
@@ -59,7 +66,7 @@ export default {
       }
 
       if (!url) {
-        return null;
+        return null
       }
 
       return url

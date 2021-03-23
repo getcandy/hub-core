@@ -28,11 +28,13 @@
               }
             }"
           >
-            {{ row.firstname }} {{ row.lastname }}
+            <span v-if="!row.firstname && !row.lastname">Unknown</span>
+            <span v-else>{{ row.firstname }} {{ row.lastname }}</span>
           </nuxt-link>
         </template>
         <template v-slot:company_name="{ row }">
-          {{ row.company_name }}
+          <span v-if="row.company_name">{{ row.company_name }}</span>
+          <span v-else class="text-xs text-gray-500">No company name provided</span>
         </template>
       </gc-table>
       <!-- <b-table
@@ -92,6 +94,11 @@ export default {
     CustomerCreate,
     Gravatar
   },
+  head () {
+    return {
+      title: 'Customers'
+    }
+  },
   data() {
     return {
       page: 1,
@@ -140,6 +147,7 @@ export default {
         {
           query: {
             page: this.page,
+            keywords: this.searchTerm
           }
         }
       )

@@ -4,7 +4,7 @@
       <gc-input v-model="id" required placeholder="G0LpOalhYTU" />
     </form-field>
     <button :disabled="processing" type="submit" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-green-600 transition duration-150 ease-in-out bg-white border border-green-300 rounded-md shadow-sm hover:text-green-500 focus:outline-none focus:border-blue-300 focus:shadow-outline sm:text-sm sm:leading-5">
-      <b-icon v-if="processing" icon="loader-4-line" class="spin" />
+      <gc-loading-spinner v-if="processing" />
       <span v-else>{{ $t('Upload Video') }}</span>
     </button>
   </form>

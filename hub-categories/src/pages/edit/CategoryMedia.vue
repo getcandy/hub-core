@@ -3,6 +3,7 @@
     <media-manager
       :refreshing="pendingDraftCreation"
       assetable="categories"
+      assetable-type="category"
       :parent="category"
       :process-on-add="false"
       @file-added="handleFileAdded"

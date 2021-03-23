@@ -4,9 +4,27 @@
     <table class="w-full" >
       <thead>
         <tr>
-          <th v-if="sortable.handle" />
-          <th v-for="(column, index) in columns" :key="index" class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-600 uppercase bg-gray-100">
-            {{ column.label }}
+          <th v-if="sortable.handle" class="bg-gray-100 " />
+          <th
+            v-for="(column, index) in columns"
+            :key="index"
+            class="text-xs font-medium leading-4 tracking-wider text-left text-gray-600 uppercase bg-gray-100"
+            :class="{
+              [column.class]: !!column.class,
+              'px-4 py-3': !column.sort
+            }"
+          >
+            <button
+              class="flex items-center justify-between block w-full font-medium leading-4 tracking-wider uppercase truncate focus:outline-none"
+              :class="{
+                'hover:bg-gray-200 cursor-pointer px-4 py-3 ': !!column.sort,
+              }"
+              v-if="column.sort"
+              @click="sort(column.sort)"
+            >
+              <span>{{ column.label }}</span> <gc-icon v-if="column.sort" :icon="getSortIcon(column.sort)" size="sm" />
+            </button>
+            <span class="truncate" v-else>{{ column.label }}</span>
           </th>
         </tr>
       </thead>
@@ -15,7 +33,7 @@
           <tr class="text-center bg-white">
             <td colspan="50" class="px-6 py-4 text-xs font-medium text-center text-gray-500 uppercase whitespace-no-wrap">
               <span class="flex items-center justify-center mx-auto">
-                <gc-icon icon="rotate-clockwise" spin/>
+                <loading-spinner />
                 <span class="ml-2">{{ $t('Loading') }}</span>
               </span>
             </td>
@@ -24,7 +42,6 @@
       </template>
       <template v-else>
         <slot name="tfoot" />
-
         <tfoot v-if="(!data || !data.length) && !$slots.tfoot">
           <tr class="text-center bg-white">
             <td colspan="50" class="px-6 py-4 text-xs font-medium text-center text-gray-500 uppercase whitespace-no-wrap">No records</td>
@@ -32,8 +49,8 @@
         </tfoot>
         <slot name="tbody" v-bind="data" />
         <tbody v-if="!$slots.tbody" v-sortable="sortable">
-          <tr :class="{'bg-white': index % 2 === 0, 'bg-gray-100': index % 2 !== 0}" v-for="(row, index) in data" :key="index">
-            <td v-if="sortable.handle" :class="sortableHandle" class="w-2 px-6 py-4 cursor-grab">
+          <tr :class="{'bg-white': index % 2 === 0, 'bg-gray-100': index % 2 !== 0}" v-for="(row, index) in data" :key="rowKeyIsIndex ? index : (row.id || index)">
+            <td v-if="sortable.handle" :class="sortableHandle" class="w-2 px-4 py-4 cursor-grab">
               <svg width="13px" viewBox="0 0 13 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <g fill="#D8D8D8">
@@ -47,14 +64,16 @@
                 </g>
               </svg>
             </td>
-            <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-no-wrap" v-for="(column, colIndex) in columns" :key="colIndex">
+            <td :class="`${column.class || ''} px-4 py-4 text-sm font-medium text-gray-900`" v-for="(column, colIndex) in columns" :key="colIndex">
                 <template v-if="column.render">
                   {{ column.render(row) }}
                 </template>
                 <template v-if="column.component">
                   <component :is="column.component" :row="row" />
                 </template>
-                <slot :name="column.field" v-bind="{ row, index }" v-else></slot>
+                <div class="max-w-4xl truncate" v-else>
+                  <slot :name="column.field" v-bind="{ row, index }"></slot>
+                </div>
             </td>
           </tr>
         </tbody>
@@ -99,6 +118,10 @@ export default {
       type: Array,
       default: () => []
     },
+    rowKeyIsIndex: {
+      type: Boolean,
+      default: false,
+    },
     sortable: {
       type: Object,
       default() {
@@ -123,7 +146,9 @@ export default {
   },
   data () {
     return {
-      slots: []
+      slots: [],
+      sortDir: null,
+      sortField: null,
     }
   },
   mounted () {
@@ -137,6 +162,44 @@ export default {
     })
   },
   methods: {
+    getSortIcon (field) {
+      if (this.sortField !== field) {
+        return 'arrows-sort'
+      }
+      if (this.sortDir === 'asc') {
+        return 'sort-ascending'
+      }
+      if (this.sortDir === 'desc') {
+        return 'sort-descending'
+      }
+      return 'arrows-sort'
+    },
+    sort (field) {
+      if (this.sortField === field) {
+        // If we're on desc, we're at the end of the cycle so null it out
+        if (this.sortDir === 'desc') {
+          this.sortDir = null
+          this.sortField = null
+          this.$emit('sort', {
+            field: null,
+            direction: null,
+          })
+          return;
+        }
+        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc'
+        this.$emit('sort', {
+          field,
+          direction: this.sortDir,
+        })
+        return;
+      }
+      this.$emit('sort', {
+        field,
+        direction: 'asc',
+      })
+      this.sortField = field
+      this.sortDir = 'asc'
+    },
     changePage (link) {
       if (!link.url) {
         return

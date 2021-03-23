@@ -8,12 +8,17 @@
 </template>
 
 <script>
-  import SalesReport from '../../components/SalesReport.vue'
-  export default {
-    components: {
-      SalesReport
+import SalesReport from '../../components/SalesReport.vue'
+export default {
+  components: {
+    SalesReport
+  },
+  head () {
+    return {
+      title: 'Sales Report'
     }
   }
+}
 </script>
 
 <style scoped>

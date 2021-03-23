@@ -24,6 +24,7 @@ export default {
     sizeClass () {
       const sizes = {
         base: 'w-6 h-6',
+        lg: 'w-8 h-8',
         sm: 'w-4 h-4',
       }
       const size = sizes[this.size] || sizes['base']

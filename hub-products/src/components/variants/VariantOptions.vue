@@ -102,14 +102,15 @@ const find = require('lodash/find')
 export default {
   props: {
     product: {
-      type: Object
+      type: Object,
+      required: true
     },
     locales: {
       type: Array,
       default: () => ['en']
     },
     initialPrice: {
-      type: String | Number,
+      type: [String, Number],
       default: 0
     },
     currentLocale: {
@@ -139,6 +140,7 @@ export default {
       return this.data && this.data.settings.length
     },
     variants () {
+      // eslint-disable-next-line
       return filter(this.data, (v, k) => k != 'settings')
     },
     locale () {
@@ -196,7 +198,7 @@ export default {
       const firstLabel = Object.keys(option.label)[0]
       return {
         option_name: get(option.label, this.locale, option.label[firstLabel]),
-        option_values: map(option.options, (value, handle) => {
+        option_values: map(option.options, (value) => {
           const firstValue = Object.keys(value.values)[0]
           return get(value.values, this.locale, value.values[firstValue])
         })
@@ -276,7 +278,7 @@ export default {
           let exists = false
 
           map(val, (v, key) => {
-            if (key != 'settings') {
+            if (key !== 'settings') {
               const attrsI = item.attrs.split('|')
               const attrsV = v.attrs.split('|')
 
@@ -284,7 +286,7 @@ export default {
                 return (attrsI.includes(value))
               })
 
-              if (arrContainsArr && attrsI.length == attrsV.length) {
+              if (arrContainsArr && attrsI.length === attrsV.length) {
                 v.attrs = item.attrs
                 exists = v
               }

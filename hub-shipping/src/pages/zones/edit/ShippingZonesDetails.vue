@@ -1,7 +1,7 @@
 <template>
   <div class="card-content" v-if="zone">
     <b-field :label="$t('Name')">
-      <b-input v-model="zone.name" @input="updateShippingZone" />
+      <gc-input v-model="zone.name" @input="updateShippingZone" />
     </b-field>
   </div>
 </template>

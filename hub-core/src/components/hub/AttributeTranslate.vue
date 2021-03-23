@@ -2,15 +2,15 @@
 <template>
   <div class="attribute-accordian">
     <div class="bg-white">
-      <div class="p-6">
+      <div class="px-6 py-4">
         <div class="flex justify-between">
           <gc-button
+            v-if="attributeGroups.length > 1"
             theme="gray"
             @click="() => {
               expandAll = !expandAll
               currentGroup = null
             }"
-            v-if="attributeGroups.length > 1"
           >
             <template v-if="expandAll">
               {{ $t('Collapse all') }}
@@ -19,7 +19,7 @@
               {{ $t('Expand all') }}
             </template>
           </gc-button>
-          <gc-button @click="translating = !translating" icon-left="language" theme="gray">
+          <gc-button icon-left="language" theme="gray" @click="translating = !translating">
             <template v-if="translating">
               {{ $t('Stop Translating') }}
             </template>
@@ -30,81 +30,98 @@
         </div>
       </div>
 
-    <!-- Translate dropdown -->
-    <div class="flex text-sm bg-white border-t" v-if="translating">
-      <div class="w-1/2">
-        <div class="flex items-center">
-          <div class="relative w-1/2">
-            <select v-model="channel" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
-              <option
-                v-for="chan in channels"
-                :value="chan.handle"
-                :key="chan.id">
-                {{ chan.name }}
-              </option>
-            </select>
-            <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
-              <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+      <!-- Translate dropdown -->
+      <div v-if="translating" class="flex text-sm bg-white border-t">
+        <div class="w-1/2">
+          <div class="flex items-center">
+            <div class="relative w-1/2">
+              <select v-model="channel" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
+                <option
+                  v-for="chan in channels"
+                  :key="chan.id"
+                  :value="chan.handle"
+                >
+                  {{ chan.name }}
+                </option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+                <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+              </div>
+            </div>
+            <div class="relative w-1/2">
+              <select v-model="language" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
+                <option
+                  v-for="lang in languages"
+                  :key="lang.id"
+                  :value="lang.lang"
+                >
+                  {{ lang.name }}
+                </option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+                <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+              </div>
             </div>
           </div>
-          <div class="relative w-1/2">
-            <select v-model="language" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
-              <option
-                v-for="lang in languages"
-                :value="lang.lang"
-                :key="lang.id">
-                {{ lang.name }}
-              </option>
-            </select>
-            <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
-              <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+        </div>
+        <div class="w-1/2">
+          <div class="flex items-center">
+            <div class="relative w-1/2">
+              <select v-model="translateChannel" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
+                <option
+                  v-for="chan in channels"
+                  :key="chan.id"
+                  :value="chan.handle"
+                >
+                  {{ chan.name }}
+                </option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+                <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+              </div>
+            </div>
+            <div class="relative w-1/2">
+              <select class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
+                <option
+                  v-for="lang in languages"
+                  :key="lang.id"
+                  :value="lang.lang"
+                >
+                  {{ lang.name }}
+                </option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+                <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="w-1/2">
-        <div class="flex items-center">
-          <div class="relative w-1/2">
-            <select v-model="translateChannel" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
-              <option
-                v-for="chan in channels"
-                :value="chan.handle"
-                :key="chan.id">
-                {{ chan.name }}
-              </option>
-            </select>
-            <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
-              <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-            </div>
-          </div>
-          <div class="relative w-1/2">
-            <select  class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
-              <option
-                v-for="lang in languages"
-                :value="lang.lang"
-                :key="lang.id"
-              >
-                {{ lang.name }}
-              </option>
-            </select>
-            <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
-              <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     </div>
     <div v-if="hasErrors" class="px-6 py-3 text-sm text-white bg-red-500">
       Please check missing fields below.
     </div>
     <template v-if="attributeGroups.length == 1">
-      <div v-for="group in attributeGroups" :key="group.id" class="flex py-3 bg-white" >
+      <div v-for="group in attributeGroups" :key="group.id" class="flex py-3 bg-white">
         <div class="px-6" :class="{ 'w-full' : !translating, 'w-1/2': translating }">
-          <localised-attributes @change="handleChange" :attribute-data="attributeData" :language="language" :channel="channel" :attributes="filteredAttributes(group.attributes.data)" :errors="errors" />
+          <localised-attributes
+            :attribute-data="attributeData"
+            :language="language"
+            :channel="channel"
+            :attributes="filteredAttributes(group.attributes.data)"
+            :errors="errors"
+            @change="handleChange"
+          />
         </div>
-        <div class="w-1/2 px-6" v-show="translating">
-          <localised-attributes @change="handleChange" :attribute-data="attributeData" :attributes="filteredAttributes(group.attributes.data)" :language="translateLanguage" :channel="translateChannel" :errors="errors" />
+        <div v-show="translating" class="w-1/2 px-6">
+          <localised-attributes
+            :attribute-data="attributeData"
+            :attributes="filteredAttributes(group.attributes.data)"
+            :language="translateLanguage"
+            :channel="translateChannel"
+            :errors="errors"
+            @change="handleChange"
+          />
         </div>
       </div>
     </template>
@@ -117,28 +134,29 @@
         <div v-show="currentGroup == group.id || expandAll">
           <div class="flex py-3">
             <div class="px-6" :class="{ 'w-full' : !translating, 'w-1/2': translating }">
-              <localised-attributes @change="handleChange" :attribute-data="attributeData" :language="language" :channel="channel" :attributes="filteredAttributes(group.attributes.data)" :errors="errors" />
+              <localised-attributes
+                :attribute-data="attributeData"
+                :language="language"
+                :channel="channel"
+                :attributes="filteredAttributes(group.attributes.data)"
+                :errors="errors"
+                @change="handleChange"
+              />
             </div>
-            <div class="w-1/2 px-6" v-show="translating">
-              <localised-attributes @change="handleChange" :attribute-data="attributeData" :attributes="filteredAttributes(group.attributes.data)" :language="translateLanguage" :channel="translateChannel" :errors="errors" />
+            <div v-show="translating" class="w-1/2 px-6">
+              <localised-attributes
+                :attribute-data="attributeData"
+                :attributes="filteredAttributes(group.attributes.data)"
+                :language="translateLanguage"
+                :channel="translateChannel"
+                :errors="errors"
+                @change="handleChange"
+              />
             </div>
           </div>
         </div>
       </div>
     </template>
-
-    <!-- <b-tabs type="is-boxed">
-      <b-tab-item :label="getTabLabel(group)" >
-        <div class="columns">
-          <div class="column">
-            <localised-attributes :attribute-data="attributeData" :language="language" :channel="channel" :attributes="filteredAttributes(group.attributes.data)" />
-          </div>
-          <div v-if="translating" class="column">
-            <localised-attributes :attribute-data="attributeData" :attributes="filteredAttributes(group.attributes.data)" :language="translateLanguage" :channel="translateChannel" />
-          </div>
-        </div>
-      </b-tab-item>
-    </b-tabs> -->
   </div>
 </template>
 
@@ -198,10 +216,10 @@ export default {
   },
   watch: {
     translateChannel () {
-      this.isDefault = (this.channel === this.translateChannel && this.defaultLanguage === this.translateLanguage);
+      this.isDefault = (this.channel === this.translateChannel && this.defaultLanguage === this.translateLanguage)
     },
     translateLanguage () {
-      this.isDefault = (this.defaultChannel === this.translateChannel && this.defaultLanguage === this.translateLanguage);
+      this.isDefault = (this.defaultChannel === this.translateChannel && this.defaultLanguage === this.translateLanguage)
     },
     errors () {
       if (this.hasErrors) {

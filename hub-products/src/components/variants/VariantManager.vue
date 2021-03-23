@@ -27,19 +27,34 @@
         </div>
       </div>
       <div class="w-full bg-white">
-        <template v-if="product.option_data.length">
+        <template v-if="productVariantCount > 1">
+          <header class="px-6 py-3 border-b shadow-sm">
+            <h3 class="text-sm font-bold text-gray-700">
+              {{ $t('Variant Image') }}
+            </h3>
+          </header>
           <div class="p-6">
-            <header class="mb-6">
-              <h2>{{ $t('Details') }}</h2>
-            </header>
-            <basic-translate v-model="optionFields" @input="handleOptionDataChange" />
+            <gc-asset-picker :assets="productImages" :current="current.image" @save="handleAssetChange">
+              <div slot="empty">
+                <div class="p-3 mb-2 text-sm text-blue-700 bg-blue-100 rounded">
+                  {{ $t('If no image is specified you can still use the default image for the product') }}
+                </div>
+              </div>
+            </gc-asset-picker>
           </div>
-          <div class="hidden sm:block">
-            <div class="border-t border-gray-200" />
+        </template>
+        <template v-if="hasOptionData">
+          <header class="px-6 py-3 border-t border-b shadow-sm">
+            <h3 class="text-sm font-bold text-gray-700">
+              {{ $t('Details') }}
+            </h3>
+          </header>
+          <div class="p-6">
+            <basic-translate v-model="optionFields" @input="handleOptionDataChange" />
           </div>
         </template>
         <div>
-          <header class="px-6 py-3 border-b shadow-sm">
+          <header class="px-6 py-3 border-t border-b shadow-sm">
             <h3 class="text-sm font-bold text-gray-700">
               {{ $t('Pricing') }}
             </h3>
@@ -66,15 +81,14 @@
               <variant-customer-group-pricing
                 :variant-id="current.id"
                 :initial-pricing="current.customer_pricing.data"
-                :new-price="this.current.price"
-                :new-tax-id="this.current.tax.data.id"
+                :new-price="current.price"
+                :new-tax-id="current.tax.data.id"
                 @input="handleCustomerGroupPricingChange"
               />
             </template>
             <div v-else class="md:grid md:grid-cols-2 md:gap-6">
               <form-field :label="$t('Unit Price')">
-                <price-input v-model="current.price" :is-cents="false" @input="handleChange" />
-                <!-- <b-input :value="$format.currency(current.unit_price, null, true, false)" @input="handlePriceInput" type="number"></b-input> -->
+                <gc-price-input v-model="current.price" :is-cents="false" @input="handleChange" />
               </form-field>
               <form-field :label="$t('Tax')">
                 <select-input v-model="current.tax.data.id" :placeholder="$t('Select a tax bracket')" @input="handleChange">
@@ -88,8 +102,6 @@
                 </select-input>
               </form-field>
             </div>
-            <!-- <div class="md:grid md:grid-cols-3 md:gap-6">
-            </div> -->
           </div>
         </div>
         <div>
@@ -112,7 +124,7 @@
           <div class="p-6">
             <div class="md:grid md:grid-cols-4 md:gap-6">
               <form-field :label="$t('SKU')">
-                <gc-input v-model="current.sku" @input="handleChange" />
+                <gc-sku-input v-model="current.sku" @input="handleChange" />
               </form-field>
               <form-field :label="$t('Stock Level')">
                 <gc-input v-model="current.inventory" type="number" @input="handleChange" />
@@ -121,7 +133,7 @@
                 <gc-input v-model="current.incoming" type="number" @input="handleChange" />
               </form-field>
               <gc-form-field :label="$t('Purchasability')" :instructions="purchasabilityHelper">
-                <select-input v-model="current.backorder" @change="handleChange">
+                <gc-select-input v-model="current.backorder" @change="handleChange">
                   <option
                     v-for="option in backorderOptions"
                     :key="option.value"
@@ -129,7 +141,7 @@
                   >
                     {{ option.label }}
                   </option>
-                </select-input>
+                </gc-select-input>
               </gc-form-field>
             </div>
           </div>
@@ -147,7 +159,7 @@
             <div class="md:grid md:grid-cols-3 md:gap-6">
               <form-field :label="$t('Width')">
                 <gc-grouped-input v-model="current.width.value" @input="handleChange">
-                  <select v-model="current.width.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @select="handleChange">
+                  <select v-model="current.width.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
                       CM
                     </option>
@@ -162,7 +174,7 @@
               </form-field>
               <form-field :label="$t('Height')">
                 <gc-grouped-input v-model="current.height.value" @input="handleChange">
-                  <select v-model="current.height.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @select="handleChange">
+                  <select v-model="current.height.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
                       CM
                     </option>
@@ -177,7 +189,7 @@
               </form-field>
               <form-field :label="$t('Depth')">
                 <gc-grouped-input v-model="current.depth.value" @input="handleChange">
-                  <select v-model="current.depth.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @select="handleChange">
+                  <select v-model="current.depth.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
                       CM
                     </option>
@@ -204,9 +216,10 @@ import HasDrafts from '@getcandy/hub-core/src/mixins/HasDrafts.js'
 import VariantTiers from './VariantTiers.vue'
 import CreateVariant from './CreateVariant.vue'
 import VariantCustomerGroupPricing from './VariantCustomerGroupPricing.vue'
-const first = require('lodash/first')
-const map = require('lodash/map')
+const filter = require('lodash/filter')
+const get = require('lodash/get')
 const find = require('lodash/find')
+const map = require('lodash/map')
 const each = require('lodash/each')
 
 export default {
@@ -230,6 +243,12 @@ export default {
     }
   },
   computed: {
+    productImages () {
+      return filter(get(this.product, 'assets.data', []), asset => asset.kind === 'image')
+    },
+    hasOptionData () {
+      return !!Object.keys(this.product.option_data).length
+    },
     productVariantCount () {
       return this.productVariants.length
     },
@@ -254,9 +273,9 @@ export default {
     },
     // TODO: Do this better
     purchasabilityHelper () {
-      if (this.current.backorder == 'in-stock') {
+      if (this.current.backorder === 'in-stock') {
         return 'This item can <strong>only</strong> be bought when in stock.'
-      } else if (this.current.backorder == 'expected') {
+      } else if (this.current.backorder === 'expected') {
         return 'This item can be bought when on backorder <strong>or</strong> in stock'
       }
       return 'This item can be bought when <strong>not</strong> in stock <strong>or</strong> not on backorder'
@@ -269,6 +288,7 @@ export default {
   },
   mounted () {
     this.syncVariants()
+    // eslint-disable-next-line
     each(this.product.option_data, (option, handle) => {
       this.$set(this.optionFields, handle, {
         values: {},
@@ -309,9 +329,19 @@ export default {
       })
       this.hasGroupPricing = this.current.customer_pricing ? this.current.customer_pricing.data.length : false
     },
-    handleChange (val) {
+    handleChange () {
       this.$emit('change', this.current, () => {
       })
+    },
+    async handleAssetChange (assetId) {
+      await this.createDraft('product', this.product.id, {
+      })
+      this.$set(this.current, 'asset_id', assetId)
+
+      const asset = find(this.productImages, asset => asset.id === assetId)
+
+      this.$set(this.current, 'image', asset)
+      this.handleChange()
     },
     async handleOptionCreate (val) {
       await this.createDraft('product', this.product.id, {
@@ -336,13 +366,13 @@ export default {
     },
     handleCustomerGroupPricingToggle (val) {
       if (!val) {
-        this.current.customer_pricing = {
+        this.$set(this.current, 'customer_pricing', {
           data: []
-        }
+        })
         this.handleChange()
       }
     },
-    handleOptionDataChange (val) {
+    handleOptionDataChange () {
       this.handleChange()
     }
   }

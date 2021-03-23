@@ -1,10 +1,10 @@
 <template>
-  <div v-if="category">
-    <b-tabs :animated="false" vertical position="is-right" v-model="activeTab">
-      <b-tab-item :label="tab.title" v-for="(tab, tabIndex) in tabs" :key="tabIndex">
+  <div v-if="collection">
+    <gc-tabs>
+      <gc-tab-item v-for="(tab, tabIndex) in tabs" :key="tabIndex" :label="tab.title">
         <component :is="tab.component" :collection="collection" />
-      </b-tab-item>
-    </b-tabs>
+      </gc-tab-item>
+    </gc-tabs>
   </div>
 </template>
 

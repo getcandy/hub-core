@@ -70,7 +70,6 @@ export default class PassportScheme {
   }
 
   async fetchUser (endpoint) {
-
     // Token is required but not available
     if (this.options.tokenRequired && !this.$auth.getToken(this.name)) {
       return
@@ -91,7 +90,7 @@ export default class PassportScheme {
 
     const hubUser = new HubUser(user)
 
-    if (!hubUser.hasRole('admin') && !hubUser.can('access_hub')) {
+    if (!hubUser.hasRole('admin') && !hubUser.can('access-hub')) {
       await this.logout()
       return
     }

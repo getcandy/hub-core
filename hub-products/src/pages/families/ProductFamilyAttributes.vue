@@ -8,7 +8,6 @@
 import NormalizesObjects from '@getcandy/hub-core/src/mixins/NormalizesObjects.js'
 import ProductFamilyAttributeManager from '../../components/ProductFamilyAttributeManager.vue'
 
-const orderBy = require('lodash/orderBy')
 const filter = require('lodash/filter')
 const map = require('lodash/map')
 

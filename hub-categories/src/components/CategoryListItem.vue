@@ -18,9 +18,9 @@
         </div>
       </div>
       <div class="px-2">
-        <button v-if="category.children_count" class="btn-muted focus:outline-none" @click.prevent="toggleChildren">
-          <b-icon v-if="loadingChildren" icon="loader-5-line" custom-class="spin" />
-          <b-icon v-else :icon="!loadedChildren ? 'arrow-right-s-line' : 'arrow-down-s-line'" />
+        <button v-if="category.children_count" class="focus:outline-none" @click.prevent="toggleChildren">
+          <gc-loading-spinner v-if="loadingChildren" class="w-4" />
+          <gc-icon v-else :icon="!loadedChildren ? 'chevron-right' : 'chevron-down'" size="sm" />
         </button>
       </div>
       <div class="w-full py-3">
@@ -47,7 +47,7 @@
         <div class="relative inline-block text-left">
           <div v-if="showOptionIndicator">
             <button type="button" class="inline-flex justify-center px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800" @click="showOptions = !showOptions">
-              <b-icon icon="more-2-line" />
+              <gc-icon icon="dots-vertical" />
             </button>
           </div>
           <div v-if="showOptions" class="absolute right-0 z-50 w-56 mt-2 origin-top-right rounded-md shadow-lg">

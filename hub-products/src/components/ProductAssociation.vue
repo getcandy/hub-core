@@ -10,6 +10,7 @@
         <search-table
           :limit="10"
           includes="assets.transforms"
+          :update-query-string="false"
           :search-placeholder="$t('Search products')"
           type="products"
           :columns="[

@@ -4,7 +4,7 @@ export default {
     currencyOverride: {
       type: Object,
       default: null
-    },
+    }
   },
   computed: {
     currency () {

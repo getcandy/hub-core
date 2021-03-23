@@ -1,15 +1,15 @@
 <template>
   <div class="split-view">
-    <div v-if="!orders.length" class="p-12 text-gray-500 uppercase font-bold text-sm">
+    <div v-if="!orders.length" class="p-12 text-sm font-bold text-gray-500 uppercase">
       {{ $t('There are currently no orders to show.') }}
     </div>
-    <div class="flex" v-if="orders.length">
+    <div v-if="orders.length" class="flex">
       <div class="order-listing">
-        <div class="bg-gray-500 px-4 py-4">
-          <button class="text-white border border-gray-300 rounded hover:bg-white hover:text-gray-600"  @click="prevPage" :disabled="page == 1" >
-            <b-icon icon="arrow-left-s-line"/>
+        <div class="px-4 py-4 bg-gray-500">
+          <button class="text-white border border-gray-300 rounded hover:bg-white hover:text-gray-600" :disabled="page == 1" @click="prevPage">
+            <b-icon icon="arrow-left-s-line" />
           </button>
-          <button class="text-white border border-gray-300 rounded hover:bg-white hover:text-gray-600"  @click="nextPage">
+          <button class="text-white border border-gray-300 rounded hover:bg-white hover:text-gray-600" @click="nextPage">
             <b-icon icon="arrow-right-s-line" />
           </button>
         </div>
@@ -22,13 +22,13 @@
           class="order-item"
           @click="load(row.id)"
         >
-          <div class="order-item__date" v-if="row.placed_at">
+          <div v-if="row.placed_at" class="order-item__date">
             {{ $format.date(row.placed_at, 'ddd Do MMM YYYY @ hh:mma') }}
           </div>
           <div class="columns is-vcentered is-gapless">
             <div class="column">
               <span class="order-item__ref">{{ row.reference || row.display_id }}</span>
-              <span class="order-item__name" v-if="row.billing_details">
+              <span v-if="row.billing_details" class="order-item__name">
                 <b-tooltip type="is-black" :label="firstOrder(row) ? $t('Returning Customer') : $t('New Customer')">
                   <span class="tag">{{ firstOrder(row) ? 'R' : 'N' }}</span>
                 </b-tooltip>
@@ -43,80 +43,79 @@
         </div>
       </div>
 
-    <div class="mx-auto my-12 w-2/3 overflow-y-scroll rounded shadow-md">
-      <div class="bg-white">
-        <b-loading :is-full-page="false" v-if="loading" />
-        <template v-else>
-          <order-details-view @statusUpdate="handleStatusUpdate" :order="order" :settings="settings" />
-        </template>
+      <div class="w-2/3 mx-auto my-12 overflow-y-scroll rounded shadow-md">
+        <div class="bg-white">
+          <b-loading v-if="loading" :is-full-page="false" />
+          <template v-else>
+            <order-details-view :order="order" :settings="settings" @statusUpdate="handleStatusUpdate" />
+          </template>
+        </div>
       </div>
     </div>
-     </div>
     <!-- {{ orders }} -->
   </div>
 </template>
 
 <script>
-  const first = require('lodash/first')
-  const find = require('lodash/find')
-  import OrderDetailsView from './OrderDetailsView.vue'
-  import InteractsWithOrders from '../mixins/InteractsWithOrders.js'
-  export default {
-    mixins: [
-      InteractsWithOrders
-    ],
-    components: {
-      OrderDetailsView
+import InteractsWithOrders from '../mixins/InteractsWithOrders.js'
+import OrderDetailsView from './OrderDetailsView.vue'
+const first = require('lodash/first')
+const find = require('lodash/find')
+export default {
+  components: {
+    OrderDetailsView
+  },
+  mixins: [
+    InteractsWithOrders
+  ],
+  props: {
+    page: {
+      type: Number,
+      default: 1
     },
-    props: {
-      page: {
-        type: Number,
-        default: 1,
-      },
-      orders: {
-        type: Array,
-        required: true
-      }
+    orders: {
+      type: Array,
+      required: true
+    }
+  },
+  data () {
+    return {
+      loading: true,
+      order: null
+    }
+  },
+  mounted () {
+    const order = first(this.orders)
+    if (order) {
+      this.load(order.id)
+    } else {
+      this.order = null
+    }
+  },
+  methods: {
+    handleStatusUpdate (status) {
+      const order = find(this.orders, o => o.id == this.order.id)
+      order.status = status
     },
-    data () {
-      return {
-        loading: true,
-        order: null
+    async load (id) {
+      if (this.order && (id === this.order.id)) {
+        return
       }
+      this.loading = true
+      const response = await this.$gc.orders.find(id, {
+        includes: 'user.customer,lines,transactions,discounts,shipping'
+      })
+      this.order = response.data.data
+      this.loading = false
     },
-    mounted () {
-      const order = first(this.orders)
-      if (order) {
-        this.load(order.id)
-      } else {
-        this.order = null
-      }
-
+    prevPage () {
+      this.$emit('changePage', this.page - 1)
     },
-    methods: {
-      handleStatusUpdate (status) {
-        const order = find(this.orders, (o) => o.id == this.order.id)
-        order.status = status
-      },
-      async load (id) {
-        if (this.order && (id === this.order.id)) {
-          return;
-        }
-        this.loading = true
-        const response = await this.$gc.orders.find(id, {
-          includes: 'user.details,lines,transactions,discounts,shipping'
-        })
-        this.order = response.data.data
-        this.loading = false
-      },
-      prevPage () {
-        this.$emit('changePage', this.page - 1)
-      },
-      nextPage () {
-        this.$emit('changePage', this.page + 1)
-      }
+    nextPage () {
+      this.$emit('changePage', this.page + 1)
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

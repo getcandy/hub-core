@@ -8,13 +8,18 @@
 </template>
 
 <script>
-  import CustomerReport from '../../components/CustomerReport.vue'
+import CustomerReport from '../../components/CustomerReport.vue'
 
-  export default {
-    components: {
-      CustomerReport
+export default {
+  components: {
+    CustomerReport
+  },
+  head () {
+    return {
+      title: 'New Vs Returning Customers'
     }
   }
+}
 </script>
 
 <style scoped>

@@ -16,7 +16,7 @@ export default ({ app }, inject) => {
       name: 'collections',
       component: CollectionIndex,
       meta: {
-        permissions: ['manage_catalogue']
+        permissions: ['manage-catalogue', 'manage-collections']
       }
     },
     {
@@ -24,7 +24,7 @@ export default ({ app }, inject) => {
         name: 'collections.edit.details',
         component: CollectionDetails,
         meta: {
-          permissions: ['manage_catalogue']
+          permissions: ['manage-catalogue', 'manage-collections']
         }
     },
     {
@@ -32,7 +32,7 @@ export default ({ app }, inject) => {
         name: 'collections.edit.media',
         component: CollectionMedia,
         meta: {
-          permissions: ['manage_catalogue']
+          permissions: ['manage-catalogue', 'manage-collections']
         }
     },
     {
@@ -40,7 +40,7 @@ export default ({ app }, inject) => {
         name: 'collections.edit.availability',
         component: CollectionAvailability,
         meta: {
-          permissions: ['manage_catalogue']
+          permissions: ['manage-catalogue', 'manage-collections']
         }
     },
     {
@@ -48,7 +48,7 @@ export default ({ app }, inject) => {
         name: 'collections.edit.associations',
         component: CollectionAssociations,
         meta: {
-          permissions: ['manage_catalogue']
+          permissions: ['manage-catalogue', 'manage-collections']
         }
     },
     {
@@ -56,7 +56,7 @@ export default ({ app }, inject) => {
         name: 'collections.edit.routes',
         component: CollectionRoutes,
         meta: {
-          permissions: ['manage_catalogue']
+          permissions: ['manage-catalogue', 'manage-collections']
         }
     }
   ])
@@ -77,6 +77,7 @@ export default ({ app }, inject) => {
       {
         label: 'Collections',
         position: 20,
+        access: ['manage-catalogue', 'manage-collections'],
         route: {
           name: 'collections'
         }

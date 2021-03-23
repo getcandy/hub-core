@@ -18,22 +18,22 @@
         </a>
       </span>
       <div v-else>
-        <b-input v-model="variants[0].inventory" v-focus @blur="save" />
+        <gc-input v-model="variants[0].inventory" v-focus @blur="save" />
       </div>
     </template>
     <template v-else>
-      <b-button @click="editing = true">
+      <gc-button size="x-small" theme="gray" @click="editing = true">
         {{ $t('Edit') }}
-      </b-button>
-      <quick-view-panel :heading="$t('Edit stock levels')" :open="editing" @close="editing = false">
+      </gc-button>
+      <quick-view-panel :heading="$t('Edit stock levels')" :open="editing" @close="closePanel">
         <div class="p-6">
-          <form action="" @submit.prevent="editing = false">
+          <form action="" @submit.prevent="save">
             <form-field v-for="variant in variants" :key="variant.id" :label="variant.sku" class="form-group">
-              <b-input v-model="variant.inventory" />
+              <gc-input v-model="variant.inventory" />
             </form-field>
-            <button type="submit" class="justify-center rounded-md bg-purple-600 hover:bg-purple-700  px-4 py-2 text-base leading-6 font-medium text-white shadow-sm focus:outline-none transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+            <gc-button type="submit" :loading="processing" :disabled="processing">
               {{ $t('Update stock') }}
-            </button>
+            </gc-button>
           </form>
         </div>
       </quick-view-panel>
@@ -55,7 +55,8 @@ export default {
     return {
       editing: false,
       variants: [],
-      stock: 0
+      stock: 0,
+      processing: false
     }
   },
   computed: {
@@ -74,11 +75,22 @@ export default {
     enableEditing () {
       this.editing = true
     },
+    closePanel () {
+      this.editing = false
+      this.processing = false
+    },
     save () {
       this.editing = false
-      this.variants.forEach((variant) => {
-        this.$gc.products.variants.updateInventory(variant.id, variant)
+      this.processing = true
+      this.variants.forEach(async (variant) => {
+        try {
+          await this.$gc.products.variants.updateInventory(variant.id, variant)
+        } catch (error) {
+          this.$notify.queue('error', this.$t(`Unable to update stock for ${variant.sku}`))
+        }
       })
+      this.processing = false
+      this.$notify.queue('success', this.$t('Stock levels updated'))
     }
   }
 }

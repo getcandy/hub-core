@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-field>
-      <b-input
+      <gc-input
         :value="formattedValue"
         @input="input"
         type="number"

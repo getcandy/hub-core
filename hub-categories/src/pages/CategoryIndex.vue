@@ -2,16 +2,16 @@
   <div>
     <toolbar heading="Categories">
       <template v-slot:search>
-        <b-input v-model="searchTerm" icon="search-line" placeholder="Search Categories" @input="setView('table')" />
+        <gc-input v-model="searchTerm" placeholder="Search Categories" @input="setView('table')" />
       </template>
 
       <div class="flex items-center">
         <div class="mr-4">
-          <div class="flex bg-gray-200 text-xs p-1 rounded shadow-inner">
-            <button class="py-2 px-3 rounded focus:outline-none" :class="{ 'bg-white shadow text-purple-600': view == 'table', 'bg-transparent text-gray-600 hover:text-gray-800' : view != 'table' }" @click="setView('table')">
+          <div class="flex p-1 text-xs bg-gray-200 rounded shadow-inner">
+            <button class="px-3 py-2 rounded focus:outline-none" :class="{ 'bg-white shadow text-purple-600': view == 'table', 'bg-transparent text-gray-600 hover:text-gray-800' : view != 'table' }" @click="setView('table')">
               Table View
             </button>
-            <button class="py-2 px-3 rounded focus:outline-none" :class="{ 'bg-white shadow text-purple-600': view == 'tree', 'bg-transparent text-gray-600 hover:text-gray-800' : view != 'tree' }" @click="setView('tree')">
+            <button class="px-3 py-2 rounded focus:outline-none" :class="{ 'bg-white shadow text-purple-600': view == 'tree', 'bg-transparent text-gray-600 hover:text-gray-800' : view != 'tree' }" @click="setView('tree')">
               Tree view
             </button>
           </div>
@@ -22,16 +22,6 @@
           </gc-button>
         </div>
       </div>
-
-      <!--
-        <b-field>
-          <p class="control">
-            <b-button class="icon-only">
-              <b-icon icon="equalizer-line" />
-            </b-button>
-          </p>
-        </b-field>
-        -->
     </toolbar>
 
     <quick-view-panel heading="Create a category" :open="showCreateModal" @close="showCreateModal = false">
@@ -93,44 +83,6 @@
       <template v-slot:customer-groups="{ row }">
         {{ visibility(row, 'customer_groups') }}
       </template>
-      <!-- <template slot-scope="props">
-        <b-table-column field="thumbnail" label="">
-          <nuxt-link :to="{
-            name: 'categories.edit.details',
-            params: {
-                id: props.row.id
-            }
-          }">
-            <thumbnail-loader width="30px" :asset="props.row.assets.data[0]"></thumbnail-loader>
-          </nuxt-link>
-        </b-table-column>
-        <b-table-column field="name" :label="$t('Name')" sortable>
-          <nuxt-link :to="{
-            name: 'categories.edit.details',
-            params: {
-                id: props.row.id
-            }
-          }">
-          {{ attribute(props.row.attribute_data, 'name') }}
-          </nuxt-link>
-        </b-table-column>
-        <b-table-column field="channels" :label="$t('Channels')">
-          {{ visibility(props.row, 'channels') }}
-        </b-table-column>
-        <b-table-column field="customer_groups" :label="$t('Customer groups')">
-          {{ visibility(props.row, 'customer_groups') }}
-        </b-table-column>
-        <b-table-column>
-          <template v-if="contextRow && contextRow.id == props.row.id">
-            <b-dropdown aria-role="list">
-              <b-icon icon="more-line" slot="trigger" role="button" />
-
-              <b-dropdown-item aria-role="listitem">Delete</b-dropdown-item>
-            </b-dropdown>
-
-          </template>
-        </b-table-column>
-      </template> -->
     </search-table>
   </div>
 </template>
@@ -181,6 +133,11 @@ export default {
           }
         }
       })
+    }
+  },
+  head () {
+    return {
+      title: 'Categories'
     }
   }
 }

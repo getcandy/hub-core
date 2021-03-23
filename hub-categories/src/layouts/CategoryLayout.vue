@@ -1,13 +1,13 @@
 <template>
   <default-layout>
-    <div v-if="$fetchState.pending" class="h-screen flex w-full items-center justify-center">
+    <div v-if="$fetchState.pending" class="flex items-center justify-center w-full h-screen">
       <div class="flex items-center text-gray-500">
         <loading-spinner class="mr-2" />
-        <span class="text-xs uppercase font-medium">{{ $t('Fetching Category') }}</span>
+        <span class="text-xs font-medium uppercase">{{ $t('Fetching Category') }}</span>
       </div>
     </div>
     <div v-else>
-      <div v-if="isDraft" class="bg-orange-100 text-orange-700 p-2 text-sm border-b border-orange-300 text-center">
+      <div v-if="isDraft" class="p-2 text-sm text-center text-orange-700 bg-orange-100 border-b border-orange-300">
         {{ $t("You are viewing a draft, changes below won't be reflected until published") }}
       </div>
       <toolbar heading="Category" :sub-heading="title">
@@ -192,6 +192,7 @@ export default {
         }
       })
       this.load(response.data.id)
+      this.$notify.queue('success', this.$t('Category restored and draft created'))
     }
 
   },

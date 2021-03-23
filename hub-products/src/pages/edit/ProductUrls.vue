@@ -3,6 +3,9 @@
     <url-manager
       :routes="routes"
       :errors="formErrors"
+      element-type="product"
+      :element-id="product.id"
+      @created="handleCreated"
       @added="handleAdded"
       @updated="handleUpdated"
       @deleted="handleDeleted"
@@ -15,9 +18,9 @@ import HubPage from '@getcandy/hub-core/src/mixins/HubPage'
 import HasDrafts from '@getcandy/hub-core/src/mixins/HasDrafts'
 import HandlesForms from '@getcandy/hub-core/src/mixins/HandlesForms.js'
 
-const filter = require('lodash/filter')
 const each = require('lodash/each')
 const first = require('lodash/first')
+const get = require('lodash/get')
 
 export default {
   layout: 'product',
@@ -44,53 +47,46 @@ export default {
     // this.redirects = filter(allRoutes, route => route.redirect) || []
   },
   methods: {
-    async handleAdded (route) {
-      await this.createDraft('product', this.product.id, {
-        afterRedirect: async (draft) => {
-          this.product.id = draft.id
-        }
-      }, this.$getcandy)
-      try {
-        const response = await this.$gc.products.addRoute(this.product.id, route)
-        this.routes.push(response.data.data)
-      } catch (e) {
-        this.setFormErrors(e.response.data)
-      }
+    handleAdded (route) {
+      this.routes.push(route)
     },
-    async handleSaved (routes, callback) {
+    async handleCreated (callback) {
       await this.createDraft('product', this.product.id, {
-        afterRedirect: async (draft) => {
+        afterRedirect: (draft) => {
           this.product.id = draft.id
         }
       }, this.$getcandy)
-
-      each(routes, async (r) => {
-        const response = await this.$gc.products.addRoute(this.product.id, r)
-        r.id = response.data.data.id
-      })
+      callback()
     },
     async handleUpdated (route) {
       await this.createDraft('product', this.product.id, {
-        afterRedirect: async (draft) => {
+        afterRedirect: (draft) => {
           this.product.id = draft.id
         }
       }, this.$getcandy)
 
       try {
         await this.$gc.routes.put(route.id, route)
+        this.$notify.queue('success', this.$t('URLs updated'))
       } catch (e) {
-        this.$notify.queue('error', this.$t('Unable to add route'))
+        const errors = get(e, 'response.data.errors', [])
+
+        each(errors, (error) => {
+          each(error, (e) => {
+            this.$notify.queue('error', this.$t(e))
+          })
+        })
       }
     },
     async handleDeleted (index) {
       await this.createDraft('product', this.product.id, {
-        afterRedirect: async (draft) => {
+        afterRedirect: (draft) => {
           this.product.id = draft.id
         }
       }, this.$getcandy)
       await this.$gc.routes.delete(this.routes[index].id)
       this.routes.splice(index, 1)
-      if (this.routes.length == 1) {
+      if (this.routes.length === 1) {
         first(this.routes).default = true
       }
     }

@@ -1,5 +1,7 @@
 import CustomerIndex from './customers/pages/CustomerIndex.vue'
 import CustomerEdit from './customers/pages/CustomerEdit.vue'
+import SpendingReport from './customers/pages/reports/SpendingReport.vue'
+import CustomerGroupReport from './customers/pages/reports/CustomerGroupReport.vue'
 import CustomerOrderHistory from './customers/pages/CustomerOrderHistory.vue'
 import { state, mutations, actions } from './customers/store/customer.js';
 
@@ -11,7 +13,7 @@ export default ({ app }, inject) => {
       name: 'customers',
       component: CustomerIndex,
       meta: {
-        permissions: ['manage_customers']
+        permissions: ['manage-customers']
       }
     },
     {
@@ -19,7 +21,23 @@ export default ({ app }, inject) => {
       name: 'customers.edit',
       component: CustomerEdit,
       meta: {
-        permissions: ['manage_customers']
+        permissions: ['manage-customers']
+      }
+    },
+    {
+      path: '/reports/customers/spending',
+      name: 'reports.customers.spending',
+      component: SpendingReport,
+      meta: {
+        permissions: ['view-reports']
+      }
+    },
+    {
+      path: '/reports/customer-group-report',
+      name: 'reports.customers.customer-group',
+      component: CustomerGroupReport,
+      meta: {
+        permissions: ['view-reports']
       }
     }
   ])
@@ -30,8 +48,31 @@ export default ({ app }, inject) => {
       {
         label: 'Customers',
         position: 10,
+        access: ['manage-customers'],
         route: {
           name: 'customers'
+        }
+      }
+    ]
+  })
+
+  app.store.dispatch('addNavItems', {
+    section: 'reports',
+    items: [
+      {
+        label: 'Customer Spending',
+        position: 0,
+        access: ['view-reports'],
+        route: {
+          name: 'reports.customers.spending'
+        }
+      },
+      {
+        label: 'Customer Group Report',
+        position: 10,
+        access: ['view-reports'],
+        route: {
+          name: 'reports.customers.customer-group'
         }
       }
     ]
@@ -52,7 +93,7 @@ export default ({ app }, inject) => {
 //       name: 'categories',
 //       component: CategoryIndex,
 //       meta: {
-//         permissions: ['manage_catalogue']
+//         permissions: ['manage-catalogue']
 //       }
 //     },
 //     {
@@ -60,7 +101,7 @@ export default ({ app }, inject) => {
 //         name: 'categories.edit.details',
 //         component: CategoryDetails,
 //         meta: {
-//           permissions: ['manage_catalogue']
+//           permissions: ['manage-catalogue']
 //         }
 //     },
 //     {

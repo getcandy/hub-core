@@ -141,7 +141,7 @@ export default {
   methods: {
     handleSettingsSave ({ familyId }) {
       this.$getcandy.on('products', 'putProductsProductId', this.product.id, {
-        familyId,
+        family_id: familyId,
         attribute_data: this.product.attribute_data
       }).then(() => {
         this.load(this.product.id)
@@ -204,6 +204,7 @@ export default {
         }
       })
       this.load(response.data.id)
+      this.$notify.queue('success', this.$t('Product restored and draft created'))
     }
   },
   head () {

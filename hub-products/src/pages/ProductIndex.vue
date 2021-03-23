@@ -2,7 +2,7 @@
   <div>
     <toolbar heading="Products">
       <template v-slot:search>
-        <b-input v-model="searchTerm" icon="search-line" placeholder="Search Products" />
+        <gc-input v-model="searchTerm" icon="search" placeholder="Search Products" />
       </template>
       <gc-button @click="showCreatePanel = true">
         {{ $t('Create product') }}

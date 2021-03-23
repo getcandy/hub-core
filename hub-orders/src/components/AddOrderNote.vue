@@ -19,7 +19,7 @@
                 <label>{{ $t('Message') }}</label>
               </header>
               <div>
-                <b-input v-model="message" type="textarea" />
+                <gc-input v-model="message" type="textarea" />
               </div>
             </div>
 
@@ -78,22 +78,7 @@
             type: 'is-success'
           })
         })
-        // apiRequest.send('POST', '/activity-log', {
-
-        //         }).then(response => {
-        //             this.reset();
-        //             this.saving = false;
-        //             CandyEvent.$emit('log-updated');
-        //             CandyEvent.$emit('notification', {
-        //                 level: 'success',
-        //                 message: 'Note added',
-        //             });
-        //         });
       }
     },
   }
 </script>
-
-<style scoped>
-
-</style>

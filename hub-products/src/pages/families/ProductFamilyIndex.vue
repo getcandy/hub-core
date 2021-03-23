@@ -40,16 +40,14 @@ export default {
   computed: {
     locale () {
       return this.$store.state.core.locale
-    }
-  },
-  computed: {
+    },
     tableColumns () {
       return [
         { label: this.$t('Name'), field: 'name' }
       ]
     }
   },
-  async mounted () {
+  mounted () {
     const query = this.$route.query
     this.page = parseInt(query.page || 1)
     this.searchTerm = query.keywords || null

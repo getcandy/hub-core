@@ -3,6 +3,8 @@
     <media-manager
       :refreshing="pendingDraftCreation"
       assetable="products"
+      :assetable-id="product.id"
+      assetable-type="product"
       :process-on-add="false"
       :parent="product"
       @file-added="handleFileAdded"
@@ -69,6 +71,7 @@ export default {
 
       }
     },
+    // eslint-disable-next-line
     async handleChange (assets, done) {
       await this.createDraft('product', this.product.id, {
         afterRedirect: (product) => {

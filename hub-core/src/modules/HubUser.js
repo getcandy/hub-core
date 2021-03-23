@@ -1,9 +1,11 @@
 const find = require('lodash/find')
+const each = require('lodash/each')
 const filter = require('lodash/filter')
 
 export default class HubUser {
   constructor (user) {
     this.email = user.email
+    this.name = user.name
     this.id = user.id
     this.roles = user.roles.data
 
@@ -19,6 +21,13 @@ export default class HubUser {
 
     this.permissions = []
 
+    each(user.roles.data, (role) => {
+      this.permissions = [
+        ...this.permissions,
+        ...role.permissions.data
+      ]
+    })
+
     // user.roles.data.forEach((role) => {
     //     // const permissions = role.permissions.data
     //     this.permissions = []
@@ -30,6 +39,9 @@ export default class HubUser {
   }
 
   can (check) {
+    if (this.hasRole('admin')) {
+      return true
+    }
     return this.performCheck('permissions', check)
   }
 
@@ -39,7 +51,13 @@ export default class HubUser {
 
   performCheck (field, check) {
     let result = true
+    if (!check) {
+      return true
+    }
     if (Array.isArray(check)) {
+      if (!check.length) {
+        return true
+      }
       result = filter(this[field], (item) => {
         return check.includes(item.guard_name) || check.includes(item.name)
       }).length

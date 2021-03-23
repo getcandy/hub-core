@@ -11,6 +11,7 @@
           :limit="10"
           includes="assets.transforms"
           :search-placeholder="$t('Search categories')"
+          :update-query-string="false"
           type="categories"
           :columns="[
             {label: '', field: 'thumbnail'},

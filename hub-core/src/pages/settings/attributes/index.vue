@@ -4,7 +4,7 @@
       <gc-button @click="showCreateModal = true">
         {{ $t('Create attribute') }}
       </gc-button>
-      <quick-view-panel :heading="$t('Create attribute')" @close="showCreateModal = false" :open="showCreateModal">
+      <quick-view-panel :heading="$t('Create attribute')" :open="showCreateModal" @close="showCreateModal = false">
         <create-attribute :attribute-groups="attributeGroups" @close="showCreateModal = false" />
       </quick-view-panel>
     </toolbar>
@@ -12,7 +12,6 @@
     <gc-table
       :data="attributes"
       :meta="meta"
-      @changePage="changePage"
       :columns="[
         {label: 'Name', field: 'name'},
         {label: 'Handle', field: 'handle'},
@@ -22,6 +21,7 @@
         {label: 'Required', field: 'required'},
         {label: 'Filterable', field: 'filterable'},
       ]"
+      @changePage="changePage"
     >
       <template v-slot:name="{ row }">
         <nuxt-link :to="{ name: 'settings-attributes-id', params: { id: row.id }}">
@@ -58,7 +58,7 @@
     </gc-table>
 
     <div class="search-table">
-     <!-- <b-table
+      <!-- <b-table
         @page-change="changePage"
         :data="attributes"
         :total="total"
@@ -97,30 +97,23 @@
 </template>
 
 <script>
-import { get } from 'lodash'
+const get = require('lodash/get')
 
 export default {
   layout: 'settings',
-  head () {
-    return {
-      title: this.$t('Available Attributes')
-    }
+  async fetch () {
+    const response = await this.$gc.attributeGroups.get({})
+    this.attributeGroups = response.data.data
   },
   data () {
     return {
       attributes: [],
+      attributeGroups: [],
       meta: {},
       page: 1,
       perPage: 15,
       total: 0,
       showCreateModal: false
-    }
-  },
-
-  async asyncData ({ app }) {
-    const response = await app.$gc.attributeGroups.get({})
-    return {
-      attributeGroups: response.data.data
     }
   },
   async mounted () {
@@ -150,12 +143,13 @@ export default {
       this.fetch()
     }
   },
+  head () {
+    return {
+      title: this.$t('Available Attributes')
+    }
+  },
   locale () {
     return this.$store.state.core.locale
   }
 }
 </script>
-
-<style scoped>
-
-</style>

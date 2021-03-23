@@ -1,18 +1,12 @@
 <template>
-  <!-- <b-input
-    :value="formattedValue"
-    @input="input"
-    type="number"
-    step="any"
-  /> -->
-  <div class="mt-1 relative rounded-md shadow-sm">
-    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+  <div class="relative mt-1 rounded-md shadow-sm">
+    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
       <span class="text-gray-500 sm:text-sm sm:leading-5">
         {{ currency.format.replace('{price}', '') }}
       </span>
     </div>
-    <input :value="formattedValue" class="form-input block w-full pl-7 pr-12 sm:text-sm sm:leading-5" placeholder="0.00" aria-describedby="price-currency" @blur="input">
-    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+    <input :value="formattedValue" class="block w-full pr-12 form-input pl-7 sm:text-sm sm:leading-5" placeholder="0.00" aria-describedby="price-currency" @blur="input">
+    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
       <span id="price-currency" class="text-gray-500 sm:text-sm sm:leading-5">
         {{ currency.code }}
       </span>

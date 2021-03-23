@@ -1,16 +1,13 @@
 <template>
   <div v-if="collection">
-    <b-tabs
-      horizontal
-      class="secondary-tabs"
-    >
-      <b-tab-item label="Channels">
+    <gc-tabs>
+      <gc-tab-item label="Channels">
         <channel-manager @change="handleChannelChange($event, collection)" :channels="collection.channels.data" />
-      </b-tab-item>
-      <b-tab-item label="Customer Groups">
+      </gc-tab-item>
+      <gc-tab-item label="Customer Groups">
         <customer-group-manager  @change="handleCustomerGroupsChange($event, collection)" :groups="collection.customer_groups.data" />
-      </b-tab-item>
-    </b-tabs>
+      </gc-tab-item>
+    </gc-tabs>
   </div>
 </template>
 

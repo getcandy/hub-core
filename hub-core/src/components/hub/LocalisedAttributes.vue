@@ -1,16 +1,16 @@
 <template>
-<div>
+  <div>
     <form-field
       v-for="attribute in attributes"
-      :label="$t(getLabel(attribute))"
       :key="attribute.handle"
+      :label="$t(getLabel(attribute))"
       :errors="getErrors(attribute.handle)"
     >
       <gc-input
-        :value="getValue(attribute.handle)"
-        @input="setValue(attribute.handle, $event)"
-        :type="attribute.type"
         v-if="(['text', 'number', 'textarea']).includes(attribute.type)"
+        :value="getValue(attribute.handle)"
+        :type="attribute.type"
+        @input="setValue(attribute.handle, $event)"
       />
       <template v-if="attribute.type == 'select'">
         <!-- <b-autocomplete
@@ -22,24 +22,24 @@
         /> -->
       </template>
       <b-switch
+        v-if="attribute.type == 'toggle'"
         :value="getValue(attribute.handle)"
         @input="setValue(attribute.handle, $event)"
-        v-if="attribute.type == 'toggle'"
       />
-      <rich-text
+      <gc-rich-text
+        v-if="attribute.type == 'richtext'"
         :value="getValue(attribute.handle)"
         @input="setValue(attribute.handle, $event)"
         @change="(value) => $emit('change', value)"
-        v-if="attribute.type == 'richtext'"
       />
 
-      <!-- <b-input
+      <!-- <gc-input
           v-if="(['text', 'number', 'textarea']).includes(attribute.type)"
           :value="get(attribute.handle, 'default')"
           @input="set(attribute.handle, $event, 'default')"
           :required="attribute.required"
           :type="attribute.type"
-      ></b-input>
+      ></gc-input>
       <b-autocomplete
           v-model="attributeData[attribute.handle][defaultChannel][defaultLanguage]"
           :data="attribute.lookups"
@@ -91,13 +91,13 @@ export default {
   computed: {
     fallbackLanguage () {
       // Get our default language
-      const defaultLang = find(this.languages, lang => lang.default);
-      return defaultLang.lang || 'en';
+      const defaultLang = find(this.languages, lang => lang.default)
+      return defaultLang.lang || 'en'
     },
     fallbackChannel () {
       // Get our default language
-      const defaultChannel = find(this.channels, channel => channel.default);
-      return defaultChannel.handle || 'webstore';
+      const defaultChannel = find(this.channels, channel => channel.default)
+      return defaultChannel.handle || 'webstore'
     },
     channels () {
       return this.$store.state.core.channels
@@ -111,7 +111,7 @@ export default {
   },
   methods: {
     getLabel (attribute) {
-      return get(attribute, `name.${this.locale}`, attribute.name[this.fallbackLanguage]);
+      return get(attribute, `name.${this.locale}`, attribute.name[this.fallbackLanguage])
     },
     getErrors (handle) {
       return get(this.errors, `attribute_data.${handle}.${this.channel}.${this.locale}`)

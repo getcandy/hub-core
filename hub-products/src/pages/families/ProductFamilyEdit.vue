@@ -1,8 +1,8 @@
 <template>
   <div v-if="family">
-    <div class="bg-white p-6">
+    <div class="px-6 py-4 bg-white">
       <form-field :label="$t('Name')" required>
-        <b-input v-model="family.name" @input="updateName" />
+        <gc-input v-model="family.name" @input="updateName" />
       </form-field>
     </div>
     <div class="bg-white">
@@ -21,11 +21,8 @@
 import NormalizesObjects from '@getcandy/hub-core/src/mixins/NormalizesObjects.js'
 import ProductFamilyAttributeManager from '../../components/ProductFamilyAttributeManager.vue'
 
-const orderBy = require('lodash/orderBy')
 const filter = require('lodash/filter')
 const map = require('lodash/map')
-const each = require('lodash/each')
-const find = require('lodash/find')
 const flattenDeep = require('lodash/flattenDeep')
 
 export default {

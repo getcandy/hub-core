@@ -2,7 +2,7 @@
   <div class="p-6">
     <form @submit.prevent="create">
       <form-field v-for="(option, handle) in options" :key="handle" :label="$t(getLocaleValue(option.label))" required>
-        <b-input v-model="fields.options[handle][locale]" />
+        <gc-input v-model="fields.options[handle][locale]" />
       </form-field>
 
       <form-field :label="$t('Price')" :error="getFirstFormError('variants.0.price')" required>
@@ -10,11 +10,11 @@
       </form-field>
 
       <form-field :label="$t('SKU')" :error="getFirstFormError('variants.0.sku')" required>
-        <b-input v-model="fields.sku" />
+        <gc-input v-model="fields.sku" />
       </form-field>
 
       <form-field :label="$t('Inventory')" :error="getFirstFormError('variants.0.inventory')" required>
-        <b-input v-model="fields.inventory" />
+        <gc-input v-model="fields.inventory" />
       </form-field>
 
       <gc-button>{{ $t('Create option') }}</gc-button>
@@ -62,26 +62,25 @@ export default {
     }
   },
   created () {
+    // eslint-disable-next-line
     each(this.options, (option, handle) => {
       this.$set(this.fields.options, handle, {})
       this.$set(this.fields.options[handle], this.locale, '')
     })
   },
-  destroy () {
-    this.fields = {
-      sku: '',
-      options: {},
-      price: '',
-      stock: '',
-      inventory: ''
-    }
-  },
   mounted () {
     this.setFormErrors(this.errors)
   },
   methods: {
-    async create () {
+    create () {
       this.$emit('saved', this.fields)
+      this.fields = {
+        sku: '',
+        options: {},
+        price: '',
+        stock: '',
+        inventory: ''
+      }
     }
   }
 }

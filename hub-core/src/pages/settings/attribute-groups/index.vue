@@ -9,12 +9,12 @@
               <label>{{ $t('Name') }}</label>
             </header>
             <div>
-              <b-input
+              <gc-input
                 v-model="newName"
                 :placeholder="$t('The display name of the attribute group')"
                 required
               >
-              </b-input>
+              </gc-input>
             </div>
             <div class="text-red-600 text-xs" v-if="hasFormError('name')">
               {{ getFirstFormError('name') }}
@@ -25,12 +25,12 @@
               <label>{{ $t('Handle') }}</label>
             </header>
             <div>
-              <!--<b-input
+              <!--<gc-input
                 v-model="newHandle"
                 :placeholder="$t('The handle of the attribute group')"
                 required
               >
-              </b-input>-->
+              </gc-input>-->
               <handle-input v-model="newHandle" @raw="rawHandle = $event"/>
             </div>
             <div class="text-gray-600 text-xs mt-2" v-if="rawHandle != newHandle">

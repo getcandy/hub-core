@@ -20,13 +20,14 @@
           <tbody>
             <tr v-for="(tier, index) in tiers" :key="index" class="bg-white">
               <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                <b-input v-model="tier.lower_limit" type="number" :expanded="true" @input="handleChange(tier)" />
+                <gc-input v-model="tier.lower_limit" type="number" :expanded="true" :min="2" @input="handleChange(tier)" />
+                <span v-if="tier.lower_limit <= 1" class="text-xs text-red-600">{{ $t('Lower limit must be at least 2') }}</span>
               </td>
               <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                 <gc-price-input v-model="tier.price" :expanded="true" :is-cents="false" @input="handleChange(tier)" />
               </td>
               <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                <select-input v-model="tier.group.id" placeholder="Select customer group" :expanded="true">
+                <gc-select-input v-model="tier.group.id" placeholder="Select customer group" :expanded="true" @input="handleChange(tier)">
                   <option
                     v-for="group in customerGroups"
                     :key="group.id"
@@ -34,7 +35,7 @@
                   >
                     {{ group.name }}
                   </option>
-                </select-input>
+                </gc-select-input>
               </td>
               <td class="px-6 py-4 text-sm font-medium leading-5 text-right whitespace-no-wrap">
                 <gc-button theme="danger" size="x-small" @click="remove(index)">
@@ -52,86 +53,6 @@
       </div>
     </div>
   </div>
-  <!-- <div class="search-table">
-    <div class="b-table">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Lower Limit</th>
-            <th>Price</th>
-            <th>Customer group</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(tier, index) in tiers" :key="index">
-            <td>
-
-            </td>
-            <td>
-              <b-input v-model="tier.price" type="number" @input="handleChange(tier)"  :expanded="true" />
-            </td>
-            <td>
-                <b-select placeholder="Select customer group" :expanded="true" v-model="tier.group.id">
-                  <option
-                    v-for="group in customerGroups"
-                    :value="group.id"
-                    :key="group.id"
-                  >
-                    {{ group.name }}
-                    </option>
-                </b-select>
-            </td>
-            <td>
-              <b-button @click="remove(index)"  type="is-danger" icon-right="close-line" />
-            </td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="5"><b-button @click="add">Add Tier</b-button></td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div> -->
-  <!-- <div class="card" v-for="(tier, index) in tiers" :key="index">
-      <div class="card-content">
-        <div class="columns">
-          <div class="column">
-            <b-field label="Lower Limit">
-
-            </b-field>
-          </div>
-          <div class="column">
-            <b-field label="Price">
-              <b-input v-model="tier.price" type="number" @input="handleChange(tier)"  :expanded="true"></b-input>
-            </b-field>
-          </div>
-          <div class="column">
-            <b-field label="Customer Group">
-              <b-select placeholder="Select customer group" :expanded="true" v-model="tier.group.id">
-                <option
-                  v-for="group in customerGroups"
-                  :value="group.id"
-                  :key="group.id"
-
-                >
-                  {{ group.name }}
-                </option>
-              </b-select>
-            </b-field>
-          </div>
-          <div class="column is-1">
-            <b-button @click="remove(index)" type="is-danger">
-              <b-icon icon="close-line" />
-            </b-button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <b-button @click="add">Add Tier</b-button>
-  </div> -->
 </template>
 
 <script>

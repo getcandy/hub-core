@@ -1,3 +1,4 @@
+import AssetPicker from './components/global/AssetPicker.vue'
 import Button from './components/forms/Button.vue'
 import Input from './components/forms/Input.vue'
 import FormField from './components/forms/FormField.vue'
@@ -64,7 +65,8 @@ const components = {
   'drop-down-item': DropDownItem,
   'user-search': UserSearch,
   'sku-input': SkuInput,
-  'slug-input': SlugInput
+  'slug-input': SlugInput,
+  'asset-picker': AssetPicker
 }
 
 // prettier-ignore

@@ -105,7 +105,7 @@ export default ({ app }, inject) => {
 //       name: 'categories',
 //       component: CategoryIndex,
 //       meta: {
-//         permissions: ['manage_catalogue']
+//         permissions: ['manage-catalogue']
 //       }
 //     },
 //     {
@@ -113,7 +113,7 @@ export default ({ app }, inject) => {
 //         name: 'categories.edit.details',
 //         component: CategoryDetails,
 //         meta: {
-//           permissions: ['manage_catalogue']
+//           permissions: ['manage-catalogue']
 //         }
 //     },
 //     {

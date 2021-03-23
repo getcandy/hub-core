@@ -15,12 +15,12 @@
         <tr v-for="(route, routeIndex) in routes" :key="route.id">
           <td>
             <b-field :message="$t('Path is used to determine nested routes (optional)')" >
-              <b-input v-model="route.path" placeholder="/" />
+              <gc-input v-model="route.path" placeholder="/" />
             </b-field>
           </td>
           <td>
             <b-field :message="$t('The main slug for the route')" >
-              <b-input v-model="route.slug" />
+              <gc-input v-model="route.slug" />
             </b-field>
           </td>
           <td>
@@ -57,12 +57,12 @@
         <tr v-for="(route, routeIndex) in redirects" :key="route.id">
           <td>
             <b-field>
-              <b-input v-model="route.path" placeholder="/" />
+              <gc-input v-model="route.path" placeholder="/" />
             </b-field>
           </td>
           <td>
             <b-field>
-              <b-input v-model="route.slug" />
+              <gc-input v-model="route.slug" />
             </b-field>
           </td>
           <td>

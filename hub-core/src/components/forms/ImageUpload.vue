@@ -4,32 +4,32 @@
       <div class="p-4 bg-gray-100">
         <img :src="preview" class="mx-auto shadow-sm">
       </div>
-      <div class="py-2 px-4 text-sm border-t flex items-center justify-between">
+      <div class="flex items-center justify-between px-4 py-2 text-sm border-t">
         <div>
           {{ value.filename }}
         </div>
-        <button class=" text-gray-500 hover:text-red-500" @click="$emit('input', null)">
-          <i class="ri-delete-bin-line text-lg" />
+        <button class="text-gray-500  hover:text-red-500" @click="$emit('input', null)">
+          <i class="text-lg ri-delete-bin-line" />
         </button>
       </div>
     </div>
     <template v-else>
       <div v-if="!uploading">
         <button
-          class="border rounded w-full text-left p-3 flex"
+          class="flex w-full p-3 text-left border rounded"
           @click="() => {
             $refs['input'].click()
           }"
         >
           <div class="text-right">
-            <span class="bg-gray-300 rounded text-xs text-gray-600 hover:text-gray-700 px-2 py-1 block font-bold uppercase">
+            <span class="block px-2 py-1 text-xs font-bold text-gray-600 uppercase bg-gray-300 rounded hover:text-gray-700">
               {{ value ? 'Replace' : 'Upload' }}
             </span>
           </div>
         </button>
       </div>
-      <div v-else class="p-3 border rounded flex items-center w-full text-gray-600 uppercase font-bold text-xs">
-        <b-icon icon="loader-5-line" class="spin mr-2" /> Uploading
+      <div v-else class="flex items-center w-full p-3 text-xs font-bold text-gray-600 uppercase border rounded">
+        <gc-loading-spinner /> Uploading
       </div>
 
       <input ref="input" type="file" class="hidden" @change="handleFileChange">

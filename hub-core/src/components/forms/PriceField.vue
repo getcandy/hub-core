@@ -1,13 +1,11 @@
 <template>
   <div>
-    <b-field>
-      <b-input
-        :value="formattedValue"
-        type="number"
-        step="any"
-        @input="input"
-      />
-    </b-field>
+    <gc-input
+      :value="formattedValue"
+      type="number"
+      step="any"
+      @input="input"
+    />
   </div>
 </template>
 

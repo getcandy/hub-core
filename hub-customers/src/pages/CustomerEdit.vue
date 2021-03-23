@@ -1,5 +1,5 @@
 <template>
-  <div v-if="customer">
+  <div v-if="!$fetchState.pending">
     <div class="flex p-6 bg-white" >
       <div class="w-3/4 mr-6">
         <div class="grid grid-cols-3 gap-4">
@@ -91,10 +91,18 @@ export default {
   mixins: [
     HandlesForms
   ],
-  async asyncData({app, params, $store, $set}) {
-    const response = await app.$getcandy.on('customers', 'getCustomersCustomerId', params.id, 'users,customerGroups')
+  data () {
+    return {
+      customer: null,
+      customerCustomerGroups: [],
+      users: [],
+      fields: []
+    }
+  },
+  async fetch () {
+    const response = await this.$getcandy.on('customers', 'getCustomersCustomerId', this.$route.params.id, 'users,customerGroups')
     // Get customer fields.
-    const fieldsResponse = await app.$getcandy.on('customers', 'getCustomerFields')
+    const fieldsResponse = await this.$getcandy.on('customers', 'getCustomerFields')
 
     const fields = get(fieldsResponse, 'data.data.fields', [])
     const customer = get(response, 'data.data')
@@ -108,28 +116,26 @@ export default {
       }
     })
 
-    return {
-      customer,
-      customerCustomerGroups: map(get(response, 'data.data.customer_groups.data', []), (group) => {
-        return group.id
-      }),
-      users: get(response, 'data.data.users.data', []),
-      fields
-    }
+    this.customer = customer
+    this.customerCustomerGroups = map(get(response, 'data.data.customer_groups.data', []), (group) => {
+      return group.id
+    })
+    this.users = get(response, 'data.data.users.data', [])
+    this.fields = fields
   },
   mounted() {
     this.$nuxt.context.app.$hooks.callHook('customers.edit.blocks', this.additionalBlocks);
   },
   methods: {
     syncCustomer () {
-      this.$store.commit('customer/setModel', this.customer)
+      this.$store.commit('customer/setModel', JSON.parse(JSON.stringify(this.customer)))
     }
   },
   watch: {
     customer: {
       deep: true,
       handler () {
-      this.syncCustomer()
+        this.syncCustomer()
       }
     },
     customerFields: {

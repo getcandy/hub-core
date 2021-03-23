@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="flex pl-4 text-white bg-gray-800">
+    <div class="flex pl-4 text-gray-600 bg-gray-200">
       <button
         v-for="(tab, tabIndex) in tabs"
         :key="tabIndex"
         @click="activate(tab)"
-        :class="tab.active ? 'bg-white text-gray-800' : 'hover:bg-gray-700'"
+        :class="tab.active ? 'bg-white text-gray-600' : 'hover:bg-gray-300'"
         class="px-6 py-4 text-sm border-none outline-none focus:border-none focus:outline-none "
       >
         {{ getTabLabel(tab) }}

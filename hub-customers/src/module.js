@@ -11,6 +11,8 @@ export default function (moduleOptions) {
     'pages/CustomerEdit.vue',
     'pages/CustomerDetails.vue',
     'pages/CustomerOrderHistory.vue',
+    'pages/reports/SpendingReport.vue',
+    'pages/reports/CustomerGroupReport.vue',
     'store/customer.js',
   ];
 

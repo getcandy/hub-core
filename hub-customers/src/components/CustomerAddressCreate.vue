@@ -3,12 +3,12 @@
     <div class="columns">
       <div class="column">
         <b-field :label="$t('First name')">
-          <b-input v-model="model.firstname" required />
+          <gc-input v-model="model.firstname" required />
         </b-field>
       </div>
       <div class="column">
         <b-field :label="$t('Last name')">
-          <b-input v-model="model.lastname" required />
+          <gc-input v-model="model.lastname" required />
         </b-field>
       </div>
     </div>
@@ -16,17 +16,17 @@
     <div class="columns">
       <div class="column">
         <b-field :label="$t('Address Line 1')">
-          <b-input v-model="model.address" required />
+          <gc-input v-model="model.address" required />
         </b-field>
       </div>
       <div class="column">
         <b-field :label="$t('Address Line 2')">
-          <b-input v-model="model.address_two" />
+          <gc-input v-model="model.address_two" />
         </b-field>
       </div>
       <div class="column">
         <b-field :label="$t('Address Line 3')">
-          <b-input v-model="model.address_three" />
+          <gc-input v-model="model.address_three" />
         </b-field>
       </div>
     </div>
@@ -34,17 +34,17 @@
     <div class="columns">
       <div class="column">
         <b-field :label="$t('City')">
-          <b-input v-model="model.city" required />
+          <gc-input v-model="model.city" required />
         </b-field>
       </div>
       <div class="column">
         <b-field :label="$t('State')">
-          <b-input v-model="model.state" />
+          <gc-input v-model="model.state" />
         </b-field>
       </div>
       <div class="column">
         <b-field :label="$t('County')">
-          <b-input v-model="model.county" />
+          <gc-input v-model="model.county" />
         </b-field>
       </div>
     </div>
@@ -52,12 +52,12 @@
     <div class="columns">
       <div class="column">
         <b-field :label="$t('Zip')">
-          <b-input v-model="model.zip" />
+          <gc-input v-model="model.zip" />
         </b-field>
       </div>
       <div class="column">
         <b-field :label="$t('Country')">
-          <b-input v-model="model.country" />
+          <gc-input v-model="model.country" />
         </b-field>
       </div>
     </div>

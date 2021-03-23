@@ -4,16 +4,29 @@ export default ({ app }, inject) => {
   // TODO: Try and do this more effeciently
   app.router.addRoutes([
     {
-      path: '/reports',
+      path: '/reports/exports',
       name: 'reports.index',
       component: ReportsIndex,
       meta: {
-        permissions: ['view_reports']
+        permissions: ['view-reports']
       }
     },
 
   ])
 
+
+  app.store.dispatch('addNavItems', {
+    section: 'reports',
+    items: [
+      {
+        label: 'Exports',
+        position: 0,
+        route: {
+          name: 'reports.index'
+        }
+      },
+    ]
+  })
 //   app.store.commit('addSection', {
 //     title: 'Reports',
 //     handle: 'reports',

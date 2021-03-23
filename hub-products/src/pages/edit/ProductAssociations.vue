@@ -1,23 +1,18 @@
 <template>
   <div v-if="product">
     <!-- Here we want to loop through any sections that have been hooked into -->
-    <div class="flex pl-4 text-white bg-gray-800">
+    <div class="flex pl-4 text-gray-600 bg-gray-200">
       <button
-        v-for="(tab, tabIndex) in tabs"
+        v-for="(item, tabIndex) in tabs"
         :key="tabIndex"
-        :class="activeTab == tabIndex ? 'bg-white text-gray-800' : 'hover:bg-gray-700'"
+        :class="activeTab == tabIndex ? 'bg-white text-gray-600' : 'hover:bg-gray-300'"
         class="px-6 py-4 text-sm border-none outline-none focus:border-none focus:outline-none "
         @click="activeTab = tabIndex"
       >
-        {{ tab.title }}
+        {{ item.title }}
       </button>
     </div>
     <component :is="tab" :product="product" @changed="handleChanged" />
-    <!-- <gc-tabs secondary>
-      <gc-tab-item v-for="(tab, tabIndex) in tabs" :key="tabIndex" :label="tab.title">
-        <component :is="tab.component" :product="product" @changed="handleChanged" />
-      </gc-tab-item>
-    </gc-tabs> -->
   </div>
 </template>
 
@@ -57,8 +52,8 @@ export default {
   },
   methods: {
     async handleChanged (callback) {
-      const product = await this.createDraft('product', this.product.id, {
-        afterRedirect: async (draft) => {
+      await this.createDraft('product', this.product.id, {
+        afterRedirect: (draft) => {
           this.product.id = draft.id
         }
       }, this.$getcandy)

@@ -23,32 +23,32 @@
     <!-- <div class="columns">
       <div class="column">
         <b-field :label="$t('First name')">
-          <b-input v-model="customer.firstname" />
+          <gc-input v-model="customer.firstname" />
         </b-field>
       </div>
       <div class="column">
         <b-field :label="$t('Last name')">
-          <b-input v-model="customer.lastname" />
+          <gc-input v-model="customer.lastname" />
         </b-field>
       </div>
     </div>
     <b-field :label="$t('Email')" :type="hasFormError('email') ? 'is-danger' : null" :message="getFirstFormError('email')">
-      <b-input v-model="customer.email" />
+      <gc-input v-model="customer.email" />
     </b-field>
     <div class="columns">
       <div class="column">
         <b-field :label="$t('Password')" :type="hasFormError('password') ? 'is-danger' : null" :message="getFirstFormError('password')">
-          <b-input type="password" v-model="customer.password" />
+          <gc-input type="password" v-model="customer.password" />
         </b-field>
       </div>
       <div class="column">
         <b-field :label="$t('Password confirmation')">
-          <b-input type="password" v-model="customer.password_confirmation" />
+          <gc-input type="password" v-model="customer.password_confirmation" />
         </b-field>
       </div>
     </div>
     <b-field v-for="(field, handle) in fields" :key="handle" :label="$t(field.label)">
-      <b-input :type="field.type || 'text'" v-model="customer.fields[handle]" />
+      <gc-input :type="field.type || 'text'" v-model="customer.fields[handle]" />
     </b-field> -->
 
     <!-- <b-button :loading="processing" type="is-primary" native-type="submit">{{ $t('Create & edit customer') }}</b-button> -->

@@ -24,6 +24,9 @@ export default {
     }
   },
   watch: {
+    value (val) {
+      this.text = val
+    },
     initial () {
       if (!this.manual) {
         this.text = this.$format.slug(this.initial)

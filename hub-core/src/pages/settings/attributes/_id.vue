@@ -34,7 +34,7 @@
             <label class="block font-bold text-gray-700">{{ $t('Handle') }}</label>
           </header>
           <div>
-            <b-input v-model="attribute.handle" :disabled="true" />
+            <gc-input v-model="attribute.handle" :disabled="true" />
           </div>
         </div>
         <div class="mb-4">
@@ -116,10 +116,10 @@
           <!-- <b-table searchable paginated :data="">
             <template slot-scope="props">
               <b-table-column field="label" :label="$t('Label')" sortable>
-                <b-input v-model="props.row.label" />
+                <gc-input v-model="props.row.label" />
               </b-table-column>
               <b-table-column field="value" :label="$t('Value')" sortable>
-                <b-input v-model="props.row.value" />
+                <gc-input v-model="props.row.value" />
               </b-table-column>
               <b-table-column>
                 <b-button type="is-danger" @click="removeLookup(props.index)"><i class="ri-delete-bin-line"></i></b-button>

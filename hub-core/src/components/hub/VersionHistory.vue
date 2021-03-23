@@ -1,66 +1,66 @@
 <template>
-  <div class="bg-gray-100 border-t p-6">
-    <div
-      class="rounded-lg border border-gray-300 bg-white px-3 py-2 hover:border-gray-400 group-focus:border-blue-300 sm:flex sm:justify-between sm:space-x-4"
-      v-for="version in versions"
-      :key="version.id"
-    >
-        <div class="flex items-center space-x-0">
-          <div class="flex-shrink-0 flex items-center hidden">
-            <span aria-hidden="" class="form-radio text-indigo-600 group-focus:bg-red-500"></span>
-          </div>
-          <div class="text-sm leading-5">
-            <p class="block font-medium text-gray-900">
-              {{ $format.date(version.created_at) }}
-            </p>
-            <div class="text-gray-500">
-              <span class="block sm:inline">
-                <span v-if="version.user.data">
-                  {{ version.user.data.email }}
-                </span>
-                <span v-else>
-                  Unknown
-                </span>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="flex text-sm leading-5 space-x-1 sm:mt-0 sm:block sm:space-x-0 sm:text-right">
-          <gc-button @click="triggerRestore(version)">
-            {{ $t('Restore') }}
-          </gc-button>
-        </div>
-      </div>
-      <simple-modal heading="Restore version" :open="showRestoreConfirm" @confirmed="() => {
+  <div class="p-6 bg-gray-100 border-t">
+    <gc-form-field label="Select a version">
+      <gc-select-input v-model="versionId">
+        <option :value="null">
+          Select a version
+        </option>
+
+        <option v-for="record in versions" :key="record.id" :value="record.id">
+          {{ $format.date(record.created_at) }} <span v-if="record.user.data">({{ record.user.data.email }})</span>
+        </option>
+      </gc-select-input>
+    </gc-form-field>
+
+    <gc-button :disabled="!version" @click="triggerRestore">
+      Restore
+    </gc-button>
+
+    <!-- <template v-if="version">
+      <version-record v-for="record in version.relations.data" :key="record.id" :record="record" />
+    </template> -->
+
+    <simple-modal
+      heading="Restore version"
+      :open="showRestoreConfirm"
+      @confirmed="() => {
         showRestoreConfirm = false
-        $emit('restore', version.id)
-      }" @close="showRestoreConfirm = false">
-        {{ $t('Are you sure you want to create a draft based on this version?') }}
-      </simple-modal>
+        $emit('restore', versionId)
+      }"
+      @close="showRestoreConfirm = false"
+    >
+      {{ $t('Are you sure you want to create a draft based on this version?') }}
+    </simple-modal>
   </div>
 </template>
 
 <script>
-  export default {
-    props: {
-      versions: {
-        type: Array,
-        default: () => []
-      }
-    },
-    data () {
-      return {
-        showRestoreConfirm: false,
-        version: null
-      }
-    },
-    methods: {
-      triggerRestore (version) {
-        this.version = version
-        this.showRestoreConfirm = true
-      }
+const find = require('lodash/find')
+
+export default {
+  props: {
+    versions: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data () {
+    return {
+      versionId: null,
+      showRestoreConfirm: false
+    }
+  },
+  computed: {
+    version () {
+      return find(this.versions, v => v.id === this.versionId)
+    }
+  },
+  methods: {
+    triggerRestore () {
+      this.showRestoreConfirm = true
     }
   }
+}
 </script>
 
 <style scoped>

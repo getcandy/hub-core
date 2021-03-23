@@ -1,28 +1,30 @@
 <template>
-    <div class="relative rounded-md shadow-sm">
-        <gc-icon :icon="icon" v-if="icon" class="absolute mt-3 ml-3 text-gray-500" size="sm" />
-        <input
-            :value="value"
-            @input="$emit('input', $event.target.value)"
-            @blur="$emit('blur', $event.target.value)"
-            @focus="$emit('focus', $event.target.value)"
-            ref="input"
-            :disabled="disabled"
-            :class="{
-                'pr-12': $slots.suffix,
-                'pl-8': $slots.prefix || icon
-            }"
-            class="block w-full form-input sm:text-sm sm:leading-5 disabled:bg-gray-100"
-            :type="type"
-            :autocomplete="autocomplete"
-            :name="name"
-            :placeholder="placeholder"
-            :required="required"
-            :max="max"
-            :step="step"
-        />
-        <slot name="suffix" />
-    </div>
+  <div class="relative rounded-md shadow-sm">
+    <gc-icon :icon="icon" v-if="icon" class="absolute mt-3 ml-3 text-gray-500" size="sm" />
+    <input
+        :value="value"
+        :id="id"
+        @input="$emit('input', $event.target.value)"
+        @blur="$emit('blur', $event.target.value)"
+        @focus="$emit('focus', $event.target.value)"
+        ref="input"
+        :disabled="disabled"
+        :class="{
+            'pr-12': $slots.suffix,
+            'pl-8': $slots.prefix || icon
+        }"
+        class="block w-full form-input sm:text-sm sm:leading-5 disabled:bg-gray-100"
+        :type="type"
+        :autocomplete="autocomplete"
+        :name="name"
+        :placeholder="placeholder"
+        :required="required"
+        :min="min"
+        :max="max"
+        :step="step"
+    />
+    <slot name="suffix" />
+  </div>
 </template>
 
 <script>
@@ -34,6 +36,10 @@ export default {
         type: {
             type: String,
             default: 'text'
+        },
+        id: {
+          type: String,
+          default: null
         },
         autocomplete: {
           type: String,
@@ -62,6 +68,10 @@ export default {
         step: {
           type: String,
           default: null,
+        },
+        min: {
+          type: Number|String,
+          default: null
         },
         max: {
           type: Number|String,

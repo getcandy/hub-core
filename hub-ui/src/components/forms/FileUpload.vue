@@ -8,7 +8,10 @@
         <span class="block p-4 text-sm text-center text-gray-500" v-if="!files.length && !processOnAdd">Files pending upload will appear here.</span>
         <div v-for="file in files" :key="file.id" class="p-4 border-b">
           <div class="flex">
-              <img :src="file.src" width="50" class="mr-4">
+                <img :src="file.src" width="50" class="mr-4" v-if="file.type.includes('image')">
+              <div class="mr-4" v-else>
+                <gc-icon icon="file-text" size="lg" />
+              </div>
               <div class="flex-none w-full ">
                 <p class="text-sm truncate">{{ file.name }}</p>
                 <span class="text-xs font-bold text-gray-500 uppercase">{{ $format.number(file.size / 1000) }}kb</span>
@@ -20,7 +23,7 @@
           <div v-if="!getFileErrors(file.id)">
           </div>
         </div>
-        <div v-if="errors.length && !files.length">
+        <div v-if="errors.length && !files.length" class="p-4">
           <div v-for="(error, errorIndex) in errors" :key="errorIndex">
             <span class="text-sm text-red-600">{{ error.message }}</span>
           </div>
@@ -104,7 +107,9 @@ export default {
         assetable: this.assetable,
         validation: {
           width: this.width,
-          height: this.height
+          height: this.height,
+          // size: this.$store.state.core.maxUploadSize
+          size: 1000
         }
       }
     }
@@ -114,12 +119,15 @@ export default {
       if (this.refreshing) {
         return
       }
+      this.errors = []
       this.uploader.upload().then(response => {
-        this.error = null
-        this.$emit('finished')
+        if (!response.failed.length) {
+          this.$emit('finished')
+          return;
+        }
       }).catch(error => {
         this.uploader.removeFile(error.file)
-        this.error = error.message
+        this.errors.push(error.message)
       })
     },
     init (files) {
@@ -149,7 +157,6 @@ export default {
           this.errors.push(error)
         }).on('upload-error', (file, error, response) => {
           this.errors.push(response)
-          console.log('hi')
           setTimeout(() => {
             this.uploader.removeFile(file.id)
           }, 2000)
@@ -199,3 +206,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.uppy-DragDrop--isDragDropSupported {
+  border:none!important;
+}
+</style>

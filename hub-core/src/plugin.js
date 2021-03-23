@@ -42,7 +42,6 @@ import CustomerGroupManager from './getcandyhub/components/hub/CustomerGroupMana
 import DraftTools from './getcandyhub/components/hub/DraftTools.vue'
 import EntrySidebar from './getcandyhub/components/hub/EntrySidebar.vue'
 import ExternalAssetUploader from './getcandyhub/components/forms/ExternalAssetUploader.vue'
-import FileUpload from './getcandyhub/components/forms/FileUpload.vue'
 import FormField from './getcandyhub/components/forms/FormField.vue'
 import GetCandyLogo from './getcandyhub/components/global/GetCandyLogo.vue'
 import GetCandyStamp from './getcandyhub/components/global/GetCandyStamp.vue'
@@ -67,7 +66,6 @@ import RichText from './getcandyhub/components/forms/RichText.vue'
 import Pagination from './getcandyhub/components/hub/Pagination.vue'
 import SearchTable from './getcandyhub/components/hub/SearchTable.vue'
 import SelectInput from './getcandyhub/components/forms/SelectInput.vue'
-import SideNav from './getcandyhub/components/global/SideNav.vue'
 import SimpleModal from './getcandyhub/components/hub/SimpleModal.vue'
 import ThumbnailLoader from './getcandyhub/components/utils/ThumbnailLoader.vue'
 import Toggle from './getcandyhub/components/forms/Toggle.vue'
@@ -75,6 +73,7 @@ import Toolbar from './getcandyhub/components/toolbar/Toolbar.vue'
 import TopBar from './getcandyhub/components/global/TopBar.vue'
 import UrlManager from './getcandyhub/components/hub/UrlManager.vue'
 import VersionHistory from './getcandyhub/components/hub/VersionHistory.vue'
+import VersionRecord from './getcandyhub/components/hub/VersionRecord.vue'
 import YoutubeUploader from './getcandyhub/components/forms/YoutubeUploader.vue'
 import { state, mutations, actions } from './getcandyhub/store/index.js';
 import UserStore from './getcandyhub/store/user.js';
@@ -96,7 +95,6 @@ Vue.component('customer-group-manager', CustomerGroupManager)
 Vue.component('draft-tools', DraftTools)
 Vue.component('entry-sidebar', EntrySidebar)
 Vue.component('external-asset-uploader', ExternalAssetUploader)
-Vue.component('file-upload', FileUpload)
 Vue.component('form-field', FormField)
 // Vue.component('gc-button', Button)
 Vue.component('pagination', Pagination)
@@ -120,13 +118,13 @@ Vue.component('radio-checkbox', RadioCheckbox)
 Vue.component('rich-text', RichText)
 Vue.component('search-table', SearchTable)
 Vue.component('select-input', SelectInput)
-Vue.component('side-nav', SideNav)
 Vue.component('simple-modal', SimpleModal)
 Vue.component('thumbnail-loader', ThumbnailLoader)
 Vue.component('toggle', Toggle)
 Vue.component('toolbar', Toolbar)
 Vue.component('top-bar', TopBar)
 Vue.component('url-manager', UrlManager)
+Vue.component('version-record', VersionRecord)
 Vue.component('version-history', VersionHistory)
 Vue.component('youtube-uploader', YoutubeUploader)
 
@@ -192,7 +190,17 @@ var notifier = {
       return moment(date)
     }
 
-    currency (value, override = null, cents = true, showSymbol = true) {
+    currency (value, override = null, cents = true, showSymbol = true, precision = 2) {
+      // Going to allow passing value as an object, eventually we will migrate all to an object
+      // so we can destructure properly. For now, we support both.
+      if (typeof value === 'object' && value !== null) {
+        override = value.override || override
+        cents = value.cents || cents
+        showSymbol = value.showSymbol || showSymbol
+        precision = (value.precision === 0 || value.precision) ? value.precision : precision
+        value = value.amount
+      }
+
       let currencyInfo = this.state.core.currency
 
       if (override) {
@@ -201,6 +209,7 @@ var notifier = {
 
       return currency(cents ? value / 100 : value, {
         symbol: currencyInfo.format.replace('{price}', ''),
+        precision,
         decimal: currencyInfo.decimal || currencyInfo.decimal_point,
         formatWithSymbol: showSymbol
       }).format()
@@ -257,29 +266,30 @@ export default async ({ app }, inject) => {
     })
 
     app.store.registerModule('core', {
-        namespaced: false,
-        state,
-        mutations,
-        actions
-      })
+      namespaced: false,
+      state,
+      mutations,
+      actions
+    })
 
-      app.store.registerModule('user', {
-        namespaced: true,
-        UserStore
-      })
+    app.store.registerModule('user', {
+      namespaced: true,
+      UserStore
+    })
 
-      app.store.dispatch('addNavItems', {
-        section: "order-processing",
-        items: [
-          {
-            label: 'Users',
-            position: 50,
-            route: {
-                name: 'users'
-            }
+    app.store.dispatch('addNavItems', {
+      section: "order-processing",
+      items: [
+        {
+          label: 'Users',
+          position: 50,
+          access: ['manage-users'],
+          route: {
+              name: 'users'
           }
-        ]
-      })
+        }
+      ]
+    })
 
 /**
  *import ReycleBinIndex from './getcandyhub/pages/recycle-bin/index.vue'
@@ -336,12 +346,18 @@ import HubIndex from './getcandyhub/pages/index.vue'
     {
         path: '/users',
         name: 'users',
-        component: UsersIndex
+        component: UsersIndex,
+        meta: {
+          permissions: ['manage-users']
+        }
     },
     {
         path: '/users/:id',
         name: 'users-id',
-        component: UsersShow
+        component: UsersShow,
+        meta: {
+          permissions: ['manage-users']
+        }
     },
     {
         path: '/',

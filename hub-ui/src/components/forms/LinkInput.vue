@@ -1,9 +1,9 @@
 <template>
   <div class="flex items-top justify-between">
     <div class="w-full">
-      <b-input v-model="data.url" @input="handleInput" />
+      <gc-input v-model="data.url" @input="handleInput" />
       <label class="text-sm my-2 block font-semibold">Link title</label>
-      <b-input v-model="data.title" @input="handleInput" />
+      <gc-input v-model="data.title" @input="handleInput" />
     </div>
     <div class="w-64 text-right ml-4">
       <div class="flex items-center">

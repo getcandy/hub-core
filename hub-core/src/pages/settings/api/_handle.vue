@@ -6,7 +6,7 @@
         {{ $t('No settings found') }}
       </b-message>
       <b-field v-for="(value, field) in settings.content" :key="field" :label="$t(capitalize(field))">
-        <b-input v-model="settings.content[field]" />
+        <gc-input v-model="settings.content[field]" />
       </b-field>
     </div>
   </div>

@@ -57,10 +57,10 @@ export default {
         {
           firstname: this.customer.firstname,
           lastname: this.customer.lastname,
-          contactNumber: this.customer.contactNumber,
-          altContactNumber: this.customer.altContactNumber,
-          companyName: this.customer.companyName,
-          vatNo: this.customer.vatNo,
+          contact_number: this.customer.contact_number,
+          alt_contact_number: this.customer.alt_contact_number,
+          company_name: this.customer.company_name,
+          vat_no: this.customer.vat_no,
           fields: this.customer.fields
         }
       )

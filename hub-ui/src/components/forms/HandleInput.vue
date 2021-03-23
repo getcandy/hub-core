@@ -1,5 +1,5 @@
 <template>
-  <b-input :value="value" @input="sanitize" />
+  <gc-input :value="value" @input="sanitize" />
 </template>
 
 <script>

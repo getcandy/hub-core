@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-orders",
-  "version": "0.11.6",
+  "version": "0.12.0",
   "description": "",
   "main": "src/module.js",
   "scripts": {
@@ -14,9 +14,20 @@
     "@babel/cli": "^7.7.0",
     "@babel/core": "^7.7.2",
     "@babel/preset-env": "^7.7.1",
-    "@getcandy/hub-core": "^0.11.6",
+    "@getcandy/hub-core": "^0.12.0",
     "babel-loader": "^8.0.6",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "@nuxt/test-utils": "^0.0.1",
+    "@nuxt/types": "^2.14.6",
+    "@nuxt/typescript-build": "^2.0.3",
+    "@nuxtjs/eslint-config": "^3.1.0",
+    "@nuxtjs/eslint-config-typescript": "^3.0.0",
+    "@nuxtjs/eslint-module": "^2.0.0",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.5.0",
+    "eslint": "^7.10.0",
+    "eslint-plugin-nuxt": "^1.0.0"
   },
   "dependencies": {
     "chart.js": "^2.9.3",

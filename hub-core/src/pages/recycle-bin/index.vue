@@ -1,12 +1,12 @@
 <template>
   <div>
-  <toolbar heading="Recycling Bin">
-    <gc-input v-model="searchTerm" @input="refresh" :placeholder="$t('Search recyling bin')" icon="search-line" />
-  </toolbar>
-    <div v-if="!items.length">
-    </div>
+    <toolbar heading="Recycling Bin">
+      <gc-input v-model="searchTerm" :placeholder="$t('Search recyling bin')" icon="search" @input="refresh" />
+    </toolbar>
+    <div v-if="!items.length" />
     <gc-table
       :data="items"
+      :loading="fetching"
       :columns="[
         {label: '', field: 'thumbnail'},
         {label: $t('Name'), field: 'name'},
@@ -15,21 +15,22 @@
       ]"
     >
       <template v-slot:thumbnail="{ row }">
-        <thumbnail-loader width="30px" :asset="row"></thumbnail-loader>
+        <thumbnail-loader width="30px" :asset="row" />
       </template>
       <template v-slot:name="{ row }">
         <nuxt-link
-            :to="{
-              name: 'recycle-bin-id',
-              params: {
-                id: row.id
-              },
-              query: {
-                type: getTypeLabel(row.type),
-              }
-            }">
-              {{ row.name }}
-            </nuxt-link>
+          :to="{
+            name: 'recycle-bin-id',
+            params: {
+              id: row.id
+            },
+            query: {
+              type: getTypeLabel(row.type),
+            }
+          }"
+        >
+          {{ row.name }}
+        </nuxt-link>
       </template>
       <template v-slot:deleted_at="{ row }">
         {{ $format.date(row.deleted_at) }}
@@ -42,24 +43,20 @@
 </template>
 
 <script>
-const debounce = require('lodash/debounce')
 import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes'
+const debounce = require('lodash/debounce')
 
 export default {
   mixins: [
     HasAttributes
   ],
-  head () {
-    return {
-      title: 'Recycling Bin'
-    }
-  },
   data () {
     return {
       page: 1,
       perPage: 30,
       total: 0,
       searchTerm: null,
+      fetching: true,
       items: []
     }
   },
@@ -79,11 +76,12 @@ export default {
       this.fetch()
     }, 300),
     async fetch () {
+      this.fetching = true
       const response = await this.$gc.recycleBin.get({
         page: this.page,
         per_page: this.perPage,
         full_response: true,
-        terms: this.searchTerm
+        term: this.searchTerm
       })
       const { data } = response
 
@@ -91,6 +89,12 @@ export default {
       this.page = data.meta.current_page
       this.perPage = data.meta.per_page
       this.total = data.meta.total
+      this.fetching = false
+    }
+  },
+  head () {
+    return {
+      title: 'Recycling Bin'
     }
   }
 }

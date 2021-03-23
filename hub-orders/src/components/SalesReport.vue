@@ -1,58 +1,79 @@
 <template>
   <div>
-    <div class="flex items-center border-b px-6 py-3" v-if="showControls">
+    <div v-if="showControls" class="flex items-center px-6 py-3 border-b">
       <div>
         <b-datepicker
-          placeholder="Click to select..."
           v-model="dates"
-          @input="refresh"
+          placeholder="Click to select..."
           range
-        >
-        </b-datepicker>
+          @input="refresh"
+        />
       </div>
       <div class="mx-4">
-        <select-input v-model="viewMode" @input="refresh">
-          <option value="daily">Daily</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-        </select-input>
+        <gc-select-input v-model="viewMode" @input="refresh">
+          <option value="daily">
+            Daily
+          </option>
+          <option value="weekly">
+            Weekly
+          </option>
+          <option value="monthly">
+            Monthly
+          </option>
+        </gc-select-input>
       </div>
       <div>
-        <select-input  v-model="style" @input="refresh">
-          <option value="line">Line</option>
-          <option value="bar">Bar</option>
-        </select-input>
+        <gc-select-input v-model="style" @input="refresh">
+          <option value="line">
+            Line
+          </option>
+          <option value="bar">
+            Bar
+          </option>
+        </gc-select-input>
+      </div>
+      <div class="ml-4">
+        <gc-button :loading="exporting" @click="exportReport">
+          Export Report
+        </gc-button>
       </div>
     </div>
-    <canvas ref="graph" v-show="!loading"/>
+    <div v-show="loading" class="flex h-full p-12">
+      <div class="flex items-center text-gray-400">
+        <loading-spinner /><span class="ml-2 text-sm font-medium uppercase"> Loading Report</span>
+      </div>
+    </div>
+    <canvas v-show="!loading" ref="graph" />
   </div>
 </template>
 
 <script>
 import moment from 'moment'
+import { theme } from '~tailwind.config'
+const each = require('lodash/each')
+const Chart = require('chart.js')
 
-var Chart = require('chart.js');
 export default {
   props: {
     to: {
       type: Object
     },
     from: {
-      type: Object,
+      type: Object
     },
     mode: {
       type: String,
-      default: 'monthly',
+      default: 'monthly'
     },
     showControls: {
       type: Boolean,
-      default: true,
+      default: true
     },
     initialStyle: {
       default: 'bar'
     }
   },
-  data() {
+  data () {
     return {
       chart: null,
       loading: true,
@@ -61,53 +82,80 @@ export default {
       dates: [],
       viewMode: this.mode,
       style: this.initialStyle,
+      exporting: false,
       data: null
     }
   },
-  created() {
+  created () {
     if (!this.fromDate || !this.toDate) {
-      const date = new Date;
-      this.fromDate = new Date(date.setMonth(date.getMonth()-12))
-      this.toDate = new Date();
+      const date = new Date()
+      this.fromDate = new Date(date.setMonth(date.getMonth() - 12))
+      this.toDate = new Date()
     } else {
-      this.fromDate = this.from.subtract(1, 'months');
-      this.toDate = this.to;
+      this.fromDate = this.from.subtract(1, 'months')
+      this.toDate = this.to
     }
 
     this.dates = [
       this.fromDate,
       this.toDate
     ]
-    this.refresh();
+    this.refresh()
   },
   methods: {
-    update(event) {
-      this.fromDate = event.start;
-      this.toDate = event.end;
+    update (event) {
+      this.fromDate = event.start
+      this.toDate = event.end
 
-      this.refresh();
+      this.refresh()
     },
-    refresh() {
-      this.loading = true;
+    async exportReport () {
+      this.exporting = true
+      await this.$gc.reports.get('sales', {
+        from: moment(this.dates[0]).format('YYYY-MM-DD'),
+        to: moment(this.dates[1]).format('YYYY-MM-DD'),
+        mode: this.viewMode,
+        export: 1
+      })
+      this.$notify.queue('success', 'Report export started. Check your emails')
+      this.exporting = false
+    },
+    refresh () {
+      this.loading = true
       // Get the report we want.
       this.$gc.reports.get('sales', {
         from: moment(this.dates[0]).format('YYYY-MM-DD'),
         to: moment(this.dates[1]).format('YYYY-MM-DD'),
-        mode: this.viewMode,
-      }).then(response => {
-        const ctx = this.$refs.graph.getContext("2d");
-        this.loading = false;
+        mode: this.viewMode
+      }).then((response) => {
+        const ctx = this.$refs.graph.getContext('2d')
+        this.loading = false
 
         if (this.chart) {
-          this.chart.destroy();
+          this.chart.destroy()
         }
 
         this.data = response.data
 
+        const { datasets, labels } = this.data
+
+        each(datasets, (set, index) => {
+          set.borderWidth = 1
+          if (index === 0) {
+            set.backgroundColor = theme.colors.pink[400]
+            set.borderColor = theme.colors.pink[500]
+          } else {
+            set.backgroundColor = theme.colors.blue[400]
+            set.borderColor = theme.colors.blue[500]
+          }
+        })
 
         this.chart = new Chart(ctx, {
           type: this.style,
-          data: this.data,
+          data: {
+            datasets,
+            labels
+          },
           options: {
             responsive: true,
             tooltips: {
@@ -115,11 +163,14 @@ export default {
               intersect: false,
               callbacks: {
                 label: (tooltipItem, data) => {
-                  var label = tooltipItem.yLabel;
+                  let label = tooltipItem.yLabel
                   if (tooltipItem.datasetIndex == 1) {
-                      label = this.$format.currency(tooltipItem.yLabel)
+                    label = this.$format.currency({
+                      amount: tooltipItem.yLabel,
+                      precision: 0
+                    })
                   }
-                  return data.datasets[tooltipItem.datasetIndex].label + ': ' + label;
+                  return data.datasets[tooltipItem.datasetIndex].label + ': ' + label
                 }
               }
             },
@@ -138,7 +189,7 @@ export default {
               yAxes: [
                 {
                   id: 'A',
-                  position:'left',
+                  position: 'left',
                   ticks: {
                     beginAtZero: true
                   },
@@ -149,11 +200,14 @@ export default {
                 },
                 {
                   id: 'B',
-                  position:'right',
+                  position: 'right',
                   ticks: {
                     beginAtZero: true,
                     callback: (value, index, values) => {
-                      return this.$format.currency(value);
+                      return this.$format.currency({
+                        amount: value,
+                        precision: 0
+                      })
                     }
                   },
                   scaleLabel: {
@@ -164,9 +218,9 @@ export default {
               ]
             }
           }
-        });
-      }).catch(errors => {
-      });
+        })
+      }).catch((errors) => {
+      })
     }
   }
 }

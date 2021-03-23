@@ -8,11 +8,11 @@
       leave-class="opacity-100"
       leave-to-class="opacity-0"
     >
-    <div
-      v-show="open"
-      class="absolute inset-0 z-40 transition-opacity bg-gray-800 bg-opacity-75"
-      @click="$emit('close')"
-    />
+      <div
+        v-show="open"
+        class="absolute inset-0 z-40 transition-opacity bg-gray-800 bg-opacity-75"
+        @click="$emit('close')"
+      />
     </transition>
     <transition
       enter-to-class="translate-x-0"
@@ -22,20 +22,22 @@
       leave-class="translate-x-0"
       leave-active-class="transition duration-200 ease-in-out transform sm:duration-700"
     >
-    <div class="fixed top-0 right-0 z-50 h-full bg-white shadow-2xl" :class="`${width}`" v-show="open">
-      <header class="px-3 py-4 border-b shadow-sm" v-if="heading">
-        <div class="flex justify-between">
-          <h3 class="text-sm font-bold uppercase" >{{ heading }}</h3>
-          <span class="delete" data-dismiss="quickview" @click="$emit('close')"></span>
+      <div v-show="open" class="fixed top-0 right-0 z-50 h-full bg-white shadow-2xl" :class="`${width}`">
+        <header v-if="heading" class="px-3 py-4 border-b shadow-sm">
+          <div class="flex justify-between">
+            <h3 class="text-sm font-bold uppercase">
+              {{ heading }}
+            </h3>
+            <span class="delete" data-dismiss="quickview" @click="$emit('close')" />
+          </div>
+        </header>
+        <div>
+          <slot />
         </div>
-      </header>
-      <div>
-      <slot />
+        <footer class="px-3 mt-8 bg-white">
+          <slot name="footer" />
+        </footer>
       </div>
-      <footer class="px-3 mt-8 bg-white">
-        <slot name="footer" />
-      </footer>
-    </div>
     </transition>
   </div>
 </template>
@@ -58,7 +60,7 @@ export default {
     },
     bg: {
       type: String,
-      default: 'bg-white',
+      default: 'bg-white'
     },
     open: {
       type: Boolean,

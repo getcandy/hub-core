@@ -5,12 +5,12 @@
         <label>{{ $t('Name') }}</label>
       </header>
       <div>
-        <b-input
+        <gc-input
           v-model="name"
           :placeholder="$t('The display name of the attribute')"
           required
         >
-        </b-input>
+        </gc-input>
       </div>
     </div>
     <div class="mb-4">
@@ -19,11 +19,11 @@
         <p class="text-gray-600 leading-tight text-xs font-normal">{{ $t('This should be a unique handle to reference your attribute') }}</p>
       </header>
       <div>
-        <b-input
+        <gc-input
           v-model="handle"
           required
         >
-        </b-input>
+        </gc-input>
       </div>
       <div class="text-red-500" v-if="hasFormError('handle')">
         {{ getFirstFormError('handle') }}

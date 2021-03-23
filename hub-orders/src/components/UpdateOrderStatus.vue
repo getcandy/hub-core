@@ -30,7 +30,7 @@
                 <p class="text-gray-600 leading-tight text-xs font-normal">{{ $t('This content will be added to the email, if supported') }}</p>
               </header>
               <div>
-                <b-input type="textarea" v-model="notes" />
+                <gc-input type="textarea" v-model="notes" />
               </div>
             </div>
             <gc-button type="submit">

@@ -1,10 +1,10 @@
 <template>
   <div v-if="category">
-    <b-tabs v-model="activeTab" :animated="false" horizontal class="secondary-tabs">
-      <b-tab-item v-for="(tab, tabIndex) in tabs" :key="tabIndex" :label="tab.title">
+    <gc-tabs>
+      <gc-tab-item v-for="(tab, tabIndex) in tabs" :key="tabIndex" :label="tab.title">
         <component :is="tab.component" :category="category" />
-      </b-tab-item>
-    </b-tabs>
+      </gc-tab-item>
+    </gc-tabs>
   </div>
 </template>
 

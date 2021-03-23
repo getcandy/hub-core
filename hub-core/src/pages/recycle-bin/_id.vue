@@ -3,18 +3,18 @@
     <toolbar :heading="item.name" :thumbnail="item.thumbnail">
       <div class="flex">
         <div>
-          <button @click="showRestoreConfirm = true"  class="inline-flex justify-center w-full rounded-md border border-green-300 px-4 py-2 bg-white text-base leading-6 font-medium text-green-600 shadow-sm hover:text-green-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+          <gc-button @click="showRestoreConfirm = true">
             {{ $t('Restore') }}
-          </button>
+          </gc-button>
         </div>
         <div class="ml-2">
-          <button @click="showDeleteConfirm = true" class="inline-flex justify-center w-full rounded-md border border-red-300 px-4 py-2 bg-white text-base leading-6 font-medium text-red-600 shadow-sm hover:text-red-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+          <gc-button theme="danger" @click="showDeleteConfirm = true">
             {{ $t('Delete') }}
-          </button>
+          </gc-button>
         </div>
       </div>
     </toolbar>
-    <component :is="`${type}Type`" :item="item" :attribute-groups="attributeGroups" :model="item.recyclable" />
+    <component :is="`${type}Type`" :item="item" :attribute-groups="attributeGroups" :model="item.recyclable.data" />
 
     <simple-modal heading="Permanent delete" :open="showDeleteConfirm" @confirmed="deleteRecord" @close="showDeleteConfirm = false">
       {{ $t('This action cannot be undone. The record will no longer exist in the database and will not be restorable.') }}
@@ -43,15 +43,8 @@ export default {
   mixins: [
     HasAttributes
   ],
-  data () {
-    return {
-      showDeleteConfirm: false,
-      showRestoreConfirm: false
-    }
-  },
   async asyncData ({ app, params, query }) {
-
-    let includes = [];
+    let includes = []
 
     if (query.type == 'Product') {
       includes = [
@@ -60,7 +53,7 @@ export default {
     }
     const response = await app.$gc.recycleBin.find(params.id, {
       full_response: true,
-      includes: includes
+      includes
     })
 
     const attributeGroupResponse = await app.$gc.attributeGroups.get({
@@ -75,9 +68,15 @@ export default {
       recyclable: response.data.data.recyclable
     }
   },
+  data () {
+    return {
+      showDeleteConfirm: false,
+      showRestoreConfirm: false
+    }
+  },
   methods: {
     restoreRecord () {
-      this.$gc.recycleBin.restore(this.item.id).then((response) => {
+      this.$gc.recycleBin.restore(this.item.id).then(() => {
         this.$router.push({
           name: 'recycle-bin'
         })
@@ -85,7 +84,7 @@ export default {
       })
     },
     deleteRecord () {
-      this.$gc.recycleBin.delete(this.item.id).then((response) => {
+      this.$gc.recycleBin.delete(this.item.id).then(() => {
         this.$router.push({
           name: 'recycle-bin'
         })
