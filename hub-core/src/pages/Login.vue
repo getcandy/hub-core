@@ -9,26 +9,24 @@
           <span class="block text-xl text-purple-800">Welcome to</span>
           <strong class="text-3xl text-purple-800 uppercase">The Hub</strong>
         </div>
-          <form @submit.prevent="process" action="" class="has-margin-top-20">
-            <form-field :label="$t('Email')" :error="getError('email')" required>
-              <gc-input v-model="email" type="email" required />
-            </form-field>
-            <form-field :label="$t('Password')" :error="getError('password')" required v-if="!forgotPassword">
-              <gc-input v-model="password" type="password" required />
-            </form-field>
-            <div>
-              <gc-button :disabled="processing" type="submit" :loading="processing" theme="green">
-                <span>{{ $t(forgotPassword ? 'Send reset email' : 'Sign in') }}</span>
-              </gc-button>
-            </div>
-            <div class="mt-4 text-sm text-red-600" v-if="message">
-              {{ message }}
-            </div>
-          </form>
+        <form action="" class="has-margin-top-20" @submit.prevent="process">
+          <form-field :label="$t('Email')" :error="getError('email')" required>
+            <gc-input v-model="email" type="email" required />
+          </form-field>
+          <form-field v-if="!forgotPassword" :label="$t('Password')" :error="getError('password')" required>
+            <gc-input v-model="password" type="password" required />
+          </form-field>
+          <div>
+            <gc-button :disabled="processing" type="submit" :loading="processing" theme="green">
+              <span>{{ $t(forgotPassword ? 'Send reset email' : 'Sign in') }}</span>
+            </gc-button>
+          </div>
+          <div v-if="message" class="mt-4 text-sm text-red-600">
+            {{ message }}
+          </div>
+        </form>
       </div>
-      <div class="hidden w-full h-screen login-image lg:block">
-
-      </div>
+      <div class="hidden w-full h-screen login-image lg:block" />
     </div>
   </div>
 </template>
@@ -38,17 +36,12 @@ export default {
   layout: 'auth',
   data () {
     return {
-      email: 'alec@neondigital.co.uk',
-      password: 'HurkeyDurk@01245',
+      email: '',
+      password: '',
       message: '',
       processing: false,
       forgotPassword: false,
       errors: {}
-    }
-  },
-  head () {
-    return {
-      title: this.$t('Login')
     }
   },
   computed: {
@@ -59,7 +52,7 @@ export default {
   methods: {
     async forgot () {
       const response = await this.$gc.generic.post('password/reset/request', {
-        email: this.email,
+        email: this.email
       })
     },
     async process () {
@@ -102,15 +95,11 @@ export default {
           } else {
             this.message = response.error || response.message
           }
-
+        } else if (window.console) {
+          console.error(e)
+          this.message = 'Something went wrong, check the console for more info.'
         } else {
-          if (window.console) {
-            console.error(e)
-            this.message = 'Something went wrong, check the console for more info.'
-          } else {
-            this.message = 'Something went wrong'
-          }
-
+          this.message = 'Something went wrong'
         }
       }
       this.processing = false
@@ -123,6 +112,11 @@ export default {
     },
     getError (field) {
       return this.errors[field] || null
+    }
+  },
+  head () {
+    return {
+      title: this.$t('Login')
     }
   }
 }
