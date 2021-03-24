@@ -14,8 +14,9 @@ const defaultIncludes = Array([
   'publishedParent',
   'family.attributes.group',
   'layout',
-  'routes',
   'routes.language',
+  'routes.publishedParent',
+  'routes.draft',
   'variants.customerPricing.group',
   'variants.customerPricing.tax',
   'variants.image.transforms',
@@ -31,6 +32,7 @@ export const state = () => ({
   isDraft: false,
   createDraft: false,
   creatingDraft: false,
+  publishingDraft: false,
   attributes: null,
   state: 'idle',
   pendingAssets: [],
@@ -41,6 +43,9 @@ export const state = () => ({
 export const mutations = {
   setCreatingDraft (state, val) {
     state.creatingDraft = val
+  },
+  setPublishingDraft (state, val) {
+    state.publishingDraft = val
   },
   setModel (state, model) {
     state.model = model
@@ -185,6 +190,7 @@ export const actions = {
   },
 
   async publish ({ commit }, { id, $nuxt }) {
+    commit('setPublishingDraft', true)
     const response = await $nuxt.$getcandy.on('products', 'postProductsIdPublish', id, {
       query: {
         include: defaultIncludes,
@@ -209,6 +215,7 @@ export const actions = {
     commit('setModel', response.data.data)
     commit('setLiveId', publishedId)
     commit('setIsDraft', false)
+    commit('setPublishingDraft', false)
     return response
   },
   /**

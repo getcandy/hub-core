@@ -17,6 +17,7 @@
               :preview-url="previewUrl"
               :is-draft="isDraft"
               :creating-draft="creatingDraft"
+              :publishing-draft="publishingDraft"
               :versions="product.versions ? product.versions.data : []"
               :created-at="product.created_at"
               :updated-at="product.updated_at"
@@ -109,6 +110,9 @@ export default {
   computed: {
     creatingDraft () {
       return this.$store.state.product.creatingDraft
+    },
+    publishingDraft () {
+      return this.$store.state.product.publishingDraft
     },
     title () {
       return this.product ? this.attribute(this.product.attribute_data, 'name') : 'Loading...'

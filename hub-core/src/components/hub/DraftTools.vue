@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div v-if="creatingDraft" class="flex items-center">
+    <div v-if="creatingDraft || publishingDraft" class="flex items-center">
       <gc-loading-spinner class="w-3 h-3 mr-3 -ml-1 text-gray-500" />
-      <span class="text-xs font-medium text-gray-500 uppercase">{{ $t('Creating Draft') }}</span>
+      <span class="text-xs font-medium text-gray-500 uppercase">{{ $t(publishingDraft ? 'Publishing Draft' : 'Creating Draft') }}</span>
     </div>
     <div v-else class="flex items-center">
       <div v-if="previewUrl && isDraft" class="mr-2">
@@ -106,6 +106,10 @@
 export default {
   props: {
     creatingDraft: {
+      type: Boolean,
+      default: false
+    },
+    publishingDraft: {
       type: Boolean,
       default: false
     },

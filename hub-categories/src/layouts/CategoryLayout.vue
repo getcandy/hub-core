@@ -16,6 +16,7 @@
             <draft-tools
               :preview-url="previewUrl"
               :creating-draft="creatingDraft"
+              :publishing-draft="publishingDraft"
               :is-draft="isDraft"
               :versions="category.versions ? category.versions.data : []"
               :created-at="category.created_at"
@@ -94,6 +95,9 @@ export default {
   computed: {
     creatingDraft () {
       return this.$store.state.categories.creatingDraft
+    },
+    publishingDraft () {
+      return this.$store.state.categories.publishingDraft
     },
     title () {
       return this.category ? this.attribute(this.category.attribute_data, 'name') : 'Loading...'
