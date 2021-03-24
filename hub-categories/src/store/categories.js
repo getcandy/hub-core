@@ -9,7 +9,9 @@ const defaultIncludes = Array([
   'customerGroups',
   'layout',
   'versions.user',
-  'routes.language'
+  'routes.language',
+  'routes.publishedParent',
+  'routes.draft'
 ]).join(',')
 
 export const state = () => ({
@@ -19,6 +21,7 @@ export const state = () => ({
   state: 'idle',
   createDraft: false,
   creatingDraft: false,
+  publishingDraft: false,
   pendingAssets: [],
   assets: [],
   config: {}
@@ -32,6 +35,9 @@ export const mutations = {
   },
   setCreatingDraft (state, val) {
     state.creatingDraft = val
+  },
+  setPublishingDraft (state, val) {
+    state.publishingDraft = val
   },
   setIsDraft (state, val) {
     state.isDraft = val
@@ -120,6 +126,7 @@ export const actions = {
     commit('setCreateDraft', false)
   },
   async publish ({ commit }, { id, $nuxt }) {
+    commit('setPublishingDraft', true)
     const response = await $nuxt.$getcandy.on('categories', 'publishCategoryDraft', id, defaultIncludes, {
       query: {
         full_response: true
@@ -141,6 +148,7 @@ export const actions = {
     }
     commit('setModel', response.data.data)
     commit('setIsDraft', false)
+    commit('setPublishingDraft', false)
     return response
   },
   async save ({ state }, payload) {

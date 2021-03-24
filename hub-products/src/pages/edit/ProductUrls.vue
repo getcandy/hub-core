@@ -20,6 +20,7 @@ import HandlesForms from '@getcandy/hub-core/src/mixins/HandlesForms.js'
 
 const each = require('lodash/each')
 const first = require('lodash/first')
+const find = require('lodash/find')
 const get = require('lodash/get')
 
 export default {
@@ -62,6 +63,15 @@ export default {
       await this.createDraft('product', this.product.id, {
         afterRedirect: (draft) => {
           this.product.id = draft.id
+          const routes = draft.routes.data
+
+          // We need to find the drafted route
+          const routeDraft = find(routes, (r) => {
+            if (r.published_parent && r.published_parent.data) {
+              return r.published_parent.data.id === route.id
+            }
+          })
+          route.id = routeDraft ? routeDraft.id : route.id
         }
       }, this.$getcandy)
 
