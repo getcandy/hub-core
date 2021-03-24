@@ -89,12 +89,22 @@ export default {
       }
     },
     async handleDeleted (index) {
+      const route = this.routes[index]
       await this.createDraft('product', this.product.id, {
         afterRedirect: (draft) => {
           this.product.id = draft.id
+          const routes = draft.routes.data
+
+          // We need to find the drafted route
+          const routeDraft = find(routes, (r) => {
+            if (r.published_parent && r.published_parent.data) {
+              return r.published_parent.data.id === route.id
+            }
+          })
+          route.id = routeDraft ? routeDraft.id : route.id
         }
       }, this.$getcandy)
-      await this.$gc.routes.delete(this.routes[index].id)
+      await this.$gc.routes.delete(route.id)
       this.routes.splice(index, 1)
       if (this.routes.length === 1) {
         first(this.routes).default = true
