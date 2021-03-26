@@ -10,7 +10,7 @@
         <quick-view-panel :open="showVariantOptions" width="w-4/5 xl:w-3/5" @close="showVariantOptions = false">
           <variant-options :product="product" :initial-price="firstVariant.price" @save="saveVariants" />
         </quick-view-panel>
-        <variant-manager :product="product" :languages="languages" @change="handleVariantsChange" />
+        <variant-manager :product="product" :languages="languages" @change="handleVariantsChange" @delete="handleVariantDelete" />
       </gc-tab-item>
       <gc-tab-item :label="$t('Channels')">
         <channel-manager :channels="product.channels.data" @change="handleChannelChange" />
@@ -113,6 +113,29 @@ export default {
       })
       this.$notify.queue('success', this.$t('Product updated'))
       this.syncModel()
+    },
+    async handleVariantDelete (variant) {
+      await this.createDraft('product', this.product.id, {
+        afterRedirect: (product) => {
+          this.product.id = product.id
+
+          const variants = product.variants.data
+          // We need to find the drafted variant equivalent
+          const variantDraft = find(variants, (v) => {
+            if (v.published_parent && v.published_parent.data) {
+              return v.published_parent.data.id === variant.id
+            }
+          })
+          variant.id = variantDraft ? variantDraft.id : variant.id
+        }
+      }, this.$getcandy)
+
+      try {
+        await this.$getcandy.on('product-variants', 'deleteProductVariant', variant.id)
+        this.$notify.queue('success', this.$t('Product variant deleted'))
+      } catch (error) {
+
+      }
     },
     handleVariantsChange: debounce(async function (variant, done) {
       await this.createDraft('product', this.product.id, {

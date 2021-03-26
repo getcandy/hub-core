@@ -3,6 +3,14 @@
     <quick-view-panel :open="showCreatePanel" :heading="$t('Add variant option')" @close="showCreatePanel = false">
       <create-variant :options="product.option_data || {}" :product-id="product.id" :errors="createErrors" @saved="handleOptionCreate" />
     </quick-view-panel>
+    <simple-modal
+      heading="Remove Variant"
+      :open="showDeleteModal"
+      @confirmed="deleteVariant"
+      @close="showDeleteModal = false"
+    >
+      {{ $t('Are you sure you want to remove this variant?') }}
+    </simple-modal>
     <div class="flex">
       <div v-if="variants.length > 1" class="w-1/5">
         <header class="px-6 py-4">
@@ -13,12 +21,16 @@
         <div
           v-for="(variant, index) in variants"
           :key="variant.id"
+          class="flex items-center px-4 my-4"
         >
+          <button class="text-gray-400 hover:text-red-600 focus:outline-none" type="button" @click="triggerDeleteModal(variant)">
+            <gc-icon icon="trash" size="sm" />
+          </button>
           <button
-            class="w-full px-6 py-4 text-sm text-left border-l-4 focus:outline-none"
+            class="w-full px-4 text-sm leading-tight text-left truncate focus:outline-none"
             :class="{
-              'bg-white text-gray-800 hover:bg-white border-blue-500' : current.id == variant.id,
-              'hover:bg-gray-200 text-gray-600 border-transparent ': current.id != variant.id
+              'text-purple-600 font-semibold' : current.id == variant.id,
+              'hover:text-gray-900 text-gray-500 border-transparent ': current.id != variant.id
             }"
             @click="selectVariant(index)"
           >
@@ -237,7 +249,9 @@ export default {
       current: null,
       variants: [],
       hasGroupPricing: 0,
+      showDeleteModal: false,
       showCreatePanel: false,
+      variantToRemove: {},
       optionFields: {},
       createErrors: {}
     }
@@ -298,6 +312,17 @@ export default {
     this.selectVariant(0)
   },
   methods: {
+    deleteVariant () {
+      this.$emit('delete', this.variantToRemove)
+      const pos = this.variants.map(function (e) { return e.id }).indexOf(this.variantToRemove.id)
+      this.variants.splice(pos, 1)
+      this.variantToRemove = {}
+      this.showDeleteModal = false
+    },
+    triggerDeleteModal (variant) {
+      this.variantToRemove = variant
+      this.showDeleteModal = true
+    },
     syncVariants () {
       this.variants = JSON.parse(
         JSON.stringify(this.productVariants)
