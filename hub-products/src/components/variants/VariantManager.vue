@@ -314,6 +314,9 @@ export default {
   methods: {
     deleteVariant () {
       this.$emit('delete', this.variantToRemove)
+      if (this.current.id === this.variantToRemove.id) {
+        this.current = this.variants[0]
+      }
       const pos = this.variants.map(function (e) { return e.id }).indexOf(this.variantToRemove.id)
       this.variants.splice(pos, 1)
       this.variantToRemove = {}
