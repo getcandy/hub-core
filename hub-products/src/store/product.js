@@ -198,12 +198,12 @@ export const actions = {
       }
     })
 
-    const { params } = $nuxt.$route
+    const { params, name } = $nuxt.$route
     const publishedId = response.data.data.id
 
     // Only try and redirect if the ID for the current route
     // is different, otherwise we get an error.
-    if (params.id !== publishedId) {
+    if (params.id !== publishedId || name !== 'products.view') {
       await $nuxt.$router.push({
         name: 'products.view',
         params: {
