@@ -5,15 +5,15 @@
         <gc-input v-model="fields.options[handle][locale]" />
       </form-field>
 
-      <form-field :label="$t('Price')" :error="getFirstFormError('variants.0.price')" required>
+      <form-field :label="$t('Price')" :error="errors['variants.0.price'] ? errors['variants.0.price'][0] : null" required>
         <gc-price-input v-model="fields.price" :is-cents="false" />
       </form-field>
 
-      <form-field :label="$t('SKU')" :error="getFirstFormError('variants.0.sku')" required>
+      <form-field :label="$t('SKU')" :error="errors['variants.0.sku'] ? errors['variants.0.sku'][0] : null" required>
         <gc-sku-input v-model="fields.sku" />
       </form-field>
 
-      <form-field :label="$t('Inventory')" :error="getFirstFormError('variants.0.inventory')" required>
+      <form-field :label="$t('Inventory')" :error="errors['variants.0.inventory'] ? errors['variants.0.inventory'][0] : null" required>
         <gc-input v-model="fields.inventory" type="number" />
       </form-field>
 
@@ -74,18 +74,21 @@ export default {
   methods: {
     create () {
       this.$emit('saved', this.fields)
-      const fields = {
-        sku: '',
-        options: {},
-        price: '',
-        stock: '',
-        inventory: ''
+
+      if (!Object.keys(this.errors).length) {
+        const fields = {
+          sku: '',
+          options: {},
+          price: '',
+          stock: '',
+          inventory: ''
+        }
+        each(this.options, (option, handle) => {
+          this.$set(fields.options, handle, {})
+          this.$set(fields.options[handle], this.locale, '')
+        })
+        this.fields = fields
       }
-      each(this.options, (option, handle) => {
-        this.$set(fields.options, handle, {})
-        this.$set(fields.options[handle], this.locale, '')
-      })
-      this.fields = fields
     }
   }
 }
