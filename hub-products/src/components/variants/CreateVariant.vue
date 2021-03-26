@@ -6,15 +6,15 @@
       </form-field>
 
       <form-field :label="$t('Price')" :error="getFirstFormError('variants.0.price')" required>
-        <price-input v-model="fields.price" :is-cents="false" />
+        <gc-price-input v-model="fields.price" :is-cents="false" />
       </form-field>
 
       <form-field :label="$t('SKU')" :error="getFirstFormError('variants.0.sku')" required>
-        <gc-input v-model="fields.sku" />
+        <gc-sku-input v-model="fields.sku" />
       </form-field>
 
       <form-field :label="$t('Inventory')" :error="getFirstFormError('variants.0.inventory')" required>
-        <gc-input v-model="fields.inventory" />
+        <gc-input v-model="fields.inventory" type="number" />
       </form-field>
 
       <gc-button>{{ $t('Create option') }}</gc-button>
@@ -74,13 +74,18 @@ export default {
   methods: {
     create () {
       this.$emit('saved', this.fields)
-      this.fields = {
+      const fields = {
         sku: '',
         options: {},
         price: '',
         stock: '',
         inventory: ''
       }
+      each(this.options, (option, handle) => {
+        this.$set(fields.options, handle, {})
+        this.$set(fields.options[handle], this.locale, '')
+      })
+      this.fields = fields
     }
   }
 }
