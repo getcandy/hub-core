@@ -61,6 +61,17 @@ export default {
       return this.$store.state.core.locale
     }
   },
+  watch: {
+    options: {
+      handler () {
+        each(this.options, (option, handle) => {
+          this.$set(this.fields.options, handle, {})
+          this.$set(this.fields.options[handle], this.locale, '')
+        })
+      },
+      deep: true
+    }
+  },
   created () {
     // eslint-disable-next-line
     each(this.options, (option, handle) => {
