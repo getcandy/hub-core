@@ -116,6 +116,10 @@ export default {
     currentLocale: {
       type: String,
       default: 'en'
+    },
+    errors: {
+      type: Object,
+      default: () => {}
     }
   },
   data () {
@@ -238,11 +242,15 @@ export default {
     prepareAndSave () {
       const options = this.preparedOptions
       const variants = this.preparedVariants
-      this.$emit('save', { options, variants })
-      // Reset after save.
-      this.data = {
-        settings: []
-      }
+      this.$emit('save', {
+        options,
+        variants,
+        callback: () => {
+          this.data = {
+            settings: []
+          }
+        }
+      })
     },
     generateVariants () {
       const val = JSON.parse(JSON.stringify(this.data))

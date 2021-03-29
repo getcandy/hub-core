@@ -8,7 +8,7 @@
           </gc-button>
         </div>
         <quick-view-panel :open="showVariantOptions" width="w-4/5 xl:w-3/5" @close="showVariantOptions = false">
-          <variant-options :product="product" :initial-price="firstVariant.price" @save="saveVariants" />
+          <variant-options :product="product" :initial-price="firstVariant.price" :errors="variantErrors" @save="saveVariants" />
         </quick-view-panel>
         <variant-manager :product="product" :languages="languages" @change="handleVariantsChange" @delete="handleVariantDelete" />
       </gc-tab-item>
@@ -45,7 +45,8 @@ export default {
   data () {
     return {
       product: null,
-      showVariantOptions: false
+      showVariantOptions: false,
+      variantErrors: {}
     }
   },
   computed: {
@@ -100,19 +101,30 @@ export default {
       }
     }, 300),
     async saveVariants (event) {
-      this.showVariantOptions = false
       await this.createDraft('product', this.product.id, {
         afterRedirect: (product) => {
           this.product.id = product.id
         }
       })
-      await this.$store.dispatch('product/createVariants', {
-        productId: this.product.id,
-        $nuxt: this.$nuxt,
-        variants: event
-      })
-      this.$notify.queue('success', this.$t('Product updated'))
-      this.syncModel()
+      this.variantErrors = {}
+      try {
+        const { variants, options } = event
+        await this.$store.dispatch('product/createVariants', {
+          productId: this.product.id,
+          $nuxt: this.$nuxt,
+          variants: {
+            variants,
+            options
+          }
+        })
+        this.$notify.queue('success', this.$t('Product updated'))
+        this.syncModel()
+        this.showVariantOptions = false
+        event.callback()
+      } catch (error) {
+        this.variantErrors = error.response.data
+        this.$notify.queue('error', this.$t('Unable to create variants'))
+      }
     },
     async handleVariantDelete (variant) {
       await this.createDraft('product', this.product.id, {
@@ -134,7 +146,6 @@ export default {
         await this.$getcandy.on('product-variants', 'deleteProductVariant', variant.id)
         this.$notify.queue('success', this.$t('Product variant deleted'))
       } catch (error) {
-
       }
     },
     handleVariantsChange: debounce(async function (variant, done) {
