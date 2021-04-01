@@ -39,6 +39,10 @@
 
   export default {
     props: {
+      disk: {
+        type: String,
+        default: 'public'
+      },
       value: {
         type: null
       },
@@ -65,6 +69,7 @@
 
           let formData = new FormData();
           formData.append('file', file);
+          formData.append('disk', this.disk);
 
           const response = await this.$gc.assets.uploadSimple(formData)
           this.$emit('input', response.data)
