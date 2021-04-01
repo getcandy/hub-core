@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-collections",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "",
   "main": "src/module.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "@getcandy/hub-core": "^0.12.3",
+    "@getcandy/hub-core": "^0.12.4",
     "css-loader": "^3.2.0",
     "moment": "^2.24.0",
     "vue": "^2.6.10",
