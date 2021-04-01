@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-products",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "",
   "main": "src/module.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "@babel/cli": "^7.7.0",
     "@babel/core": "^7.7.2",
     "@babel/preset-env": "^7.7.1",
-    "@getcandy/hub-core": "^0.12.1",
+    "@getcandy/hub-core": "^0.12.3",
     "@nuxt/test-utils": "^0.0.1",
     "@nuxt/types": "^2.14.6",
     "@nuxt/typescript-build": "^2.0.3",
