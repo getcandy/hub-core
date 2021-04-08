@@ -180,6 +180,7 @@ export default {
           id: this.category.id,
           $nuxt: this.$nuxt
         })
+        this.$nuxt.context.app.$hooks.callHook('category.publish')
       } catch (error) {
         this.$notify.queue('error', this.$t('Unable to publish draft'))
       }
