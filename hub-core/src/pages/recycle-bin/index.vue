@@ -6,13 +6,15 @@
     <div v-if="!items.length" />
     <gc-table
       :data="items"
-      :loading="fetching"
+      :loading="$fetchState.pending"
+      :meta="meta"
       :columns="[
         {label: '', field: 'thumbnail'},
         {label: $t('Name'), field: 'name'},
         {label: $t('Deleted At'), field: 'deleted_at'},
         {label: $t('Type'), field: 'type'},
       ]"
+      @changePage="setPage"
     >
       <template v-slot:thumbnail="{ row }">
         <thumbnail-loader width="30px" :asset="row" />
@@ -50,6 +52,22 @@ export default {
   mixins: [
     HasAttributes
   ],
+  async fetch () {
+    const { query } = this.$route
+    const response = await this.$gc.recycleBin.get({
+      page: query.page,
+      per_page: this.perPage,
+      full_response: true,
+      term: this.searchTerm
+    })
+    const { data } = response
+
+    this.items = data.data
+    this.meta = data.meta
+    this.page = data.meta.current_page
+    this.perPage = data.meta.per_page
+    this.total = data.meta.total
+  },
   data () {
     return {
       page: 1,
@@ -57,40 +75,31 @@ export default {
       total: 0,
       searchTerm: null,
       fetching: true,
+      meta: {},
       items: []
     }
   },
-  mounted () {
-    this.fetch()
-    // this.$nuxt.context.app.$hooks.callHook('customers.listing.columns', this.customColumns);
+  watch: {
+    '$route.query': '$fetch'
   },
   methods: {
-    changePage (val) {
-      this.page = val
-      this.fetch()
+    setPage (val) {
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          ...{
+            page: val
+          }
+        }
+      })
     },
     getTypeLabel (val) {
       return val.split('\\').slice(-1)[0]
     },
     refresh: debounce(function () {
-      this.fetch()
-    }, 300),
-    async fetch () {
-      this.fetching = true
-      const response = await this.$gc.recycleBin.get({
-        page: this.page,
-        per_page: this.perPage,
-        full_response: true,
-        term: this.searchTerm
-      })
-      const { data } = response
-
-      this.items = data.data
-      this.page = data.meta.current_page
-      this.perPage = data.meta.per_page
-      this.total = data.meta.total
-      this.fetching = false
-    }
+      this.setPage(1)
+    }, 300)
   },
   head () {
     return {
