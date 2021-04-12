@@ -169,7 +169,7 @@ export default {
           this.createPanelVisible = false
           this.$notify.queue('success', this.$t('Route created'))
         } catch (err) {
-          console.log('Something went wrong')
+          this.$notify.queue('error', this.$t('Unable to save route'))
         }
       })
     },
