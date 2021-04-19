@@ -11,6 +11,7 @@ export default function (moduleOptions) {
     'components/OrderDetails.vue',
     'components/OrdersSplitView.vue',
     'components/OrdersTableView.vue',
+    'components/CreateTransaction.vue',
     'components/RefundTransaction.vue',
     'components/CustomerOrderHistory.vue',
     'components/CustomerReport.vue',

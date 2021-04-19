@@ -1,7 +1,10 @@
 <template>
   <div class="p-6">
+    <div class="mb-4">
+      <create-transaction @created="handleTransactionCreated" :order-id="orderId" :initial-amount="remaining" />
+    </div>
     <div
-      v-for="t in transactions"
+      v-for="t in records"
       :key="t.id"
       class="mb-2 overflow-hidden border rounded shadow-sm"
       :class="{
@@ -64,7 +67,7 @@
           </div>
         </div>
         <div>
-          <refund-transaction v-if="canRefund(t)" @success="handleRefund" :initial="t.amount / 100" :reference="t.transaction_id" :max="maxRefund / 100" :id="t.id" />
+          <refund-transaction v-if="canRefund(t) && !t.manual" @success="handleRefund" :initial="t.amount / 100" :reference="t.transaction_id" :max="maxRefund / 100" :id="t.id" />
         </div>
       </div>
       <div class="p-4 text-xs border-t rounded-b">
@@ -81,7 +84,7 @@
             <i class="mr-1" :class="`ri-${t.postcode_matched ? 'check-line' : 'close-line'}`" />
             {{ $t('Postcode') }}
           </span>
-          <span class="flex items-center px-3 py-1 font-medium rounded ":class="{'bg-blue-100 text-blue-700': t.threed_secure, 'bg-gray-100 text-gray-500': !t.threed_secure}">
+          <span class="flex items-center px-3 py-1 font-medium rounded" :class="{'bg-blue-100 text-blue-700': t.threed_secure, 'bg-gray-100 text-gray-500': !t.threed_secure}">
             <i class="mr-1" :class="`ri-${t.threed_secure ? 'check-line' : 'close-line'}`" />
             {{ $t('ThreeD Secure') }}
           </span>
@@ -94,12 +97,31 @@
 <script>
   const each = require('lodash/each')
   import RefundTransaction from './RefundTransaction.vue'
+  import CreateTransaction from './CreateTransaction.vue'
 
   export default {
     components: {
-      RefundTransaction
+      RefundTransaction,
+      CreateTransaction
+    },
+    data () {
+      return {
+        records: []
+      }
     },
     props: {
+      orderId: {
+        type: String,
+        required: true
+      },
+      orderTotal: {
+        type: [String, Number],
+        default: 0
+      },
+      currency: {
+        type: Object,
+        default: () => {}
+      },
       transactions: {
         type: Array,
         default() {
@@ -107,7 +129,19 @@
         }
       }
     },
+    mounted () {
+      this.records = this.transactions || []
+    },
     computed: {
+      remaining () {
+        let transactionTotal = 0;
+        each(this.transactions, item => {
+          if (item.success) {
+            transactionTotal += item.amount;
+          }
+        });
+        return this.orderTotal - transactionTotal;
+      },
       maxRefund() {
         let transactions = 0;
         each(this.transactions, item => {
@@ -119,6 +153,9 @@
       },
     },
     methods: {
+      handleTransactionCreated (transaction) {
+        this.records.push(transaction)
+      },
       handleRefund (transaction) {
         this.$emit('refunded', transaction)
       },
