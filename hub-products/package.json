@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-products",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "description": "",
   "main": "src/module.js",
   "scripts": {
@@ -12,10 +12,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-  },
   "dependencies": {
-    "@getcandy/hub-core": "^0.12.4"
+    "@getcandy/hub-core": "^0.12.5"
   },
   "gitHead": "844b40607aa7054d3dd582ad933251f199dcd1bb"
 }
