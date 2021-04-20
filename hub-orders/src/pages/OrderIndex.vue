@@ -25,7 +25,7 @@
       heading="Apply filters"
       @close="showFilters = false"
     >
-      <form action="" class="mx-6 text-sm">
+      <form action="" class="mx-4 text-sm">
         <div class="mt-4">
           <header class="mb-1 text-sm font-bold text-gray-700">
             <label>{{ $t('Order date') }}</label>
@@ -45,14 +45,14 @@
             <label>{{ $t('Shipping Zone') }}</label>
           </header>
           <div>
-            <select-input v-model="filters.zone" @input="loadData">
+            <gc-select-input v-model="filters.zone" @input="loadData">
               <option value>
                 {{ $t('All Zones') }}
               </option>
               <option v-for="(zone, handle) in zones" :key="handle" :value="zone.name">
                 {{ zone.name }}
               </option>
-            </select-input>
+            </gc-select-input>
           </div>
         </div>
         <div>
@@ -60,14 +60,29 @@
             <label>{{ $t('Status') }}</label>
           </header>
           <div>
-            <select-input v-model="filters.status" @input="loadData">
+            <gc-select-input v-model="filters.status" @input="loadData">
               <option value>
                 {{ $t('All Statuses') }}
               </option>
               <option v-for="(status, handle) in settings.statuses.options" :key="handle" :value="handle">
                 {{ status.label ? status.label : $t('Unknown') }}
               </option>
-            </select-input>
+            </gc-select-input>
+          </div>
+        </div>
+        <div class="my-4">
+          <header class="mb-1 text-sm font-bold text-gray-700">
+            <label>{{ $t('Status') }}</label>
+          </header>
+          <div>
+            <gc-select-input v-model="filters.type" @input="loadData">
+              <option value>
+                {{ $t('All Types') }}
+              </option>
+              <option v-for="(type, typeIndex) in types" :key="typeIndex" :value="type.label">
+                {{ type.label ? type.label : $t('Unknown') }}
+              </option>
+            </gc-select-input>
           </div>
         </div>
       </form>
@@ -123,7 +138,8 @@ export default {
       dates: [],
       filters: {
         status: null,
-        zone: null
+        zone: null,
+        type: null,
       },
       checkedRows: [],
       page: 1,
@@ -139,9 +155,10 @@ export default {
     }
   },
   mounted () {
-    const { keywords, page } = this.$route.query
+    const { keywords, page, type } = this.$route.query
     this.searchTerm = keywords
     this.page = page
+    this.filters.type = type
 
     this.loadTypes()
     this.loadData()
@@ -209,6 +226,7 @@ export default {
         query: {
           status: this.filters.status,
           zone: this.filters.zone,
+          type: this.filters.type,
           keywords: this.searchTerm,
           page: this.page
         }
