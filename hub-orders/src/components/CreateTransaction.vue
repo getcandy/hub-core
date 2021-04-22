@@ -75,6 +75,7 @@ export default {
           manual: true,
           status: 'complete',
           card_type: this.cardType,
+          driver: 'offline',
           success: true,
         })
         this.$emit('created', response.data.data)
