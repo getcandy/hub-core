@@ -165,17 +165,14 @@ export default {
       window.open(fileURL)
     },
     async updateStatus (data) {
-      const response = await this.$gc.orders.updateStatus(
+      await this.$gc.orders.updateStatus(
         this.order.id,
         data.status,
         data.send_emails,
         data.text
       )
 
-      this.$buefy.toast.open({
-        message: 'Order status updated',
-        type: 'is-success'
-      })
+      this.$notify.queue('success', this.$t('Order status updated'))
 
       this.order.status = data.status
 

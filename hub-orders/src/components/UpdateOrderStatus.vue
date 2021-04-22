@@ -6,28 +6,25 @@
         <div class="flex h-full">
           <div class="w-2/5 p-6">
             <div class="mb-4">
-              <header class="mb-1 font-bold text-gray-700 text-sm">
-                <label>{{ $t('Status') }}</label>
+              <gc-form-field label="Status">
+                <gc-select-input v-model="status" @input="updateTemplate">
+                    <option v-for="(status, handle) in statuses" :key="handle" :value="handle">{{ status.label }}</option>
+                </gc-select-input>
+              </gc-form-field>
+            </div>
+            <div class="mb-4">
+              <header class="mb-2 text-sm">
+                <label class="block font-bold text-gray-700">{{ $t('Send Notfication') }}</label>
+                <p class="text-xs font-normal leading-tight text-gray-600">{{ $t('This will send out an email to the customer based on the status, if available') }}</p>
               </header>
               <div>
-                <select-input v-model="status" @input="updateTemplate">
-                  <option v-for="(status, handle) in statuses" :key="handle" :value="handle">{{ status.label }}</option>
-                </select-input>
+                <gc-toggle v-model="sendEmails" />
               </div>
             </div>
             <div class="mb-4">
               <header class="mb-2 text-sm">
-                <label class="font-bold text-gray-700 block">{{ $t('Send Notfication') }}</label>
-                <p class="text-gray-600 leading-tight text-xs font-normal">{{ $t('This will send out an email to the customer based on the status, if available') }}</p>
-              </header>
-              <div>
-                <b-switch v-model="sendEmails" :true-value="true" :false-value="false" />
-              </div>
-            </div>
-            <div class="mb-4">
-              <header class="mb-2 text-sm">
-                <label class="font-bold text-gray-700 block">{{ $t('Additional Content') }}</label>
-                <p class="text-gray-600 leading-tight text-xs font-normal">{{ $t('This content will be added to the email, if supported') }}</p>
+                <label class="block font-bold text-gray-700">{{ $t('Additional Content') }}</label>
+                <p class="text-xs font-normal leading-tight text-gray-600">{{ $t('This content will be added to the email, if supported') }}</p>
               </header>
               <div>
                 <gc-input type="textarea" v-model="notes" />
@@ -39,11 +36,11 @@
           </div>
           <div class="w-full h-full">
             <div class="mt-12 text-center" v-if="loadingEmail">
-              <i class="ri-refresh-line spin block text-2xl" />
+              <i class="block text-2xl ri-refresh-line spin" />
             </div>
-            <iframe style="width:100%;height:100%" v-if="emailTemplate" :srcdoc="emailTemplate" ref="emailPreview">
+            <iframe class="w-full h-screen" v-if="emailTemplate" :srcdoc="emailTemplate" ref="emailPreview">
             </iframe>
-            <div class="bg-gray-700 text-white rounded p-6 border-l-4 border-blue-500 m-12 flex" v-if="missingTemplate">
+            <div class="flex p-4 m-12 text-red-600 bg-red-100 border-l-4 border-red-500 rounded" v-if="missingTemplate">
               {{ $t('There is no email template for this status') }}
             </div>
           </div>
@@ -109,7 +106,7 @@
       save() {
         this.$emit('save', {
           text: this.additionalCopy,
-          sendEmails: this.sendEmails,
+          send_emails: this.sendEmails,
           status: this.status,
         });
         this.showModal = false
