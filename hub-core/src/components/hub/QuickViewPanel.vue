@@ -1,10 +1,10 @@
 <template>
   <div>
     <transition
-      enter-active-class="duration-500 ease-in-out"
+      enter-active-class="duration-200 ease-in-out"
       enter-class="opacity-0"
       enter-to-class="opacity-100"
-      leave-active-class="duration-500 ease-in-out"
+      leave-active-class="duration-200 ease-in-out"
       leave-class="opacity-100"
       leave-to-class="opacity-0"
     >
@@ -16,11 +16,11 @@
     </transition>
     <transition
       enter-to-class="translate-x-0"
-      enter-active-class="transition duration-200 ease-in-out transform sm:duration-700"
+      enter-active-class="transition duration-100 ease-in-out transform sm:duration-100"
       enter-class="translate-x-full"
       leave-to-class="translate-x-full"
       leave-class="translate-x-0"
-      leave-active-class="transition duration-200 ease-in-out transform sm:duration-700"
+      leave-active-class="transition duration-100 ease-in-out transform sm:duration-100"
     >
       <div v-show="open" class="fixed top-0 right-0 z-50 h-full bg-white shadow-2xl" :class="`${width}`">
         <header v-if="heading" class="px-3 py-4 border-b shadow-sm">
