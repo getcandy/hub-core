@@ -7,6 +7,9 @@
         </div>
         <div>
           <div class="flex">
+            <div v-for="(component, index) in toolbarSlot" :key="index" class="mx-4">
+              <component :is="component" :order="order" />
+            </div>
             <div>
               <update-order-status :current-status="order.status" :statuses="settings.statuses.options" :order-id="order.id" size="is-small" @save="updateStatus" />
             </div>
@@ -119,7 +122,7 @@ export default {
   props: {
     settings: {
       type: Object,
-      default: {}
+      default: () => {}
     },
     order: {
       type: Object,
@@ -128,7 +131,15 @@ export default {
       }
     }
   },
+  data () {
+    return {
+      additionalActions: []
+    }
+  },
   computed: {
+    toolbarSlot () {
+      return this.additionalActions
+    },
     billing () {
       return this.order.billing_details
     },
@@ -138,6 +149,9 @@ export default {
     status () {
       return this.settings.statuses.options[this.order.status] || null
     }
+  },
+  mounted () {
+    this.$nuxt.context.app.$hooks.callHook('order.details.toolbar', this.additionalActions)
   },
   methods: {
     async download () {
