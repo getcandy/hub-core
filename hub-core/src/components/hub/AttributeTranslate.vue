@@ -53,7 +53,7 @@
                 <option
                   v-for="lang in languages"
                   :key="lang.id"
-                  :value="lang.lang"
+                  :value="lang.code"
                 >
                   {{ lang.name }}
                 </option>
@@ -68,6 +68,9 @@
           <div class="flex items-center">
             <div class="relative w-1/2">
               <select v-model="translateChannel" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
+                <option :value="null">
+                  {{ $t('Please select') }}
+                </option>
                 <option
                   v-for="chan in channels"
                   :key="chan.id"
@@ -81,11 +84,14 @@
               </div>
             </div>
             <div class="relative w-1/2">
-              <select class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
+              <select v-model="translateLanguage" class="w-full p-4 bg-white border-r rounded-none appearance-none focus:outline-none">
+                <option :value="null">
+                  {{ $t('Please select') }}
+                </option>
                 <option
                   v-for="lang in languages"
                   :key="lang.id"
-                  :value="lang.lang"
+                  :value="lang.code"
                 >
                   {{ lang.name }}
                 </option>
@@ -114,6 +120,7 @@
           />
         </div>
         <div v-show="translating" class="w-1/2 px-6">
+          {{ translateLanguage }} {{ translateChannel }}
           <localised-attributes
             :attribute-data="attributeData"
             :attributes="filteredAttributes(group.attributes.data)"
@@ -143,7 +150,7 @@
                 @change="handleChange"
               />
             </div>
-            <div v-show="translating" class="w-1/2 px-6">
+            <div v-show="translating && translateLanguage && translateChannel" class="w-1/2 px-6">
               <localised-attributes
                 :attribute-data="attributeData"
                 :attributes="filteredAttributes(group.attributes.data)"
@@ -229,7 +236,7 @@ export default {
   },
   mounted () {
     this.channel = find(this.channels, channel => channel.default).handle
-    this.language = find(this.languages, lang => lang.default).lang
+    this.language = find(this.languages, lang => lang.default).code
     const group = first(this.attributeGroups)
     this.currentGroup = group ? group.id : null
     this.originalData = this.normalize(this.attributeData)
@@ -238,8 +245,8 @@ export default {
     getTabLabel (tab) {
       return get(tab, `name.${this.locale}`, tab.name.en)
     },
-    handleChange () {
-      this.$emit('changed', this.attributeData)
+    handleChange (value) {
+      this.$emit('changed', value)
     },
     filteredAttributes (attributes) {
       return filter(attributes, (att) => {

@@ -111,7 +111,7 @@
         items.push({
           path: null,
           slug: null,
-          locale: first(this.languages).lang,
+          locale: first(this.languages).code,
           default: false,
         })
       },

@@ -85,14 +85,14 @@ export default {
   },
   data () {
     return {
-      data: this.attributeData // So we can manipulate it
+      data: {}
     }
   },
   computed: {
     fallbackLanguage () {
       // Get our default language
       const defaultLang = find(this.languages, lang => lang.default)
-      return defaultLang.lang || 'en'
+      return defaultLang.code || 'en'
     },
     fallbackChannel () {
       // Get our default language
@@ -109,6 +109,11 @@ export default {
       return this.$i18n.locale
     }
   },
+  mounted () {
+    this.data = JSON.parse(
+      JSON.stringify(this.attributeData)
+    ) // So we can manipulate it
+  },
   methods: {
     getLabel (attribute) {
       return get(attribute, `name.${this.locale}`, attribute.name[this.fallbackLanguage])
@@ -121,21 +126,21 @@ export default {
      */
     getValue (attributeHandle) {
       // If the attribute doesn't exist for this channel
-      return get(this.attributeData, `${attributeHandle}.${this.channel}.${this.language}`)
+      return get(this.data, `${attributeHandle}.${this.channel}.${this.language}`)
     },
     setValue (handle, value) {
       if (value) {
-        if (!this.attributeData[handle]) {
-          this.$set(this.attributeData, handle, {})
+        if (!this.data[handle]) {
+          this.$set(this.data, handle, {})
         }
-        if (!this.attributeData[handle][this.channel]) {
-          this.$set(this.attributeData[handle], this.channel, {})
+        if (!this.data[handle][this.channel]) {
+          this.$set(this.data[handle], this.channel, {})
         }
-        this.$set(this.attributeData[handle][this.channel], this.language, value)
+        this.$set(this.data[handle][this.channel], this.language, value)
       } else {
-        this.$set(this.attributeData[handle][this.channel], this.language, null)
+        this.$set(this.data[handle][this.channel], this.language, null)
       }
-      this.$emit('change', value)
+      this.$emit('change', this.data)
     }
   }
 }
