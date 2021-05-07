@@ -8,16 +8,12 @@
     class="has-round-edge"
     includes="channels,customer_groups,family,variants,assets.transforms,draft"
     :hide-search="hideSearch"
-    :columns="[
-      {label: 'Status', field: 'status'},
-      {label: $t('Name'), field: 'name'},
-      {label: $t('Stock'), field: 'stock'},
-      {label: $t('Channels'), field: 'channels'},
-      {label: $t('Customer Groups'), field: 'customer-groups'},
-      {label: $t('Purchasable'), field: 'customer-groups'},
-    ]"
+    :columns="tableColumns"
     @loaded="(e) => $emit('loaded', e)"
   >
+    <template v-slot:selection="{ row }" v-if="checkable">
+      <input type="checkbox" v-model="selected" :value="row" />
+    </template>
     <template v-slot:status="{ row }">
       <span
         class="px-2 py-1 text-xs border rounded"
@@ -34,6 +30,7 @@
       </span>
     </template>
     <template v-slot:name="{ row }">
+
       <nuxt-link
         class="flex items-center block"
         :to="{
@@ -67,6 +64,7 @@ import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes.js'
 import HasGroups from '../mixins/HasGroups.js'
 import EditStock from './EditStock.vue'
 const get = require('lodash/get')
+const find = require('lodash/find')
 
 export default {
   components: {
@@ -92,6 +90,35 @@ export default {
     searchTerm: {
       type: String,
       default: null
+    }
+  },
+  data () {
+    return {
+      selected: []
+    }
+  },
+  watch: {
+    selected(val) {
+      this.$emit('selected', val)
+    }
+  },
+  computed: {
+    tableColumns() {
+      const columns = [
+        {label: 'Status', field: 'status'},
+        {label: this.$t('Name'), field: 'name'},
+        {label: this.$t('Stock'), field: 'stock'},
+        {label: this.$t('Channels'), field: 'channels'},
+        {label: this.$t('Customer Groups'), field: 'customer-groups'},
+        {label: this.$t('Purchasable'), field: 'customer-groups'},
+      ];
+
+      if (this.checkable) {
+        columns.unshift({
+          name: null, field: 'selection'
+        })
+      }
+      return columns;
     }
   },
   methods: {
