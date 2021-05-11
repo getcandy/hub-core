@@ -108,8 +108,7 @@ export default {
         validation: {
           width: this.width,
           height: this.height,
-          // size: this.$store.state.core.maxUploadSize
-          size: 1000
+          size: this.$store.state.core.maxUploadSize
         }
       }
     }
