@@ -18,7 +18,14 @@
         </thead>
         <tbody>
           <tr v-for="line in basketLines" :key="line.id">
-            <td>{{ line.sku }}</td>
+            <td>
+              <nuxt-link :to="{
+                name: 'products',
+                query: {
+                  keywords: line.sku
+                }
+              }">{{ line.sku }}</nuxt-link>
+            </td>
             <td>{{ line.description }}</td>
             <td>{{ line.option }}</td>
             <td>{{ line.quantity }}</td>
