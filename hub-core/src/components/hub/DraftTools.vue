@@ -23,6 +23,11 @@
         </div>
       </template>
       <template v-else>
+        <div v-if="liveUrl" class="mr-2">
+          <a class="inline-flex items-center px-4 py-2 text-sm font-medium leading-6 text-gray-700 transition duration-150 ease-in-out bg-white border border-transparent border-gray-300 rounded-md hover:text-gray-500 focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 disabled:cursor-not-allowed focus:outline-none" :href="liveUrl" target="_blank" rel="noopener noreferrer">
+            {{ $t('View Product') }}
+          </a>
+        </div>
         <div>
           <gc-button size="x-small" theme="danger" @click="showDeleteConfirm = true">
             <gc-icon icon="trash" />
@@ -126,6 +131,10 @@ export default {
       default: () => []
     },
     previewUrl: {
+      type: String,
+      default: null
+    },
+    liveUrl: {
       type: String,
       default: null
     },
