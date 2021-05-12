@@ -15,6 +15,7 @@
           <div>
             <draft-tools
               :preview-url="previewUrl"
+              :live-url="liveUrl"
               :is-draft="isDraft"
               :creating-draft="creatingDraft"
               :publishing-draft="publishingDraft"
@@ -56,6 +57,7 @@ import DefaultLayout from '@getcandy/hub-core/src/layouts/Default.vue'
 import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes'
 import HasDrafts from '@getcandy/hub-core/src/mixins/HasDrafts'
 import ProductSettings from './products/components/ProductSettings.vue'
+const first = require('lodash/first');
 
 export default {
   components: {
@@ -119,6 +121,14 @@ export default {
     },
     previewUrl () {
       return this.product ? (this.config.preview_url.replace(':id', this.product.id) || null) : null
+    },
+    liveUrl () {
+      const { routes } = this.product
+      const route = first(routes ? routes.data : [])
+      if (!route) {
+        return null
+      }
+      return this.product ? (this.config.live_url.replace(':slug', route.slug) || null) : null
     },
     product () {
       return this.$store.state.product.model
