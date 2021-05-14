@@ -36,6 +36,9 @@
         {{ row.billing_details.firstname }} {{ row.billing_details.lastname }}
         <span v-if="row.billing_details.company_name" class="block text-xs text-gray-600">{{ row.billing_details.company_name }}</span>
       </template>
+      <template v-slot:email="{ row }">
+        {{ row.billing_details.email }}
+      </template>
       <template v-slot:type="{ row }">
         {{ row.type }}
       </template>
@@ -104,6 +107,7 @@ export default {
         { label: 'Status', field: 'status' },
         { label: 'Reference', field: 'reference' },
         { label: 'Name', field: 'name' },
+        { label: 'Email', field: 'email' },
         { label: 'Type', field: 'type' },
         { label: 'Guest', field: 'guest' },
         { label: 'Sub Total', field: 'sub_total' },
