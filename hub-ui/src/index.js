@@ -22,6 +22,7 @@ import IconSprite from './components/IconSprite.vue'
 import LoadingSpinner from './components/LoadingSpinner.vue'
 import Table from './components/Table.vue'
 import TabItem from './components/TabItem.vue'
+import Textarea from './components/forms/Textarea.vue'
 import Tabs from './components/Tabs.vue'
 import ResourceNav from './components/ResourceNav.vue'
 import DatePicker from './components/forms/DatePicker.vue'
@@ -66,7 +67,8 @@ const components = {
   'user-search': UserSearch,
   'sku-input': SkuInput,
   'slug-input': SlugInput,
-  'asset-picker': AssetPicker
+  'asset-picker': AssetPicker,
+  'textarea': Textarea,
 }
 
 // prettier-ignore

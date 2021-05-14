@@ -2,24 +2,24 @@
   <div>
       <gc-button @click="showModal = true" theme="gray">Add Note</gc-button>
       <quick-view-panel :heading="$t('Add Note')" :open="showModal" @close="showModal = false">
-        <form class="px-3" @submit="save" ref="form">
+        <form class="p-4" @submit="save" ref="form">
             <div class="mb-4">
               <header class="mb-1 text-sm font-bold text-gray-700">
                 <label>{{ $t('Visibility') }}</label>
               </header>
               <div>
-                <select-input v-model="isPublic">
+                <gc-select-input v-model="isPublic">
                   <option :value="true">{{ $t('Public') }}</option>
                   <option :value="false">{{ $t('Private') }}</option>
-                </select-input>
+                </gc-select-input>
               </div>
             </div>
             <div>
               <header class="mb-1 text-sm font-bold text-gray-700">
-                <label>{{ $t('Message') }}</label>
+                <label>{{ $t('Note') }}</label>
               </header>
               <div>
-                <gc-input v-model="message" type="textarea" />
+                <gc-textarea v-model="message" type="textarea" />
               </div>
             </div>
 
@@ -30,7 +30,7 @@
             {{ $t('Close') }}
           </gc-button>
           <gc-button @click="save">
-            {{ $t('Publish changes') }}
+            {{ $t('Add Note') }}
           </gc-button>
           </div>
         </div>
@@ -62,8 +62,8 @@
         this.isPublic = false;
         this.showModal = false;
       },
-      save: function (e) {
-        this.$gc.activityLog.post({
+      async save () {
+        const note = {
           properties: {
             message: this.message,
           },
@@ -71,13 +71,15 @@
           type: 'order',
           log: this.isPublic ? 'public' : 'private',
           id: this.orderId,
-        }).then(response => {
-          this.showModal = false
-          this.$buefy.toast.open({
-            message: 'Note successfully saved',
-            type: 'is-success'
-          })
-        })
+        }
+
+        const { data } = await this.$gc.activityLog.post(note)
+        this.showModal = false
+        this.message = null
+        this.$notify.queue('success', this.$t('Note added'))
+        this.$emit('note-added', note)
+
+        this.$store.dispatch('order/addOrderNote', data.data)
       }
     },
   }

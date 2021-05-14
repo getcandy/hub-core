@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!$fetchState.pending">
     <toolbar heading="Order Details" :sub-heading="order.reference" />
     <div class="bg-white">
       <order-details-view :order="order" :settings="settings"/>
@@ -8,7 +8,6 @@
 </template>
 
 <script>
-const find = require('lodash/find')
 import OrderDetailsView from '../components/OrderDetailsView.vue'
 import AddOrderNote from '../components/AddOrderNote.vue'
 import UpdateOrderStatus from '../components/UpdateOrderStatus.vue'
@@ -19,15 +18,19 @@ export default {
     UpdateOrderStatus,
     OrderDetailsView
   },
-  async asyncData({app, params}) {
-    const orderResponse = await app.$gc.orders.find(params.id, {
+  async fetch () {
+    const { params } = this.$route
+    const orderResponse = await this.$gc.orders.find(params.id, {
       includes: 'user.customer,lines,transactions,discounts,shipping'
     })
-    const settingResponse = await app.$gc.settings.fetch('orders');
-
+    const settingResponse = await this.$gc.settings.fetch('orders');
+    this.order = orderResponse.data.data,
+    this.settings = settingResponse.data.data
+  },
+  data () {
     return {
-      order: orderResponse.data.data,
-      settings: settingResponse.data.data
+      order: {},
+      settings: {}
     }
   },
   head () {
@@ -36,25 +39,6 @@ export default {
         reference: this.order.reference
       })
     }
-  },
-  methods: {
-    async updateStatus(data) {
-      const response = await this.$gc.orders.updateStatus(
-        this.order.id,
-        data.status,
-        data.send_emails,
-        data.text
-      )
-
-      this.$buefy.toast.open({
-        message: 'Order status updated',
-        type: 'is-success'
-      })
-    }
   }
 }
 </script>
-
-<style scoped>
-
-</style>

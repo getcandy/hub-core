@@ -17,11 +17,15 @@ export default function (moduleOptions) {
     'components/CustomerReport.vue',
     'components/OrderAverageReport.vue',
     'components/OrderExport.vue',
+    'components/OrderHistory.vue',
     'components/MetricBadge.vue',
     'components/OrdersReport.vue',
     'components/BestSellersReport.vue',
     'components/SalesReport.vue',
     'mixins/InteractsWithOrders.js',
+
+
+    'store/order.js',
 
     // Translations
     'locales/en.json',

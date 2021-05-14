@@ -55,7 +55,7 @@
     <div class="bg-white">
       <order-lines v-show="view == 'order-lines'" :currency="currency" :order="order" />
       <order-transactions v-show="view == 'transactions'" :currency="currency" :order-total="order.order_total" :order-id="order.id" :transactions="transactions" @refunded="handleRefund" />
-      <activity-log v-show="view == 'history'" :id="order.id" type="order" />
+      <order-history :order-id="order.id" v-show="view === 'history'"/>
       <component :is="tab.component" v-for="(tab, tabKey) in additionalTabs" v-show="view == tab.view" :key="tabKey" :order="order" />
     </div>
   </div>
@@ -65,13 +65,15 @@
 import OrderLines from '../components/OrderLines.vue'
 import OrderDetails from '../components/OrderDetails.vue'
 import OrderTransactions from '../components/OrderTransactions.vue'
+import OrderHistory from '../components/OrderHistory.vue'
 const find = require('lodash/find')
 
 export default {
   components: {
     OrderLines,
     OrderDetails,
-    OrderTransactions
+    OrderTransactions,
+    OrderHistory
   },
   props: {
     settings: {

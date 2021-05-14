@@ -7,10 +7,18 @@ import OrdersReport from './orders/pages/reports/OrdersReport.vue'
 import NewVsReturningCustomers from './orders/pages/reports/NewVsReturningCustomers.vue'
 import BestSellers from './orders/pages/reports/BestSellers.vue'
 import AvgOrderValue from './orders/pages/reports/AvgOrderValue.vue'
+import { state, mutations, actions } from './orders/store/order.js'
 
 export default ({ app }, inject) => {
   app.i18n.mergeLocaleMessage('en', require('./orders/locales/en.json'))
   app.i18n.mergeLocaleMessage('fr', require('./orders/locales/fr.json'))
+
+  app.store.registerModule('order', {
+    namespaced: true,
+    state,
+    mutations,
+    actions
+  })
 
   const routes = [
     {
