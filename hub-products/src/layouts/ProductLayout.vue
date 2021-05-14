@@ -11,6 +11,9 @@
         {{ $t("You are viewing a draft, changes below won't be reflected until published") }}
       </div>
       <toolbar heading="Products" :sub-heading="title">
+        <template v-slot:subHeadingExtra>
+          <span class="block text-xs text-red-600">{{ sku }}</span>
+        </template>
         <div class="flex items-center">
           <div>
             <draft-tools
@@ -58,6 +61,7 @@ import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes'
 import HasDrafts from '@getcandy/hub-core/src/mixins/HasDrafts'
 import ProductSettings from './products/components/ProductSettings.vue'
 const first = require('lodash/first');
+const get = require('lodash/get');
 
 export default {
   components: {
@@ -132,6 +136,13 @@ export default {
     },
     product () {
       return this.$store.state.product.model
+    },
+    sku () {
+      const variants = get(this.product, 'variants.data', []);
+      if (!variants.length || variants.length > 1) {
+        return null;
+      }
+      return variants.map(v => v.sku).join(', ')
     },
     liveId () {
       return this.$store.state.product.liveId

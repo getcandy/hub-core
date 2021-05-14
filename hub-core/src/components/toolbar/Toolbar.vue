@@ -15,7 +15,10 @@
             </h1>
             <template v-if="subHeading">
               <b-icon class="text-gray-300" icon="arrow-right-s-line" />
-              <span>{{ truncate(subHeading) }}</span>
+              <div>
+                {{ truncate(subHeading) }}
+                <slot name="subHeadingExtra" />
+              </div>
             </template>
           </div>
         </div>
