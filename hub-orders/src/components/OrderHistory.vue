@@ -92,7 +92,7 @@ export default {
   },
   computed: {
     sortedItems () {
-      return sortBy(this.$store.state.order.history, item => item.created_at)
+      return this.$store.state.order.history
     }
   },
   async fetch () {
