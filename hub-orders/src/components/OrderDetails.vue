@@ -10,6 +10,16 @@
             <div v-for="(component, index) in toolbarSlot" :key="index" class="mx-4">
               <component :is="component" :order="order" />
             </div>
+            <div class="mx-4" v-if="user">
+              <nuxt-link :to="{
+                name: 'users-id',
+                params: {
+                  id: user.id
+                }
+              }" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 transition duration-150 ease-in-out border border-transparent border-gray-400 rounded-md disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none hover:bg-gray-200 focus:border-gray-700 focus:shadow-outline-gray disabled:bg-red-500">
+                View User
+              </nuxt-link>
+            </div>
             <div>
               <update-order-status :current-status="order.status" :statuses="settings.statuses.options" :order-id="order.id" size="is-small" @save="updateStatus" />
             </div>
@@ -148,6 +158,9 @@ export default {
     },
     status () {
       return this.settings.statuses.options[this.order.status] || null
+    },
+    user () {
+      return get(this.order, 'user.data', null)
     }
   },
   mounted () {
