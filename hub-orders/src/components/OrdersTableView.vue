@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div v-if="checkedRows.length" class="px-6 py-2 text-sm bg-gray-200">
+    <div v-if="checkedRows.length" class="flex items-center px-6 py-2 text-sm bg-gray-50">
+      <div class="mr-4" v-for="(action, actionIndex) in extendedOrderActions" :key="actionIndex">
+        <component :is="action.component" :order-ids="checkedRows" :statuses="settings.statuses.options" />
+      </div>
       <update-order-status :order-id="checkedRows[0]" :statuses="settings.statuses.options" @save="handleStatusChange" />
     </div>
     <gc-table
@@ -96,8 +99,12 @@ export default {
   },
   data () {
     return {
-      checkedRows: []
+      checkedRows: [],
+      extendedOrderActions: []
     }
+  },
+  mounted () {
+    this.$nuxt.context.app.$hooks.callHook('orders.table.extend-actions', this.extendedOrderActions)
   },
   computed: {
     columns () {
