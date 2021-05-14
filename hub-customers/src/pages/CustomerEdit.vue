@@ -107,11 +107,12 @@ export default {
     const fields = get(fieldsResponse, 'data.data.fields', [])
     const customer = get(response, 'data.data')
 
+
     each(fields, (field, handle) => {
       if (!customer.fields) {
         customer.fields = {}
       }
-      if (!customer.fields[field]) {
+      if (!customer.fields[handle]) {
         customer.fields[handle] = ''
       }
     })
