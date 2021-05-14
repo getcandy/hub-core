@@ -201,7 +201,7 @@ export default {
       }
 
       const response = await this.$gc.orders.get({
-        includes: 'user.firstOrder,shipping',
+        includes: 'user.firstOrder,user.customer,shipping',
         to,
         from,
         page: this.page,
