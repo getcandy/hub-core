@@ -40,7 +40,7 @@
           {{ row.label }}
         </template>
         <template v-for="group in groups" v-slot:[group.field]="{ row }">
-          {{ $format.currency(row[group.field].order_total) }}
+          {{ $format.currency(row[group.field].sub_total) }}
         </template>
       </gc-table>
     </div>
@@ -205,7 +205,7 @@ export default {
           borderColor: colour[500],
           fill: false,
           borderWidth: 1,
-          data: map(group.data, row => row.order_total)
+          data: map(group.data, row => row.sub_total)
         }
       })
 
