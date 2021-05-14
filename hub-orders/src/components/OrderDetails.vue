@@ -45,6 +45,10 @@
           <strong class="text-xs text-gray-600">{{ $t('Order Reference') }}</strong><br>
           <span class="inline-flex items-center">{{ order.reference }} <click-to-copy class="ml-2" :text="order.reference" /></span>
         </div>
+        <div v-for="(block, blockIndex) in topDetails" :key="blockIndex">
+          <strong class="text-xs text-gray-600">{{ $t(block.title) }}</strong><br>
+          {{ block.value(order) }}
+        </div>
         <div>
           <strong class="text-xs text-gray-600">{{ $t('Customer Reference') }}</strong><br>
           <template v-if="order.customer_reference">
@@ -120,6 +124,7 @@
 import AddOrderNote from '../components/AddOrderNote.vue'
 import UpdateOrderStatus from '../components/UpdateOrderStatus.vue'
 import InteractsWithOrders from '../mixins/InteractsWithOrders.js'
+const get = require('lodash/get')
 
 export default {
   components: {
@@ -143,7 +148,8 @@ export default {
   },
   data () {
     return {
-      additionalActions: []
+      additionalActions: [],
+      topDetails: []
     }
   },
   computed: {
@@ -165,6 +171,7 @@ export default {
   },
   mounted () {
     this.$nuxt.context.app.$hooks.callHook('order.details.toolbar', this.additionalActions)
+    this.$nuxt.context.app.$hooks.callHook('order.details.topdetails', this.topDetails)
   },
   methods: {
     async download () {
