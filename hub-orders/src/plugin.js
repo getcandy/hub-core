@@ -12,8 +12,7 @@ export default ({ app }, inject) => {
   app.i18n.mergeLocaleMessage('en', require('./orders/locales/en.json'))
   app.i18n.mergeLocaleMessage('fr', require('./orders/locales/fr.json'))
 
-  // TODO: Try and do this more effeciently
-  app.router.addRoutes([
+  const routes = [
     {
       path: '/order-processing/dashboard',
       name: 'order-processing.dashboard',
@@ -86,7 +85,11 @@ export default ({ app }, inject) => {
         permissions: ['view-reports']
       }
     }
-  ])
+  ]
+
+  routes.forEach(route => {
+    app.router.addRoute(route)
+  });
 
   app.store.dispatch('addNavItems', {
     section: 'reports',

@@ -302,7 +302,7 @@ import AttributesShow from './getcandyhub/pages/attributes/_id.vue'
 import HubIndex from './getcandyhub/pages/index.vue'
  */
 
-  app.router.addRoutes([
+  const routes = [
     {
       path: '/login',
       name: 'login',
@@ -368,6 +368,10 @@ import HubIndex from './getcandyhub/pages/index.vue'
       path: '/account',
       name: 'account',
       component: Account
-  }
-  ])
+    }
+  ]
+
+  routes.forEach(route => {
+    app.router.addRoute(route)
+  });
 }

@@ -7,7 +7,7 @@ import { state, mutations, actions } from './customers/store/customer.js';
 
 export default ({ app }, inject) => {
 
-  app.router.addRoutes([
+  const routes = [
     {
       path: '/order-processing/customers',
       name: 'customers',
@@ -40,7 +40,11 @@ export default ({ app }, inject) => {
         permissions: ['view-reports']
       }
     }
-  ])
+  ]
+
+  routes.forEach(route => {
+    app.router.addRoute(route)
+  });
 
   app.store.dispatch('addNavItems', {
     section: 'order-processing',

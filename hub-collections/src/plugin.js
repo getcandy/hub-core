@@ -9,8 +9,7 @@ import { state, mutations, actions } from './collections/store/collections.js';
 export default ({ app }, inject) => {
   const options = <%= JSON.stringify(options, null, 2) %>
 
-  // TODO: Try and do this more effeciently
-  app.router.addRoutes([
+  const routes = [
     {
       path: '/catalogue-manager/collections',
       name: 'collections',
@@ -59,7 +58,12 @@ export default ({ app }, inject) => {
           permissions: ['manage-catalogue', 'manage-collections']
         }
     }
-  ])
+  ]
+
+  routes.forEach(route => {
+    app.router.addRoute(route)
+  });
+
 
   // Add our store module
   app.store.registerModule('collections', {

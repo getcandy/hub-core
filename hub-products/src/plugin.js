@@ -31,9 +31,7 @@ export default ({ app }, inject) => {
       const sortable = new Sortable(el, binding.value || {})
     }
   })
-
-  // TODO: Try and do this more effeciently
-  app.router.addRoutes([
+  const routes = [
     {
       path: '/catalogue-manager/products',
       name: 'products',
@@ -114,7 +112,11 @@ export default ({ app }, inject) => {
         permissions: ['manage-catalogue']
       }
     }
-  ])
+  ]
+
+  routes.forEach(route => {
+    app.router.addRoute(route)
+  });
 
   // Add our store module
   app.store.registerModule('product', {

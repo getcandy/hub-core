@@ -9,8 +9,7 @@ import { state, mutations, actions } from './shipping/store/shippingMethods.js';
 import ShippingZoneState from './shipping/store/shippingZones.js';
 
 export default ({ app }, inject) => {
-
-  app.router.addRoutes([
+  const routes = [
     {
       path: '/order-processing/shipping-methods',
       name: 'shipping-methods',
@@ -67,8 +66,11 @@ export default ({ app }, inject) => {
         permissions: ['manage_shipping']
       }
     }
-  ])
+  ]
 
+  routes.forEach(route => {
+    app.router.addRoute(route)
+  });
   // Add our store module
   app.store.registerModule('shippingMethods', {
     namespaced: true,
