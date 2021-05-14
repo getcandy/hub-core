@@ -82,10 +82,6 @@ export default {
     orderId: {
       type: String,
       required: true
-    },
-    type: {
-      type: String,
-      required: true
     }
   },
   data () {
