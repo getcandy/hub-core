@@ -133,7 +133,7 @@ export default {
       this.showCreateModal = false
       this.$getcandy.on('categories', 'getCategoriesParentParentId',
         this.category.id,
-        'routes,assets.transforms'
+        'routes,assets.transforms,children'
       ).then((response) => {
         this.loadedChildren = true
         this.loadingChildren = false
