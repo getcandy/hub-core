@@ -13,6 +13,7 @@
       <gc-table
         :data="customers"
         :meta="meta"
+        :loading="loading"
         :columns="[
           {label: 'Name', field: 'first_name'},
           {label: 'Company name', field: 'company_name'},
@@ -37,49 +38,6 @@
           <span v-else class="text-xs text-gray-500">No company name provided</span>
         </template>
       </gc-table>
-      <!-- <b-table
-        :data="customers"
-        paginated
-        :striped="true"
-        :loading="loading"
-        backend-pagination
-        @page-change="changePage"
-        :total="total"
-        :per-page="perPage"
-      >
-        <template slot-scope="props">
-          <b-table-column>
-            <figure class="image is-24x24">
-              <gravatar :email="props.row.email" class="is-rounded" />
-            </figure>
-          </b-table-column>
-          <b-table-column field="name" :label="$t('Name')">
-            <nuxt-link
-              :to="{
-                name: 'customers.edit',
-                params: {
-                  id: props.row.id
-                }
-              }"
-            >
-              {{ props.row.name }}
-            </nuxt-link>
-          </b-table-column>
-          <b-table-column field="email" :label="$t('Email')">
-            {{ props.row.email }}
-          </b-table-column>
-          <b-table-column field="company_name" :label="$t('Company Name')">
-          </b-table-column>
-          <b-table-column :field="col.field" :label="$t(col.label)" v-for="(col, colIndex) in customColumns" :key="colIndex">
-            <template v-if="col.component">
-              <component :is="col.component" v-bind="props.row" />
-            </template>
-            <template v-else>
-              {{ col.value(props.row) }}
-            </template>
-          </b-table-column>
-        </template>
-      </b-table> -->
     </div>
   </div>
 </template>
@@ -156,12 +114,7 @@ export default {
       this.customers = data.data
       this.meta = data.meta
 
-      // this.customers = data.data;
-      // this.page = data.meta.current_page;
-      // this.perPage = data.meta.per_page;
-      // this.total = data.meta.total;
-
-      // this.loading = false;
+      this.loading = false;
     }
   }
 }
