@@ -60,8 +60,8 @@ import DefaultLayout from '@getcandy/hub-core/src/layouts/Default.vue'
 import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes'
 import HasDrafts from '@getcandy/hub-core/src/mixins/HasDrafts'
 import ProductSettings from './products/components/ProductSettings.vue'
-const first = require('lodash/first');
-const get = require('lodash/get');
+const first = require('lodash/first')
+const get = require('lodash/get')
 
 export default {
   components: {
@@ -132,15 +132,18 @@ export default {
       if (!route) {
         return null
       }
+      if (!this.config.live_url) {
+        return null
+      }
       return this.product ? (this.config.live_url.replace(':slug', route.slug) || null) : null
     },
     product () {
       return this.$store.state.product.model
     },
     sku () {
-      const variants = get(this.product, 'variants.data', []);
+      const variants = get(this.product, 'variants.data', [])
       if (!variants.length || variants.length > 1) {
-        return null;
+        return null
       }
       return variants.map(v => v.sku).join(', ')
     },
