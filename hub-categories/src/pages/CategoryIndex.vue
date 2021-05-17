@@ -8,11 +8,11 @@
       <div class="flex items-center">
         <div class="mr-4">
           <div class="flex p-1 text-xs bg-gray-200 rounded shadow-inner">
-            <button class="px-3 py-2 rounded focus:outline-none" :class="{ 'bg-white shadow text-purple-600': view == 'table', 'bg-transparent text-gray-600 hover:text-gray-800' : view != 'table' }" @click="setView('table')">
-              Table View
-            </button>
             <button class="px-3 py-2 rounded focus:outline-none" :class="{ 'bg-white shadow text-purple-600': view == 'tree', 'bg-transparent text-gray-600 hover:text-gray-800' : view != 'tree' }" @click="setView('tree')">
               Tree view
+            </button>
+            <button class="px-3 py-2 rounded focus:outline-none" :class="{ 'bg-white shadow text-purple-600': view == 'table', 'bg-transparent text-gray-600 hover:text-gray-800' : view != 'table' }" @click="setView('table')">
+              Table View
             </button>
           </div>
         </div>
@@ -105,12 +105,12 @@ export default {
     return {
       pageLimit: 30,
       showCreateModal: false,
-      view: 'table',
+      view: 'tree',
       searchTerm: null,
       contextRow: null,
       views: {
-        table: 'Table listing',
-        tree: 'Tree listing'
+        tree: 'Tree listing',
+        table: 'Table listing'
       }
     }
   },
@@ -123,13 +123,13 @@ export default {
       this.contextRow = row
     },
     setView (view) {
-      this.view = view || 'table'
+      this.view = view || 'tree'
       this.$router.push({
         path: this.$route.path,
         query: {
           ...this.$route.query,
           ...{
-            view: view || 'table'
+            view: view || 'tree'
           }
         }
       })
