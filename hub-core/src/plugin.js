@@ -181,7 +181,13 @@ var notifier = {
 
     percent (oldVal, newVal) {
       if (!oldVal && !newVal) {
-        return 0;
+        return 0
+      }
+      if (!oldVal) {
+        return 100
+      }
+      if (!newVal) {
+        return -100
       }
       return this.number((newVal - oldVal) / oldVal * 100)
     }
