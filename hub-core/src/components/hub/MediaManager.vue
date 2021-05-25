@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <quick-view-panel :open="showUploader" heading="Upload asset" :takeover="true" @close="showUploader = false">
+      <quick-view-panel :open="showUploader" heading="Upload image/file" :takeover="true" @close="showUploader = false">
         <gc-file-upload
           :initial-files="pending"
           :process-on-add="processOnAdd"
@@ -22,7 +22,7 @@
       <div class="flex items-center px-6 py-4 bg-white">
         <div class="mr-4">
           <gc-button @click="showUploader = true">
-            Upload file
+            Upload image/file
           </gc-button>
         </div>
         <div>
