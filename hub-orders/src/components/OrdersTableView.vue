@@ -17,8 +17,8 @@
         <input v-model="checkedRows" type="checkbox" :value="row.id">
       </template>
       <template v-slot:new_returning="{ row }">
-        <span v-if="!firstOrder(row)" class="text-orange-500" data-toggle="tooltip" :title="$t('Returning Customer')">R</span>
-        <span v-else class="text-blue-500" data-toggle="tooltip" :title="$t('New Customer')">N</span>
+        <span v-if="!firstOrder(row)" class="text-gray-400" data-toggle="tooltip" :title="$t('Returning Customer')">Returning</span>
+        <span v-else class="text-gray-800" data-toggle="tooltip" :title="$t('New Customer')">New Customer</span>
       </template>
       <template v-slot:status="{ row }">
         <span class="tag" :style="getStatusStyles(row.status)">{{ getStatusLabel(row.status) }}</span>
