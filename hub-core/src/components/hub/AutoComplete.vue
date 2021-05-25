@@ -1,10 +1,16 @@
 <template>
-  <div class="relative">
+  <div v-click-outside="() => open = false" class="relative">
     <gc-input
       :value="keywords"
       @input="update"
       @focus="init"
-    />
+    >
+      <template v-slot:suffix>
+        <div class="absolute top-0 right-0 mt-3 mr-3">
+          <gc-icon icon="chevron-down " size="sm" />
+        </div>
+      </template>
+    </gc-input>
     <div v-if="open && data.length" class="absolute z-50 w-full mt-1 overflow-y-scroll text-sm bg-white shadow-md max-h-64">
       <button v-for="(row, index) in data" :key="index" type="button" class="block w-full p-2 text-left cursor-pointer hover:bg-gray-100" @click="selectRow(row)">
         {{ row.name }}
@@ -14,9 +20,13 @@
 </template>
 
 <script>
+import ClickOutside from 'vue-click-outside'
 const debounce = require('lodash/debounce')
 
 export default {
+  directives: {
+    ClickOutside
+  },
   props: ['value', 'data'],
   data () {
     return {
