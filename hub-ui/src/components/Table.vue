@@ -71,7 +71,7 @@
                 <template v-if="column.component">
                   <component :is="column.component" :row="row" />
                 </template>
-                <div :class="column.truncate ? 'truncate max-w-4xl' : null" v-else>
+                <div class="max-w-4xl" :class="column.truncate ? 'truncate' : null" v-else>
                   <slot :name="column.field" v-bind="{ row, index }"></slot>
                 </div>
             </td>
