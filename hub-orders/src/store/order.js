@@ -11,8 +11,8 @@ export const actions = {
   async addOrderNote ({ commit, state }, note) {
     const notes = state.history
     commit('setOrderHistory', [
+      ...[note],
       ...state.history,
-      ...[note]
     ]);
   }
 }
