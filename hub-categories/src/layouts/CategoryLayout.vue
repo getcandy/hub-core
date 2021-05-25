@@ -74,7 +74,7 @@ export default {
       },
       {
         route: 'categories.edit.routes',
-        label: 'Routes'
+        label: 'URLs'
       }
     ]
     this.$nuxt.context.app.$hooks.callHook('category.main.tabs', items)
