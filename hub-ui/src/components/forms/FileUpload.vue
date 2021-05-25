@@ -158,7 +158,7 @@ export default {
           this.errors.push(response)
           setTimeout(() => {
             this.uploader.removeFile(file.id)
-          }, 2000)
+          }, 5000)
         }).on('file-added', file => this.addFileToStack(file))
         .on('file-removed', file => this.removeFileFromStack(file))
 
