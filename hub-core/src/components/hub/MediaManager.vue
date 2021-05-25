@@ -104,7 +104,10 @@
         <span v-if="row.extension">.{{ row.extension }}</span><span v-else>{{ row.kind }}</span>
       </template>
       <template v-slot:actions="{ row }">
-        <a :href="row.url" class="button is-text" target="_blank">
+        <a v-if="row.kind === 'youtube'" :href="`https://www.youtube.com/watch?v=${row.location}`" target="_blank" class="button is-text">
+          <gc-icon size="sm" icon="link" />
+        </a>
+        <a v-else :href="row.url" class="button is-text" target="_blank">
           <b-icon icon="download-line" size="is-small" />
         </a>
         <gc-button size="x-small" theme="danger" @click="showDeleteModal(row)">
