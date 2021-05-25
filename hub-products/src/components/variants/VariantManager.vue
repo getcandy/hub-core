@@ -288,11 +288,11 @@ export default {
     // TODO: Do this better
     purchasabilityHelper () {
       if (this.current.backorder === 'in-stock') {
-        return 'This item can <strong>only</strong> be bought when in stock.'
+        return 'This item can only be bought when in stock.'
       } else if (this.current.backorder === 'expected') {
-        return 'This item can be bought when on backorder <strong>or</strong> in stock'
+        return 'This item can be bought when stock is expected'
       }
-      return 'This item can be bought when <strong>not</strong> in stock <strong>or</strong> not on backorder'
+      return 'This item can be bought regardless of stock level'
     }
   },
   watch: {
