@@ -13,13 +13,19 @@
         @input="setValue(attribute.handle, $event)"
       />
       <template v-if="attribute.type == 'select'">
-        <!-- <b-autocomplete
+        <gc-select
           :value="getValue(attribute.handle)"
-          @input="setValue(attribute.handle, $event)"
-          :placeholder="data[attribute.handle][fallbackChannel][fallbackLanguage]"
-          :data="attribute.lookups"
-          :open-on-focus="true"
-        /> -->
+          @change="setValue(attribute.handle, $event)"
+        >
+          <option
+            v-for="(lookup, lookupIndex) in attribute.lookups"
+            :key="lookupIndex"
+            :value="lookup.value || lookup"
+            :selected="(lookup.value || lookup) === getValue(attribute.handle)"
+          >
+            {{ lookup.label || lookup }}
+          </option>
+        </gc-select>
       </template>
       <b-switch
         v-if="attribute.type == 'toggle'"
