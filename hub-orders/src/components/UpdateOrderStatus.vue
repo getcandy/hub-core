@@ -70,6 +70,11 @@
         }
       }
     },
+    watch: {
+      notes: debounce(function (val) {
+        this.updateTemplate()
+      }, 300)
+    },
     data() {
       return {
         showModal: false,
