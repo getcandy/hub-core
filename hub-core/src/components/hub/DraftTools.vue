@@ -65,7 +65,7 @@
     </simple-modal>
 
     <simple-modal
-      heading="Permanent delete"
+      heading="Delete record"
       :open="showDeleteConfirm"
       @confirmed="() => {
         showDeleteConfirm = false
@@ -73,7 +73,7 @@
       }"
       @close="showDeleteConfirm = false"
     >
-      {{ $t('Are you sure you want to delete this record? This action cannot be undone.') }}
+      {{ $t('This will send the record to the Recycle Bin.') }}
     </simple-modal>
 
     <quick-view-panel
