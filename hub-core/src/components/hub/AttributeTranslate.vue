@@ -120,7 +120,6 @@
           />
         </div>
         <div v-show="translating" class="w-1/2 px-6">
-          {{ translateLanguage }} {{ translateChannel }}
           <localised-attributes
             :attribute-data="attributeData"
             :attributes="filteredAttributes(group.attributes.data)"
