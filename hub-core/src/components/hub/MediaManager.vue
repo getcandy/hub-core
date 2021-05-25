@@ -76,7 +76,7 @@
         {label: 'Caption', field: 'caption'},
         {label: 'Tags', field: 'tags'},
         {label: 'Type', field: 'type'},
-        {label: null, field: 'actions', class: 'w-8'},
+        {label: null, field: 'actions', class: 'w-32'},
       ]"
     >
       <template v-slot:primary="{ row }">
@@ -104,15 +104,21 @@
         <span v-if="row.extension">.{{ row.extension }}</span><span v-else>{{ row.kind }}</span>
       </template>
       <template v-slot:actions="{ row }">
-        <a v-if="row.kind === 'youtube'" :href="`https://www.youtube.com/watch?v=${row.location}`" target="_blank" class="button is-text">
-          <gc-icon size="sm" icon="link" />
-        </a>
-        <a v-else :href="row.url" class="button is-text" target="_blank">
-          <b-icon icon="download-line" size="is-small" />
-        </a>
-        <gc-button size="x-small" theme="danger" @click="showDeleteModal(row)">
-          <b-icon icon="delete-bin-line" size="is-small" />
-        </gc-button>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <a v-if="row.kind === 'youtube'" :href="`https://www.youtube.com/watch?v=${row.location}`" target="_blank" class="inline-flex justify-center block px-3 py-2 text-gray-800 border rounded">
+              <gc-icon size="sm" icon="link" />
+            </a>
+            <a v-else :href="row.url" class="inline-flex justify-center block px-3 py-2 text-gray-800 border rounded" target="_blank">
+              <gc-icon icon="download" size="sm" />
+            </a>
+          </div>
+          <div>
+            <gc-button size="x-small" theme="danger" @click="showDeleteModal(row)">
+              <b-icon icon="delete-bin-line" size="is-small" />
+            </gc-button>
+          </div>
+        </div>
       </template>
     </gc-table>
 
