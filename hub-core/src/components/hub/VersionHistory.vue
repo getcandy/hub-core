@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 bg-gray-100 border-t">
+  <div v-if="versions.length" class="p-6 bg-gray-100 border-t">
     <gc-form-field label="Select a version">
       <gc-select-input v-model="versionId">
         <option :value="null">
