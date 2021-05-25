@@ -6,6 +6,14 @@
       </form-field>
     </div>
     <div class="bg-white">
+      <div class="flex mb-2">
+        <div class="w-1/2 pl-12 text-sm font-bold text-gray-500 uppercase">
+          Selected
+        </div>
+        <div class="w-1/2 pl-12 text-sm font-bold text-gray-500 uppercase">
+          Available
+        </div>
+      </div>
       <product-family-attribute-manager
         v-model="productAttributes"
         :attributes="attributes"
