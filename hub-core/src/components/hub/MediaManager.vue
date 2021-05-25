@@ -324,6 +324,7 @@ export default {
         response.primary = true
       }
       this.assets.push(response)
+      this.$notify.queue('success', this.$t('File successfully uploaded'))
     },
     getThumbnail (asset) {
       if (asset.thumbnail) {
