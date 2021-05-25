@@ -16,7 +16,7 @@
           :columns="[
             {label: '', field: 'thumbnail'},
             {label: $t('Name'), field: 'name'},
-            {label: $t('SKU(s)'), field: 'sku'},
+            {label: $t('SKU'), field: 'sku'},
             {label: null, field: 'actions'},
           ]"
         >
@@ -79,7 +79,7 @@
             <tr>
               <th />
               <th>{{ $t('Name') }}</th>
-              <th>{{ $t('SKU(s)') }}</th>
+              <th>{{ $t('SKU') }}</th>
               <th>{{ $t('Type') }}</th>
               <th />
             </tr>
