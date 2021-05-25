@@ -57,6 +57,10 @@ const debounce = require('lodash/debounce')
 
 export default {
   props: {
+    useQueryString: {
+      type: Boolean,
+      default: true
+    },
     to: {
       type: Object,
       default: null
@@ -90,30 +94,31 @@ export default {
   async fetch () {
     const { from, to, page } = this.$route.query
 
-    this.page = page || 1
-
-    if (from || to) {
-      this.fromDate = moment(from, 'YYYY-MM-DD').toDate()
-      this.toDate = moment(to, 'YYYY-MM-DD').toDate()
-    }
-
-    if (!this.fromDate || !this.toDate) {
-      this.fromDate = moment().startOf('month').subtract(1, 'year').toDate()
-      this.toDate = moment().toDate()
-      if (moment(this.fromDate).isSame(this.toDate, 'day')) {
-        this.toDate = moment().add(1, 'day').toDate()
+    if (this.useQueryString) {
+      if (from || to) {
+        this.fromDate = moment(from, 'YYYY-MM-DD').toDate()
+        this.toDate = moment(to, 'YYYY-MM-DD').toDate()
       }
+
+      if (!this.fromDate || !this.toDate) {
+        this.fromDate = moment().startOf('month').subtract(1, 'year').toDate()
+        this.toDate = moment().toDate()
+        if (moment(this.fromDate).isSame(this.toDate, 'day')) {
+          this.toDate = moment().add(1, 'day').toDate()
+        }
+      }
+    } else {
+      this.fromDate = this.from.toDate()
+      this.toDate = this.to.toDate()
     }
 
-    if (this.from && this.to) {
-      this.fromDate = this.from
-      this.toDate = this.to
-    }
+    this.page = page || 1
 
     this.dates = [
       this.fromDate,
       this.toDate
     ]
+
     await this.refresh()
   },
   data () {
@@ -134,6 +139,7 @@ export default {
       this.exporting = true
       const from = moment(this.dates[0]).format('YYYY-MM-DD')
       const to = moment(this.dates[1]).format('YYYY-MM-DD')
+
       await this.$gc.reports.get('products/best-sellers', {
         from,
         to,
@@ -153,11 +159,13 @@ export default {
     async refresh () {
       this.loading = true
       // Get the report we want.]
-      const from = moment(this.dates[0]).format('YYYY-MM-DD')
-      const to = moment(this.dates[1]).format('YYYY-MM-DD')
+
+      const from = moment(this.dates[0])
+      const to = moment(this.dates[1])
+
       const response = await this.$gc.reports.get('products/best-sellers', {
-        from,
-        to,
+        from: from.format('YYYY-MM-DD'),
+        to: to.format('YYYY-MM-DD'),
         page: this.page,
         term: this.term
       })
@@ -166,15 +174,18 @@ export default {
       this.meta = response.data
       this.page = response.data.current_page
 
-      this.$router.push({
-        path: this.$route.path,
-        query: {
-          from,
-          to,
-          term: this.term,
-          page: this.page
-        }
-      })
+      if (this.useQueryString) {
+        this.$router.push({
+          path: this.$route.path,
+          query: {
+            from: from.format('YYYY-MM-DD'),
+            to: to.format('YYYY-MM-DD'),
+            term: this.term,
+            page: this.page
+          }
+        })
+      }
+
     }
   }
 }

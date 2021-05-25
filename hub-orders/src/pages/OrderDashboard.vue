@@ -212,11 +212,12 @@
           </nuxt-link>
         </div>
       </div>
-
       <best-sellers-report
+        :use-query-string="false"
         :from="bestSellersFromDate"
         :show-controls="false"
         :to="bestSellersToDate"
+        v-if="bestSellersFromDate && bestSellersToDate"
       />
     </div>
   </div>
