@@ -80,6 +80,14 @@ export default {
       this.clearFormErrors()
       this.processing = true
       try {
+        if (!this.productName) {
+          this.setFormErrors({
+            name: [
+              this.$t('Please enter a name')
+            ]
+          })
+          return;
+        }
         const response = await this.$gc.products.create(this.product)
 
         this.$router.push({
