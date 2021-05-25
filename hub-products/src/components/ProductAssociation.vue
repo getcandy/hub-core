@@ -79,6 +79,7 @@
             <tr>
               <th />
               <th>{{ $t('Name') }}</th>
+              <th>{{ $t('SKU(s)') }}</th>
               <th>{{ $t('Type') }}</th>
               <th />
             </tr>
@@ -87,6 +88,7 @@
             <tr v-for="(association, rowIndex) in associations" :key="rowIndex">
               <td><thumbnail-loader width="50px" :asset="association.thumbnail" /></td>
               <td>{{ attribute(association.attribute_data, 'name') }}</td>
+              <td>{{ association.skus.join(', ') }}</td>
               <td>
                 <gc-select v-model="association.type" placeholder="Select a type" @change="updateAssociationType">
                   <option
@@ -151,6 +153,7 @@ export default {
     this.associations = map(get(this.product, 'associations.data', []), (item) => {
       return {
         id: item.association.data.id,
+        skus: this.getSkus(item.association.data),
         thumbnail: item.association.data.assets.data[0],
         attribute_data: item.association.data.attribute_data,
         type: item.group.data.id

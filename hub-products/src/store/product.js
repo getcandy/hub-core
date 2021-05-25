@@ -2,6 +2,7 @@ const defaultIncludes = Array([
   'assets.tags',
   'assets.transforms',
   'associations.association.assets.transforms',
+  'associations.association.variants',
   'associations.group',
   'attributes.group.attributes',
   'categories.assets.transforms',
