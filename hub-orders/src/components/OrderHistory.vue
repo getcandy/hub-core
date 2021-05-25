@@ -28,7 +28,14 @@
             </template>
           </p>
           <hr>
+          <div v-if="item.type == 'private'" class="mb-2">
+            <span class="px-3 py-2 text-xs font-bold text-red-600 uppercase border border-red-500 rounded bg-red-50">
+              Private
+            </span>
+          </div>
           {{ item.description }}
+
+
           <div v-for="(detail, handle) in item.properties" :key="handle">
             <template v-if="handle == 'attributes'">
               <template v-if="getChanges(item).length">
