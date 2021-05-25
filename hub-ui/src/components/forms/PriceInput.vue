@@ -11,7 +11,7 @@
         {{ currency.format.replace('{price}', '') }}
       </span>
     </div>
-    <input :value="formattedValue" @blur="input" class="block w-full pl-10 pr-12 form-input sm:text-sm sm:leading-5" placeholder="0.00" aria-describedby="price-currency" />
+    <input :value="formattedValue" @blur="input" type="number" class="block w-full pl-10 pr-12 form-input sm:text-sm sm:leading-5" step='0.01' placeholder="0.00" aria-describedby="price-currency" />
     <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
       <span class="text-gray-500 sm:text-sm sm:leading-5" id="price-currency">
         {{ currency.code }}

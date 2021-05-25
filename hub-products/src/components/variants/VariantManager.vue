@@ -77,10 +77,10 @@
                 <gc-input v-model="current.unit_qty" type="number" @input="handleChange" />
               </form-field>
               <form-field :label="$t('Min Purchase Quantity')" :instructions="$t('The minimum amount that can be purchased')">
-                <gc-input v-model="current.min_qty" @input="handleChange" />
+                <gc-input v-model="current.min_qty" type="number" @input="handleChange" />
               </form-field>
               <form-field :label="$t('Min Batch Quantity')" :instructions="$t('This product can only be ordered in multiples of {min_batch}', { min_batch: current.min_batch })">
-                <gc-input v-model="current.min_batch" @input="handleChange" />
+                <gc-input v-model="current.min_batch" type="number" @input="handleChange" />
               </form-field>
             </div>
             <div class="my-4">
@@ -170,7 +170,7 @@
           <div class="p-6">
             <div class="md:grid md:grid-cols-3 md:gap-6">
               <form-field :label="$t('Width')">
-                <gc-grouped-input v-model="current.width.value" @input="handleChange">
+                <gc-grouped-input v-model="current.width.value" @input="handleChange" input-type="number">
                   <select v-model="current.width.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
                       CM
@@ -185,7 +185,7 @@
                 </gc-grouped-input>
               </form-field>
               <form-field :label="$t('Height')">
-                <gc-grouped-input v-model="current.height.value" @input="handleChange">
+                <gc-grouped-input v-model="current.height.value" @input="handleChange" input-type="number">
                   <select v-model="current.height.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
                       CM
@@ -200,7 +200,7 @@
                 </gc-grouped-input>
               </form-field>
               <form-field :label="$t('Depth')">
-                <gc-grouped-input v-model="current.depth.value" @input="handleChange">
+                <gc-grouped-input v-model="current.depth.value" @input="handleChange" input-type="number">
                   <select v-model="current.depth.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
                       CM
