@@ -22,7 +22,7 @@
         </div>
       </div>
       <form-field :label="$t('Price')" :error="getFirstFormError('price')" for="price" required>
-        <price-input id="price" v-model="product.price" :is-cents="false" />
+        <gc-price-input id="price" v-model="product.price" :is-cents="false" />
       </form-field>
       <form-field :label="$t('Stock')" for="stock">
         <gc-input id="stock" v-model="product.stock" type="number" steps="1" />
