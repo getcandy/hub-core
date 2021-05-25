@@ -80,15 +80,14 @@ export default {
       this.clearFormErrors()
       this.processing = true
       try {
+        const data = JSON.parse(
+          JSON.stringify(this.product)
+        )
+
         if (!this.productName) {
-          this.setFormErrors({
-            name: [
-              this.$t('Please enter a name')
-            ]
-          })
-          return;
+          delete data.name
         }
-        const response = await this.$gc.products.create(this.product)
+        const response = await this.$gc.products.create(data)
 
         this.$router.push({
           name: 'products.view',
