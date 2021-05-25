@@ -143,7 +143,7 @@ export default ({ app }, inject) => {
       },
       {
         label: 'Product Families',
-        position: 10,
+        position: 5,
         access: ['manage-catalogue'],
         route: {
           name: 'product-families'
