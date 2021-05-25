@@ -9,13 +9,14 @@
       <quick-view-panel heading="Search products" :open="showBrowser" width="w-2/3" @close="showBrowser = false">
         <search-table
           :limit="10"
-          includes="assets.transforms"
+          includes="assets.transforms,variants"
           :update-query-string="false"
           :search-placeholder="$t('Search products')"
           type="products"
           :columns="[
             {label: '', field: 'thumbnail'},
             {label: $t('Name'), field: 'name'},
+            {label: $t('SKU(s)'), field: 'sku'},
             {label: null, field: 'actions'},
           ]"
         >
@@ -42,6 +43,9 @@
             >
               {{ attribute(row.attribute_data, 'name') }}
             </nuxt-link>
+          </template>
+          <template v-slot:sku="{ row }">
+            {{ getSkus(row).join(', ') }}
           </template>
           <template v-slot:actions="{ row }">
             <template v-if="row.id != product.id">
@@ -173,6 +177,12 @@ export default {
 
       this.$emit('changed', () => {
         this.save()
+      })
+    },
+    getSkus(product) {
+      const variants = get(product, 'variants.data', [])
+      return map(variants, v => {
+        return v.sku
       })
     },
     updateAssociationType () {
