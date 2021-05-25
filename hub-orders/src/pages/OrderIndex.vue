@@ -72,7 +72,7 @@
         </div>
         <div class="my-4">
           <header class="mb-1 text-sm font-bold text-gray-700">
-            <label>{{ $t('Status') }}</label>
+            <label>{{ $t('Payment Types') }}</label>
           </header>
           <div>
             <gc-select-input v-model="filters.type" @input="loadData">
