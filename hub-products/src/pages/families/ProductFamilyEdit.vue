@@ -35,6 +35,11 @@ const flattenDeep = require('lodash/flattenDeep')
 
 export default {
   layout: 'product-family',
+  head () {
+    return {
+      title: this.family ? this.family.name : null
+    }
+  },
   components: {
     ProductFamilyAttributeManager
   },

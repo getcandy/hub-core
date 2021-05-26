@@ -33,6 +33,7 @@ export default function (moduleOptions) {
     'components/ProductAssociation.vue',
     'components/ProductTable.vue',
     'components/ProductCreate.vue',
+    'components/ProductFamilyCreate.vue',
     'components/ProductFamilyAttributeManager.vue',
     'components/ProductFamilyProductsManager.vue',
 
