@@ -80,8 +80,8 @@
       </template>
     </table>
     </div>
-    <template v-if="state != 'loading'">
-      <nav class="flex items-center justify-center px-4 pb-3 border-t border-gray-200 sm:px-0" v-if="meta && meta.links">
+    <template v-if="state != 'loading' && meta">
+      <nav class="flex items-center justify-center px-4 pb-3 border-t border-gray-200 sm:px-0" v-if="meta.links">
         <div class="hidden md:flex">
           <a
             href="#"
