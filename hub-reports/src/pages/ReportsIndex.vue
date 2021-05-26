@@ -30,6 +30,9 @@
 
 <script>
 export default {
+  head: {
+    title: 'Report Exports'
+  },
   data () {
     return {
       reports: [],
