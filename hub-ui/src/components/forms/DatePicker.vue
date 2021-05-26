@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <date-picker :value="date" @input="handleInput" v-bind="options" :is-range="isRange">
+      <date-picker timezone="UTC" :value="date" @input="handleInput" v-bind="options" :is-range="isRange">
         <template v-slot="{ inputValue, togglePopover, inputEvents }">
           <input class="block w-full form-input sm:text-sm sm:leading-5 disabled:bg-gray-100" :value="inputValue" @focus="togglePopover({ placement: 'bottom' })" v-on="sortInputEvents(inputEvents)" v-if="!isRange" />
           <input class="block w-full form-input sm:text-sm sm:leading-5 disabled:bg-gray-100" :value="`${date.start} - ${date.end}`" v-on="sortInputEvents(inputEvents)" v-else />
