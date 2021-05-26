@@ -17,8 +17,18 @@
         <input v-model="checkedRows" type="checkbox" :value="row.id">
       </template>
       <template v-slot:new_returning="{ row }">
-        <span v-if="!firstOrder(row)" class="px-2 py-1 text-xs text-orange-500 rounded-md bg-orange-50" data-toggle="tooltip" :title="$t('Returning Customer')">R</span>
-        <span v-else class="px-2 py-1 text-xs text-blue-500 rounded-md bg-blue-50" data-toggle="tooltip" :title="$t('New Customer')">N</span>
+        <div class="relative new-ret-tooltip cursor-help" v-if="!firstOrder(row)">
+          <span class="px-2 py-1 text-xs text-orange-500 rounded-md bg-orange-50" data-toggle="tooltip">R</span>
+          <div class="absolute top-0 hidden w-auto px-2 py-1 text-xs text-orange-500 truncate rounded-md bg-orange-50">
+            {{ $t('Returning Customer') }}
+          </div>
+        </div>
+        <div class="relative new-ret-tooltip cursor-help" v-else>
+          <span class="px-2 py-1 text-xs text-blue-500 rounded-md bg-blue-50" data-toggle="tooltip">N</span>
+          <div class="absolute top-0 hidden w-auto px-2 py-1 text-xs text-blue-500 truncate rounded-md bg-blue-50">
+            {{ $t('New Customer') }}
+          </div>
+        </div>
       </template>
       <template v-slot:status="{ row }">
         <span class="tag" :style="getStatusStyles(row.status)">{{ getStatusLabel(row.status) }}</span>
@@ -110,7 +120,7 @@ export default {
     columns () {
       const columns = [
         { label: null, field: 'actions' },
-        { label: null, field: 'new_returning' },
+        { label: null, field: 'new_returning', class: 'w-12' },
         { label: 'Status', field: 'status' },
         { label: 'Reference', field: 'reference' },
         { label: 'Name', field: 'name' },
@@ -149,5 +159,11 @@ export default {
 </script>
 
 <style scoped>
-
+  .new-ret-tooltip {
+    cursor: help;
+  }
+  .new-ret-tooltip:hover div {
+    display:block;
+    margin-top:-1px;
+  }
 </style>
