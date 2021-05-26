@@ -98,6 +98,9 @@
           </a>
         </div>
       </nav>
+      <div class="text-xs text-center text-red-600" v-if="meta.large_dataset">
+        {{ $t('Pagination has been limited due to the high number of results') }}
+      </div>
     </template>
   </div>
 </template>
