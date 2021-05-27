@@ -1,9 +1,11 @@
 <template>
-  <form @submit.prevent="createProductFamily" class="p-4">
+  <form class="p-4" @submit.prevent="createProductFamily">
     <gc-form-field label="Name" class="mb-4" required :error="getFirstFormError('name')">
       <gc-input v-model="name" />
     </gc-form-field>
-    <gc-button type="submit" :loading="processing">Create product family</gc-button>
+    <gc-button type="submit" :loading="processing">
+      Create product family
+    </gc-button>
   </form>
 </template>
 
@@ -38,7 +40,6 @@ export default {
           }
         })
       } catch (e) {
-        console.log(e)
         this.setFormErrors(
           get(e, 'response.data.errors', [])
         )
