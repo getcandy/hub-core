@@ -9,7 +9,7 @@
           class="editable-stock"
           :class="{
             'text-red-600': variants[0].inventory <= 5,
-            'text-orange-500': variants[0].inventory <= 20,
+            'text-yellow-500': variants[0].inventory <= 20 && variants[0].inventory > 5,
             'text-green-500': variants[0].inventory > 20,
           }"
           @click.prevent="enableEditing"
@@ -18,7 +18,16 @@
         </a>
       </span>
       <div v-else>
-        <gc-input v-model="variants[0].inventory" v-focus @blur="save" />
+        <form @submit.prevent="save">
+          <gc-input v-model="variants[0].inventory" v-focus type="number" :min="variants[0].reserved_stock" @blur="save" />
+          <span
+            class="text-xs uppercase"
+            :class="{
+              'text-gray-400': !variants[0].reserved_stock,
+              'text-blue-600': !!variants[0].reserved_stock
+            }"
+          >{{ variants[0].reserved_stock }} {{ $t('Reserved') }}</span>
+        </form>
       </div>
     </template>
     <template v-else>
@@ -26,10 +35,19 @@
         {{ $t('Edit') }}
       </gc-button>
       <quick-view-panel :heading="$t('Edit stock levels')" :open="editing" @close="closePanel">
-        <div class="p-6">
+        <div class="p-4">
           <form action="" @submit.prevent="save">
-            <form-field v-for="variant in variants" :key="variant.id" :label="variant.sku" class="form-group">
-              <gc-input v-model="variant.inventory" />
+            <form-field v-for="variant in variants" :key="variant.id" :label="variant.sku" class="pb-4 border-b border-gray-100 form-group">
+              <div class="flex items-center justify-between">
+                <gc-input v-model="variant.inventory" :min="variant.reserved_stock" type="number" />
+                <span
+                  class="text-xs uppercase"
+                  :class="{
+                    'text-gray-400': !variant.reserved_stock,
+                    'text-blue-600': !!variant.reserved_stock
+                  }"
+                >{{ variant.reserved_stock }} {{ $t('Reserved') }}</span>
+              </div>
             </form-field>
             <gc-button type="submit" :loading="processing" :disabled="processing">
               {{ $t('Update stock') }}

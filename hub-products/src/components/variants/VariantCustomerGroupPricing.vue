@@ -5,11 +5,11 @@
         <gc-price-input v-model="price.price" :is-cents="false" @input="handleChange" />
       </form-field>
       <form-field :label="$t('Tax')">
-        <select-input v-model="price.tax_id" @input="handleChange">
+        <gc-select-input v-model="price.tax_id" @input="handleChange">
           <option v-for="tax in taxes" :key="tax.id" :value="tax.id">
             {{ tax.name }} ({{ tax.percentage }}%)
           </option>
-        </select-input>
+        </gc-select-input>
       </form-field>
     </div>
   </div>

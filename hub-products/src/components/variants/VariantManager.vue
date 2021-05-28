@@ -138,8 +138,8 @@
               <form-field :label="$t('SKU')">
                 <gc-sku-input v-model="current.sku" @input="handleChange" />
               </form-field>
-              <form-field :label="$t('Stock Level')">
-                <gc-input v-model="current.inventory" type="number" @input="handleChange" />
+              <form-field :label="$t('Stock Level')" :instructions="`${current.reserved_stock} currently reserved`">
+                <gc-input v-model="current.inventory" type="number" :min="current.reserved_stock" @input="handleChange" />
               </form-field>
               <form-field :label="$t('Incoming')">
                 <gc-input v-model="current.incoming" type="number" @input="handleChange" />
@@ -170,7 +170,7 @@
           <div class="p-6">
             <div class="md:grid md:grid-cols-3 md:gap-6">
               <form-field :label="$t('Width')">
-                <gc-grouped-input v-model="current.width.value" @input="handleChange" input-type="number">
+                <gc-grouped-input v-model="current.width.value" input-type="number" @input="handleChange">
                   <select v-model="current.width.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
                       CM
@@ -185,7 +185,7 @@
                 </gc-grouped-input>
               </form-field>
               <form-field :label="$t('Height')">
-                <gc-grouped-input v-model="current.height.value" @input="handleChange" input-type="number">
+                <gc-grouped-input v-model="current.height.value" input-type="number" @input="handleChange">
                   <select v-model="current.height.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
                       CM
@@ -200,7 +200,7 @@
                 </gc-grouped-input>
               </form-field>
               <form-field :label="$t('Depth')">
-                <gc-grouped-input v-model="current.depth.value" @input="handleChange" input-type="number">
+                <gc-grouped-input v-model="current.depth.value" input-type="number" @input="handleChange">
                   <select v-model="current.depth.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
                       CM
@@ -358,6 +358,10 @@ export default {
       this.hasGroupPricing = this.current.customer_pricing ? this.current.customer_pricing.data.length : false
     },
     handleChange () {
+      if (this.current.inventory < this.current.reserved_stock) {
+        this.$notify.queue('error', this.$t(`Stock must be at least ${this.current.reserved_stock}`))
+        return
+      }
       this.$emit('change', this.current, () => {
       })
     },
