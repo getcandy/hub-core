@@ -31,7 +31,7 @@
       </div>
     </template>
     <template v-else>
-      <gc-button size="x-small" theme="gray" @click="editing = true">
+      <gc-button size="x-small" theme="gray" @click="enableEditing">
         {{ $t('Edit') }}
       </gc-button>
       <quick-view-panel :heading="$t('Edit stock levels')" :open="editing" @close="closePanel">
@@ -92,10 +92,22 @@ export default {
   methods: {
     enableEditing () {
       this.editing = true
+      this.refreshStock()
     },
     closePanel () {
       this.editing = false
       this.processing = false
+    },
+    async refreshStock() {
+      const response = await this.$getcandy.on('products', 'getProductsProductId',
+        this.product.id,
+        'variants',
+        true,
+        true,
+        true,
+        1
+      )
+      this.variants = response.data.data.variants.data
     },
     save () {
       this.editing = false
