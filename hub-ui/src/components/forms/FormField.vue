@@ -2,9 +2,6 @@
   <div class="mb-4">
     <header v-if="label" class="mb-1 text-sm text-gray-700">
       <label class="font-bold ">{{ $t(label) }} <sup v-if="required" class="text-red-500">*</sup></label>
-      <p v-if="instructions" class="my-1 text-xs text-gray-600">
-        {{ instructions }}
-      </p>
     </header>
     <div>
       <slot />
@@ -15,6 +12,9 @@
         {{ message }}
       </p>
     </div>
+    <p v-if="instructions" class="my-1 text-xs text-gray-600">
+      {{ instructions }}
+    </p>
     <button class="text-xs text-blue-700 focus:outline-none" v-if="explanation" @click="expandedExplanation = !expandedExplanation">{{ expandedExplanation ? 'Hide' : 'Show' }} explanation</button>
     <!-- This example requires Tailwind CSS v2.0+ -->
     <div class="p-3 mt-1 rounded-md bg-blue-50" v-if="expandedExplanation">

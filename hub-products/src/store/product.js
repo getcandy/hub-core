@@ -24,7 +24,8 @@ const defaultIncludes = Array([
   'variants.tax',
   'variants.tiers.group',
   'versions.user',
-  'versions.relations'
+  'versions.relations',
+  'variants.publishedParent'
 ]).join(',')
 
 export const state = () => ({

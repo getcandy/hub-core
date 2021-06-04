@@ -73,15 +73,15 @@
           </header>
           <div class="p-6">
             <div class="md:grid md:grid-cols-3 md:gap-6">
-              <form-field :label="$t('Unit Quantity')" :instructions="$t('The number of units that make up the price')">
+              <gc-form-field :label="$t('Unit Quantity')" :instructions="$t('The number of units that make up the price')">
                 <gc-input v-model="current.unit_qty" type="number" @input="handleChange" />
-              </form-field>
-              <form-field :label="$t('Min Purchase Quantity')" :instructions="$t('The minimum amount that can be purchased')">
+              </gc-form-field>
+              <gc-form-field :label="$t('Min Purchase Quantity')" :instructions="$t('The minimum amount that can be purchased')">
                 <gc-input v-model="current.min_qty" type="number" @input="handleChange" />
-              </form-field>
-              <form-field :label="$t('Min Batch Quantity')" :instructions="$t('This product can only be ordered in multiples of {min_batch}', { min_batch: current.min_batch })">
+              </gc-form-field>
+              <gc-form-field :label="$t('Min Batch Quantity')" :instructions="$t('This product can only be ordered in multiples of {min_batch}', { min_batch: current.min_batch })">
                 <gc-input v-model="current.min_batch" type="number" @input="handleChange" />
-              </form-field>
+              </gc-form-field>
             </div>
             <div class="my-4">
               <label class="flex items-center">
@@ -99,10 +99,10 @@
               />
             </template>
             <div v-else class="md:grid md:grid-cols-2 md:gap-6">
-              <form-field :label="$t('Unit Price')">
+              <gc-form-field :label="$t('Unit Price')">
                 <gc-price-input v-model="current.price" :is-cents="false" @input="handleChange" />
-              </form-field>
-              <form-field :label="$t('Tax')">
+              </gc-form-field>
+              <gc-form-field :label="$t('Tax')">
                 <select-input v-model="current.tax.data.id" :placeholder="$t('Select a tax bracket')" @input="handleChange">
                   <option
                     v-for="option in taxes"
@@ -112,7 +112,7 @@
                     {{ option.name }} ({{ option.percentage }}%)
                   </option>
                 </select-input>
-              </form-field>
+              </gc-form-field>
             </div>
           </div>
         </div>
@@ -132,20 +132,23 @@
             <h3 class="text-sm font-bold text-gray-700">
               {{ $t('Inventory') }}
             </h3>
+            <p class="mt-1 text-xs text-blue-600">
+              {{ $t('Changes to inventory are not versioned and will be applied to the live product') }}
+            </p>
           </header>
           <div class="p-6">
             <div class="md:grid md:grid-cols-4 md:gap-6">
-              <form-field :label="$t('SKU')">
+              <gc-form-field :label="$t('SKU')">
                 <gc-sku-input v-model="current.sku" @input="handleChange" />
-              </form-field>
-              <form-field :label="$t('Stock Level')" :instructions="`${current.reserved_stock} currently reserved`">
-                <gc-input v-model="current.inventory" type="number" :min="current.reserved_stock" @input="handleChange" />
-              </form-field>
-              <form-field :label="$t('Incoming')">
-                <gc-input v-model="current.incoming" type="number" @input="handleChange" />
-              </form-field>
+              </gc-form-field>
+              <gc-form-field :label="$t('Stock Level')" :instructions="`${current.reserved_stock} currently reserved`">
+                <gc-input v-model="current.inventory" type="number" :min="current.reserved_stock" @input="handleLiveChange" />
+              </gc-form-field>
+              <gc-form-field :label="$t('Incoming')">
+                <gc-input v-model="current.incoming" type="number" @input="handleLiveChange" />
+              </gc-form-field>
               <gc-form-field :label="$t('Purchasability')" :instructions="purchasabilityHelper">
-                <gc-select-input v-model="current.backorder" @change="handleChange">
+                <gc-select-input v-model="current.backorder" @change="handleLiveChange">
                   <option
                     v-for="option in backorderOptions"
                     :key="option.value"
@@ -169,7 +172,7 @@
           </header>
           <div class="p-6">
             <div class="md:grid md:grid-cols-3 md:gap-6">
-              <form-field :label="$t('Width')">
+              <gc-form-field :label="$t('Width')">
                 <gc-grouped-input v-model="current.width.value" input-type="number" @input="handleChange">
                   <select v-model="current.width.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
@@ -183,8 +186,8 @@
                     </option>
                   </select>
                 </gc-grouped-input>
-              </form-field>
-              <form-field :label="$t('Height')">
+              </gc-form-field>
+              <gc-form-field :label="$t('Height')">
                 <gc-grouped-input v-model="current.height.value" input-type="number" @input="handleChange">
                   <select v-model="current.height.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
@@ -198,8 +201,8 @@
                     </option>
                   </select>
                 </gc-grouped-input>
-              </form-field>
-              <form-field :label="$t('Depth')">
+              </gc-form-field>
+              <gc-form-field :label="$t('Depth')">
                 <gc-grouped-input v-model="current.depth.value" input-type="number" @input="handleChange">
                   <select v-model="current.depth.unit" class="h-full py-0 pl-2 text-gray-500 bg-transparent border-transparent form-select pr-7 sm:text-sm sm:leading-5" @change="handleChange">
                     <option value="cm">
@@ -213,7 +216,7 @@
                     </option>
                   </select>
                 </gc-grouped-input>
-              </form-field>
+              </gc-form-field>
             </div>
           </div>
         </div>
@@ -357,12 +360,25 @@ export default {
       })
       this.hasGroupPricing = this.current.customer_pricing ? this.current.customer_pricing.data.length : false
     },
-    handleChange () {
+    checkStock () {
       if (this.current.inventory < this.current.reserved_stock) {
         this.$notify.queue('error', this.$t(`Stock must be at least ${this.current.reserved_stock}`))
+        return false
+      }
+      return true
+    },
+    handleChange () {
+      if (!this.checkStock()) {
         return
       }
       this.$emit('change', this.current, () => {
+      })
+    },
+    handleLiveChange () {
+      if (!this.checkStock()) {
+        return
+      }
+      this.$emit('live-change', this.current, () => {
       })
     },
     async handleAssetChange (assetId) {

@@ -10,7 +10,13 @@
         <quick-view-panel :open="showVariantOptions" width="w-4/5 xl:w-3/5" @close="showVariantOptions = false">
           <variant-options :product="product" :initial-price="firstVariant.price" :errors="variantErrors" @save="saveVariants" />
         </quick-view-panel>
-        <variant-manager :product="product" :languages="languages" @change="handleVariantsChange" @delete="handleVariantDelete" />
+        <variant-manager
+          :product="product"
+          :languages="languages"
+          @change="handleVariantsChange"
+          @live-change="handleVariantsLiveChange"
+          @delete="handleVariantDelete"
+        />
       </gc-tab-item>
       <gc-tab-item :label="$t('Channels')">
         <channel-manager :channels="product.channels.data" @change="handleChannelChange" />
@@ -148,6 +154,20 @@ export default {
       } catch (error) {
       }
     },
+    handleVariantsLiveChange: debounce(async function (variant, done) {
+      await this.$gc.products.variants.put(variant.published_parent.data.id, {
+        inventory: variant.inventory,
+        sku: variant.sku,
+        backorder: variant.backorder
+      })
+      await this.$gc.products.variants.put(variant.id, {
+        inventory: variant.inventory,
+        sku: variant.sku,
+        backorder: variant.backorder
+      })
+      done()
+      this.$notify.queue('success', this.$t('Product updated'))
+    }, 300),
     handleVariantsChange: debounce(async function (variant, done) {
       await this.createDraft('product', this.product.id, {
         afterRedirect: (product) => {
