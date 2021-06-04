@@ -155,18 +155,22 @@ export default {
       }
     },
     handleVariantsLiveChange: debounce(async function (variant, done) {
-      await this.$gc.products.variants.put(variant.published_parent.data.id, {
-        inventory: variant.inventory,
-        sku: variant.sku,
-        backorder: variant.backorder
-      })
-      await this.$gc.products.variants.put(variant.id, {
-        inventory: variant.inventory,
-        sku: variant.sku,
-        backorder: variant.backorder
-      })
-      done()
-      this.$notify.queue('success', this.$t('Product updated'))
+      try {
+        await this.$gc.products.variants.put(variant.published_parent.data.id, {
+          inventory: variant.inventory,
+          sku: variant.sku,
+          backorder: variant.backorder
+        })
+        await this.$gc.products.variants.put(variant.id, {
+          inventory: variant.inventory,
+          sku: variant.sku,
+          backorder: variant.backorder
+        })
+        done()
+        this.$notify.queue('success', this.$t('Product updated'))
+      } catch (e) {
+        this.$notify.queue('error', this.$t('Unable to update stock'))
+      }
     }, 300),
     handleVariantsChange: debounce(async function (variant, done) {
       await this.createDraft('product', this.product.id, {
