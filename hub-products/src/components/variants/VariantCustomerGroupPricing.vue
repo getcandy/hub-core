@@ -77,7 +77,6 @@ export default {
       const remaining = filter(this.groups, (g) => {
         return !pricingGroups.includes(g.id)
       })
-
       each(remaining, (group) => {
         this.pricing.push({
           customer_group_id: group.id,
@@ -88,7 +87,7 @@ export default {
       })
 
       if (remaining.length) {
-        this.$emit('input', this.pricing)
+        this.$emit('live-change', this.pricing)
       }
     }
   }
