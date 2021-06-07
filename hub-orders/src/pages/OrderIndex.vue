@@ -36,7 +36,7 @@
               icon="calendar-line"
               :placeholder="$t('Select date')"
               range
-              @input="loadData"
+              @input="updateDate"
             />
           </div>
         </div>
@@ -45,7 +45,7 @@
             <label>{{ $t('Shipping Zone') }}</label>
           </header>
           <div>
-            <gc-select-input v-model="filters.zone" @input="loadData">
+            <gc-select-input v-model="filters.zone" @input="filter('zone', filters.zone)">
               <option value>
                 {{ $t('All Zones') }}
               </option>
@@ -60,7 +60,7 @@
             <label>{{ $t('Status') }}</label>
           </header>
           <div>
-            <gc-select-input v-model="filters.status" @input="loadData">
+            <gc-select-input v-model="filters.status" @input="filter('status', filters.status)">
               <option value>
                 {{ $t('All Statuses') }}
               </option>
@@ -75,7 +75,7 @@
             <label>{{ $t('Payment Types') }}</label>
           </header>
           <div>
-            <gc-select-input v-model="filters.type" @input="loadData">
+            <gc-select-input v-model="filters.type" @input="filter('type', filters.type)">
               <option value>
                 {{ $t('All Types') }}
               </option>
@@ -96,6 +96,7 @@
       :settings="settings"
       :meta="meta"
       @changePage="changePage"
+      @filterStatus="filterStatus"
     />
 
     <orders-split-view
@@ -154,6 +155,43 @@ export default {
       meta: {}
     }
   },
+  async fetch () {
+    this.loading = true
+
+    const {
+      page,
+      to,
+      from,
+      status,
+      keywords,
+      per_page,
+      type,
+      sort,
+      zone
+    } = this.$route.query
+
+    const response = await this.$gc.orders.get({
+      includes: 'user.firstOrder,user.customer,shipping',
+      to: to || null,
+      from: from || null,
+      page: page || 1,
+      sort: sort || null,
+      status: status || null,
+      zone: zone || null,
+      keywords: keywords || null,
+      per_page: per_page || 50,
+      type: type || null
+    })
+
+    this.orders = response.data.data
+    this.meta = response.data.meta
+    this.loading = false
+    const meta = response.data.meta
+    this.total = meta.total
+    this.perPage = meta.per_page
+    this.page = meta.current_page
+
+  },
   mounted () {
     const { keywords, page, type } = this.$route.query
     this.searchTerm = keywords
@@ -161,7 +199,6 @@ export default {
     this.filters.type = type
 
     this.loadTypes()
-    this.loadData()
     this.loadShippingZones()
   },
   head () {
@@ -169,10 +206,35 @@ export default {
       title: 'Orders'
     }
   },
+  watch: {
+    '$route': '$fetch',
+  },
   methods: {
+    filterStatus(status) {
+      this.filter('status', status)
+    },
+    filter (handle, value) {
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          ...{
+            [handle]: value
+          }
+        }
+      })
+    },
     changePage (page) {
       this.page = page
-      this.loadData()
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          ...{
+            page: this.page
+          }
+        }
+      })
     },
     loadTypes () {
       this.$gc.orders.types().then((response) => {
@@ -185,11 +247,17 @@ export default {
       })
     },
     initSearch: debounce(function () {
-      this.loadData()
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          ...this.$route.query,
+          ...{
+            keywords: this.searchTerm
+          }
+        }
+      })
     }, 500),
-    async loadData () {
-      this.loading = true
-
+    updateDate () {
       let [from, to] = this.dates
 
       if (to) {
@@ -200,38 +268,17 @@ export default {
         from = moment(from).format('YYYY-MM-DD')
       }
 
-      const response = await this.$gc.orders.get({
-        includes: 'user.firstOrder,user.customer,shipping',
-        to,
-        from,
-        page: this.page,
-        sort: this.sort,
-        status: this.filters.status,
-        zone: this.filters.zone,
-        keywords: this.searchTerm,
-        per_page: this.perPage,
-        type: this.filters.type
-      })
-
-      this.orders = response.data.data
-      this.meta = response.data.meta
-      this.loading = false
-      const meta = response.data.meta
-      this.total = meta.total
-      this.perPage = meta.per_page
-      this.page = meta.current_page
-
       this.$router.push({
         path: this.$route.path,
         query: {
-          status: this.filters.status,
-          zone: this.filters.zone,
-          type: this.filters.type,
-          keywords: this.searchTerm,
-          page: this.page
+          ...this.$route.query,
+          ...{
+            to,
+            from
+          }
         }
       })
-    }
+    },
   },
   computed: {
     currencies () {
