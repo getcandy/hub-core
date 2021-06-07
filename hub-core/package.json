@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-core",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "description": "",
   "main": "src/module.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "@getcandy/hub-ui": "^0.13.3",
+    "@getcandy/hub-ui": "^0.13.4",
     "@getcandy/node-client": "^0.10.2",
     "dropzone": "^5.3.0",
     "fuse.js": "^3.4.3",
