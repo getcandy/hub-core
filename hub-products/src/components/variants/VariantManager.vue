@@ -96,6 +96,7 @@
                 :new-price="current.price"
                 :new-tax-id="current.tax.data.id"
                 @input="handleCustomerGroupPricingChange"
+                @live-change="handleLiveCustomerGroupPricingChange"
               />
             </template>
             <div v-else class="md:grid md:grid-cols-2 md:gap-6">
@@ -405,6 +406,12 @@ export default {
       } catch (e) {
         this.createErrors = e.response.data
       }
+    },
+    handleLiveCustomerGroupPricingChange (pricing) {
+      this.$set(this.current, 'customer_pricing', {
+        data: pricing
+      })
+      this.handleLiveChange()
     },
     handleCustomerGroupPricingChange (pricing) {
       this.$set(this.current, 'customer_pricing', {
