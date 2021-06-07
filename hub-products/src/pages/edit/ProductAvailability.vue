@@ -35,6 +35,7 @@ import VariantOptions from '../../components/variants/VariantOptions.vue'
 
 const find = require('lodash/find')
 const debounce = require('lodash/debounce')
+const get = require('lodash/get')
 const map = require('lodash/map')
 
 export default {
@@ -156,15 +157,20 @@ export default {
     },
     handleVariantsLiveChange: debounce(async function (variant, done) {
       try {
-        await this.$gc.products.variants.put(variant.published_parent.data.id, {
-          inventory: variant.inventory,
-          sku: variant.sku,
-          backorder: variant.backorder
-        })
+        const parent = get(variant, 'published_parent.data', null)
+        if (parent) {
+          await this.$gc.products.variants.put(parent.id, {
+            inventory: variant.inventory,
+            sku: variant.sku,
+            backorder: variant.backorder,
+            pricing: variant.customer_pricing.data
+          })
+        }
         await this.$gc.products.variants.put(variant.id, {
           inventory: variant.inventory,
           sku: variant.sku,
-          backorder: variant.backorder
+          backorder: variant.backorder,
+          pricing: variant.customer_pricing.data
         })
         done()
         this.$notify.queue('success', this.$t('Product updated'))
@@ -185,6 +191,11 @@ export default {
             }
           })
           variant.id = variantDraft ? variantDraft.id : variant.id
+          if (variantDraft) {
+            variant.published_parent = {
+              data: variantDraft.published_parent.data
+            }
+          }
         }
       }, this.$getcandy)
 
