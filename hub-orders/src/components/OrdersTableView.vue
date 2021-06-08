@@ -6,14 +6,29 @@
       </div>
       <update-order-status :order-id="checkedRows[0]" :statuses="settings.statuses.options" @save="handleStatusChange" />
     </div>
+    <div class="flex flex-no-wrap w-full overflow-x-auto text-sm bg-gray-200 border-b no-scrollbar">
+      <div class="flex-none" v-for="(status, statusKey) in favouriteStatuses" :key="statusKey">
+        <button
+          class="p-4 border-none shadow-none outline-none hover:bg-gray-100 focus:outline-none"
+          :class="{
+            'bg-white border-b border-purple-500': currentFilteredStatus === statusKey
+          }"
+          @click="filterByStatus(statusKey)"
+      >
+        {{ status.label }}
+      </button>
+      </div>
+    </div>
     <gc-table
       :data="orders"
       :loading="loading"
       :meta="meta"
       :columns="columns"
+      :checkable="true"
+      @toggleCheck="toggleRows"
       @changePage="changePage"
     >
-      <template v-slot:actions="{ row }">
+      <template v-slot:check="{ row }">
         <input v-model="checkedRows" type="checkbox" :value="row.id">
       </template>
       <template v-slot:new_returning="{ row }">
@@ -62,7 +77,7 @@
         <span v-html="formatSubTotal(row)" />
       </template>
       <template v-slot:date="{ row }">
-        {{ $format.date(row.placed_at) }}
+        {{ $format.date(row.placed_at || row.created_at) }}
       </template>
     </gc-table>
   </div>
@@ -72,7 +87,9 @@
 import InteractsWithOrders from '../mixins/InteractsWithOrders.js'
 import UpdateOrderStatus from './UpdateOrderStatus.vue'
 const each = require('lodash/each')
+const map = require('lodash/map')
 const find = require('lodash/find')
+const pickBy = require('lodash/pickBy')
 
 export default {
   components: {
@@ -117,9 +134,15 @@ export default {
     this.$nuxt.context.app.$hooks.callHook('orders.table.extend-actions', this.extendedOrderActions)
   },
   computed: {
+    favouriteStatuses () {
+      return pickBy(this.settings.statuses.options, option => option.favourite)
+    },
+    currentFilteredStatus () {
+      return this.$route.query.status
+    },
     columns () {
       const columns = [
-        { label: null, field: 'actions' },
+        { label: null, field: 'check' },
         { label: null, field: 'new_returning', class: 'w-12' },
         { label: 'Status', field: 'status' },
         { label: 'Reference', field: 'reference' },
@@ -136,7 +159,14 @@ export default {
   },
   methods: {
     changePage (page) {
+      this.checkedRows = []
       this.$emit('changePage', page)
+    },
+    toggleRows (event) {
+        this.checkedRows = event ? map(this.orders, order => order.id) : []
+    },
+    filterByStatus (status) {
+      this.$emit('filterStatus', status)
     },
     async handleStatusChange (data) {
       each(this.checkedRows, async (orderId) => {
@@ -159,6 +189,15 @@ export default {
 </script>
 
 <style scoped>
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
   .new-ret-tooltip {
     cursor: help;
   }
