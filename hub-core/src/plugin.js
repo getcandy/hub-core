@@ -49,6 +49,7 @@ import GroupedInput from './getcandyhub/components/forms/GroupedInput.vue'
 import HandleInput from './getcandyhub/components/forms/HandleInput.vue'
 import ImageUpload from './getcandyhub/components/forms/ImageUpload.vue'
 import Input from './getcandyhub/components/forms/Input.vue'
+import AddressManager from './getcandyhub/components/hub/AddressManager.vue'
 import LanguagePicker from './getcandyhub/components/hub/LanguagePicker.vue'
 import LinkInput from './getcandyhub/components/forms/LinkInput.vue'
 import LoadingSpinner from './getcandyhub/components/hub/LoadingSpinner.vue'
@@ -81,6 +82,7 @@ import UserStore from './getcandyhub/store/user.js';
 Vue.use(HubUi)
 
 Vue.component('activity-log', ActivityLog)
+Vue.component('address-manager', AddressManager)
 Vue.component('app-notification', AppNotification)
 Vue.component('attribute-translate', AttributeTranslate)
 Vue.component('auto-complete', AutoComplete)

@@ -1,10 +1,34 @@
 <template>
-  <div>
+  <div v-if="user">
     <toolbar :heading="user && user.name ? user.name : user.email">
-      <gc-button @click="save">
-        {{ $t('Save User') }}
-      </gc-button>
+      <div>
+        <gc-button theme="green" :loading="fetchingImpersonateToken" @click="handleImpersonate">
+          {{ $t('Impersonate') }}
+        </gc-button>
+      </div>
+      <div class="ml-2">
+        <gc-button @click="save">
+          {{ $t('Save User') }}
+        </gc-button>
+      </div>
     </toolbar>
+    <quick-view-panel :open="showImpersonateChannelSelect" heading="Select channel">
+      <div class="p-4">
+        <gc-form-field label="Select a channel">
+          <gc-select v-model="channelToImpersonate">
+            <option readonly>
+              Select channel
+            </option>
+            <option v-for="channel in channels" :key="channel.id" :value="channel.id">
+              {{ channel.name }}
+            </option>
+          </gc-select>
+        </gc-form-field>
+        <gc-button theme="green" :loading="fetchingImpersonateToken" @click="impersonate">
+          {{ $t('Impersonate') }}
+        </gc-button>
+      </div>
+    </quick-view-panel>
     <div class="p-6 bg-white">
       <div class="flex">
         <div class="w-3/4">
@@ -79,6 +103,7 @@
       </nav>
     </div>
     <div>
+      <address-manager v-if="currentTab == 'addresses'" :user-id="user.id" :addresses="user.addresses.data" @remove="removeAddress" @updated="$fetch" />
       <user-dashboard v-if="currentTab == 'dashboard'" :user-id="user.id" />
       <order-history v-if="currentTab == 'order-history'" :orders="orders" />
     </div>
@@ -91,6 +116,8 @@ import OrderHistory from './components/OrderHistory.vue'
 import UserDashboard from './components/UserDashboard.vue'
 
 const get = require('lodash/get')
+const find = require('lodash/find')
+const first = require('lodash/first')
 
 export default {
   components: {
@@ -100,23 +127,28 @@ export default {
   mixins: [
     HandlesForms
   ],
-  async asyncData ({ app, params }) {
-    const response = await app.$getcandy.on('users', 'getUsersUserId', params.id, {
+  async fetch () {
+    const { id } = this.$route.params
+    const response = await this.$getcandy.on('users', 'getUsersUserId', id, {
       query: {
-        include: 'orders,addresses,customer.customerGroups'
+        include: 'orders,addresses.country,customer.customerGroups'
       }
     })
-    return {
-      user: get(response, 'data.data'),
-      orders: get(response, 'data.data.orders.data', [])
-    }
+    this.user = get(response, 'data.data')
+    this.orders = get(response, 'data.data.orders.data', [])
   },
   data () {
     return {
+      user: null,
+      orders: [],
       currentTab: 'dashboard',
+      fetchingImpersonateToken: false,
+      channelToImpersonate: null,
+      showImpersonateChannelSelect: false,
       tabs: [
         { label: 'Dashboard', handle: 'dashboard' },
-        { label: 'Order History', handle: 'order-history' }
+        { label: 'Order History', handle: 'order-history' },
+        { label: 'Addresses', handle: 'addresses' }
       ],
       newPassword: null,
       newPasswordConfirmation: null
@@ -128,9 +160,43 @@ export default {
     },
     customerGroups () {
       return get(this.customer, 'customer_groups.data', [])
+    },
+    channels () {
+      return this.$store.state.core.channels
     }
   },
   methods: {
+    removeAddress (index) {
+      this.user.addresses.data.splice(index, 1)
+    },
+    async handleImpersonate () {
+      if (this.channels.length > 1) {
+        this.showImpersonateChannelSelect = true
+        return
+      }
+      this.channelToImpersonate = first(this.channels).id
+      await this.impersonate()
+    },
+    async impersonate () {
+      this.fetchingImpersonateToken = true
+
+      try {
+        const { data } = await this.$gc.$http.post('auth/impersonate', {
+          encoded_id: this.user.id
+        })
+        const token = data.access_token
+
+        const impersonatePath = (this.$config.impersonatePath || '/impersonate/:token').replace(':token', token.accessToken)
+
+        const channel = find(this.channels, channel => channel.id === this.channelToImpersonate)
+
+        window.open(`${channel.url}${impersonatePath}`, '_blank')
+      } catch (error) {
+
+      }
+
+      this.fetchingImpersonateToken = false
+    },
     save () {
       let data = this.user
 
@@ -150,7 +216,7 @@ export default {
   },
   head () {
     return {
-      title: this.user.email
+      title: this.user ? this.user.email : null
     }
   }
 }

@@ -39,6 +39,7 @@ export default function (_moduleOptions) {
 
     // Hub components
     'components/hub/ActivityLog.vue',
+    'components/hub/AddressManager.vue',
     'components/hub/AppNotification.vue',
     'components/hub/AttributeTranslate.vue',
     'components/hub/AutoComplete.vue',
