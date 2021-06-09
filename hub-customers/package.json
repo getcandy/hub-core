@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-customers",
-  "version": "0.12.12",
+  "version": "0.12.13",
   "description": "",
   "main": "src/module.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@getcandy/hub-core": "^0.12.12"
+    "@getcandy/hub-core": "^0.12.13"
   },
   "gitHead": "844b40607aa7054d3dd582ad933251f199dcd1bb"
 }
