@@ -6,34 +6,19 @@
           {{ $t('Add Categories') }}
         </gc-button>
       </div>
-      <quick-view-panel heading="Search categories" :open="showBrowser" width="w-2/3" @close="showBrowser = false">
-        <search-table
-          :limit="10"
-          includes="assets.transforms"
-          :search-placeholder="$t('Search categories')"
-          :update-query-string="false"
-          type="categories"
-          :columns="[
-            {label: '', field: 'thumbnail'},
-            {label: $t('Name'), field: 'name'},
-            {label: null, field: 'actions'},
-          ]"
-        >
-          <template v-slot:thumbnail="{ row }">
-            <thumbnail-loader width="25px" :asset="row.assets.data[0]" />
-          </template>
-          <template v-slot:name="{ row }">
-            {{ attribute(row.attribute_data, 'name') }}
-          </template>
-          <template v-slot:actions="{ row }">
-            <gc-button v-if="!selected.includes(row.id)" theme="green" @click="attach(row)">
-              Attach
-            </gc-button>
-            <gc-button v-else theme="danger" @click="detach(row)">
-              Detach
-            </gc-button>
-          </template>
-        </search-table>
+      <quick-view-panel heading="Attach categories" :open="showBrowser" width="w-2/3" @close="showBrowser = false">
+        <div class="p-4 bg-gray-100">
+          <category-list-item
+            v-for="category in tree"
+            :key="category.id"
+            :sortable="false"
+            :category="category"
+            :selected="selected"
+            :attachable="true"
+            @attach="attach"
+            @detach="detach"
+          />
+        </div>
       </quick-view-panel>
     </div>
     <gc-table
@@ -48,7 +33,12 @@
         <thumbnail-loader width="50px" :asset="row.assets.data[0]" />
       </template>
       <template v-slot:name="{ row }">
-        {{ attribute(row.attribute_data, 'name') }}
+        <span v-if="row.name">
+          {{ row.name }}
+        </span>
+        <span v-else>
+          {{ attribute(row.attribute_data, 'name') }}
+        </span>
       </template>
       <template v-slot:actions="{ row }">
         <gc-button theme="danger" @click="detach(row)">
@@ -61,9 +51,13 @@
 
 <script>
 import HasAttributes from '@getcandy/hub-core/src/mixins/HasAttributes'
+import CategoryListItem from './CategoryListItem.vue'
 const each = require('lodash/each')
 
 export default {
+  components: {
+    CategoryListItem
+  },
   mixins: [
     HasAttributes
   ],
@@ -79,7 +73,8 @@ export default {
     return {
       showBrowser: false,
       categories: this.product ? this.product.categories.data : [],
-      selected: []
+      selected: [],
+      tree: {}
     }
   },
   mounted () {
@@ -88,8 +83,19 @@ export default {
         this.selected.push(category.id)
       })
     })
+    this.loadTree()
   },
   methods: {
+    async loadTree () {
+      const { data } = await this.$getcandy.on('categories', 'getCategories', {
+        query: {
+          tree: true,
+          include: 'assets.transforms'
+        }
+      })
+
+      this.tree = data.data
+    },
     detach (category) {
       this.selected.splice(this.selected.indexOf(category.id), 1)
       this.categories.splice(this.categories.indexOf(category), 1)

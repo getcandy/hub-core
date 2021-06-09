@@ -31,7 +31,7 @@
             <span class="delete" data-dismiss="quickview" @click="$emit('close')" />
           </div>
         </header>
-        <div>
+        <div class="h-full overflow-y-auto ">
           <slot />
         </div>
         <footer class="px-3 mt-8 bg-white">

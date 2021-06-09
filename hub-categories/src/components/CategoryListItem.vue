@@ -45,20 +45,30 @@
       <div />
       <div>
         <div class="relative inline-block text-left">
-          <div v-if="showOptionIndicator">
-            <button type="button" class="inline-flex justify-center px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800" @click="showOptions = !showOptions">
-              <gc-icon icon="dots-vertical" />
-            </button>
+          <div v-if="attachable" class="mr-2">
+            <gc-button v-if="!selected.includes(category.id)" size="x-small" theme="green" @click="$emit('attach', category)">
+              Attach
+            </gc-button>
+            <gc-button v-else theme="danger" size="x-small" @click="$emit('detach', category)">
+              Detach
+            </gc-button>
           </div>
-          <div v-if="showOptions" class="absolute right-0 z-50 w-56 mt-2 origin-top-right rounded-md shadow-lg">
-            <div class="bg-white rounded-md shadow-xs ">
-              <div class="py-1">
-                <button class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" @click="showCreateModal = true">
-                  Create child
-                </button>
+          <template v-else>
+            <div v-if="showOptionIndicator">
+              <button type="button" class="inline-flex justify-center px-4 py-2 text-sm font-medium leading-5 text-gray-700 transition duration-150 ease-in-out bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800" @click="showOptions = !showOptions">
+                <gc-icon icon="dots-vertical" />
+              </button>
+            </div>
+            <div v-if="showOptions" class="absolute right-0 z-50 w-56 mt-2 origin-top-right rounded-md shadow-lg">
+              <div class="bg-white rounded-md shadow-xs ">
+                <div class="py-1">
+                  <button class="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" @click="showCreateModal = true">
+                    Create child
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </template>
         </div>
       </div>
     </div>
@@ -72,7 +82,15 @@
       }"
       class="pl-8"
     >
-      <category-list-item v-for="child in children" :key="child.id" :sortable="children.length > 1" :category="child" @expand="handleExpanded" />
+      <category-list-item
+        v-for="child in children"
+        :key="child.id" :sortable="children.length > 1"
+        :category="child" @expand="handleExpanded"
+        :attachable="attachable"
+        :selected="selected"
+        @attach="handleChildAttach"
+        @detach="handleChildDetach"
+      />
     </div>
     <quick-view-panel heading="Create a child category" :open="showCreateModal" @close="showCreateModal = false">
       <div class="p-6">
@@ -112,6 +130,14 @@ export default {
     sortable: {
       type: Boolean,
       default: false
+    },
+    selected: {
+      type: Array,
+      default: () => [],
+    },
+    attachable: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -127,6 +153,12 @@ export default {
   methods: {
     handleExpanded (parent, child) {
       this.$emit('expanded', parent, child)
+    },
+    handleChildAttach (category) {
+      this.$emit('attach', category)
+    },
+    handleChildDetach (category) {
+      this.$emit('detach', category)
     },
     loadChildren () {
       this.loadingChildren = true
