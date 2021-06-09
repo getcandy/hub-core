@@ -78,7 +78,7 @@
     >
       {{ $t('Are you sure you? This is a permanent action and cannot be reversed.') }}
     </simple-modal>
-    <quick-view-panel :open="!!address" heading="Edit address" width="w-1/3" @close="address = null">
+    <quick-view-panel :open="!!address" heading="Edit address" width="w-1/3" @close="cancel">
       <form v-if="address" class="p-4" @submit.prevent="saveAddress">
         <gc-form-field label="Type">
           <label>
@@ -113,10 +113,10 @@
               </option>
             </gc-select>
           </gc-form-field>
-          <gc-form-field label="Firstname">
+          <gc-form-field label="Firstname" :error="getFirstFormError('firstname')" required>
             <gc-input v-model="address.firstname" />
           </gc-form-field>
-          <gc-form-field label="Lastname">
+          <gc-form-field label="Lastname" :error="getFirstFormError('lastname')" required>
             <gc-input v-model="address.lastname" />
           </gc-form-field>
         </div>
@@ -131,7 +131,7 @@
             <gc-input v-model="address.phone" type="tel" />
           </gc-form-field>
         </div>
-        <gc-form-field label="Address">
+        <gc-form-field label="Address" :error="getFirstFormError('address')" required>
           <gc-input v-model="address.address" />
         </gc-form-field>
         <div class="grid grid-cols-2 gap-4">
@@ -143,35 +143,49 @@
           </gc-form-field>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <gc-form-field label="City">
+          <gc-form-field label="City" :error="getFirstFormError('city')" required>
             <gc-input v-model="address.city" />
           </gc-form-field>
-          <gc-form-field label="Postal Code">
+          <gc-form-field label="Postal Code" :error="getFirstFormError('postal_code')" required>
             <gc-input v-model="address.postal_code" />
           </gc-form-field>
         </div>
-        <gc-form-field label="Country">
+        <gc-form-field label="Country" :error="getFirstFormError('country_id')" required>
           <gc-select v-model="address.country_id">
             <option v-for="country in countries" :key="country.id" :value="country.id">
               {{ country.name }}
             </option>
           </gc-select>
         </gc-form-field>
-        <gc-button theme="gray" @click="address = null">
+        <gc-button theme="gray" type="button" class="mr-4" @click="cancel">
           {{ $t('Cancel') }}
         </gc-button>
-        <gc-button>{{ $t('Save Address') }}</gc-button>
+        <gc-button v-if="address.id" type="button" theme="green" class="mr-4" @click="duplicate">
+          <template v-if="address.type == 'billing'">
+            {{ $t('Duplicate to shipping') }}
+          </template>
+          <template v-else>
+            {{ $t('Duplicate to billing') }}
+          </template>
+        </gc-button>
+        <gc-button>
+          {{ $t(address.id ? 'Save Address' : 'Create Address') }}
+        </gc-button>
       </form>
     </quick-view-panel>
   </div>
 </template>
 
 <script>
+import HandlesForms from '@getcandy/hub-core/src/mixins/HandlesForms.js'
 const filter = require('lodash/filter')
 const findIndex = require('lodash/findIndex')
 const get = require('lodash/get')
 
 export default {
+  mixins: [
+    HandlesForms
+  ],
   props: {
     addresses: {
       type: Array,
@@ -282,11 +296,14 @@ export default {
         country_id: null
       }
     },
-    async saveAddress () {
+    async saveAddress (duplicate = false) {
       try {
         const address = this.address
-        address.shipping = address.type === 'shipping'
-        address.billing = address.type === 'billing'
+        if (!duplicate) {
+          address.shipping = address.type === 'shipping'
+          address.billing = address.type === 'billing'
+        }
+
         if (this.address.id) {
           await this.$gc.$http.put(`/addresses/${this.address.id}`, address)
         } else {
@@ -295,18 +312,43 @@ export default {
           await this.$gc.$http.post('/addresses', address)
         }
 
-        this.$notify.queue('success', this.$t('Address updated'))
+        this.$notify.queue('success', this.$t(duplicate ? 'Address duplicated' : 'Address updated'))
         this.address = null
         this.$emit('updated')
       } catch (error) {
-        this.$notify.queue('error', this.$t('Unable to update address'))
+        this.setFormErrors(error.response.data.errors)
+        this.$notify.queue(
+          'error',
+          this.$t(
+            duplicate ? 'Unable to duplicate address' : (this.address.id ? 'Unable to update address' : 'Unable to create address')
+          )
+        )
       }
+    },
+    async duplicate () {
+      this.address.billing = this.address.type === 'shipping'
+      this.address.shipping = this.address.type === 'billing'
+      delete this.address.id
+      delete this.address.last_used_at
+      delete this.address.meta
+      delete this.address.delivery_instructions
+      if (!this.address.email) {
+        delete this.address.email
+      }
+      if (!this.address.salutation) {
+        delete this.address.salutation
+      }
+      await this.saveAddress(true)
     },
     getCountryName (country) {
       return get(country, 'data.name', '-')
     },
     getAddresses (type) {
       return filter(this.addresses, address => !!address[type])
+    },
+    cancel () {
+      this.address = null
+      this.setFormErrors({})
     },
     async removeAddress () {
       try {
