@@ -31,7 +31,7 @@
             <span class="delete" data-dismiss="quickview" @click="$emit('close')" />
           </div>
         </header>
-        <div class="h-full overflow-y-auto ">
+        <div :class="containerClass">
           <slot />
         </div>
         <footer class="px-3 mt-8 bg-white">
@@ -65,6 +65,10 @@ export default {
     open: {
       type: Boolean,
       default: false
+    },
+    containerClass: {
+      type: String,
+      default: null
     }
   }
 }

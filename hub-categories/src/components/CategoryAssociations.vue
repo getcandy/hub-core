@@ -6,7 +6,7 @@
           {{ $t('Add Categories') }}
         </gc-button>
       </div>
-      <quick-view-panel heading="Attach categories" :open="showBrowser" width="w-2/3" @close="showBrowser = false">
+      <quick-view-panel heading="Attach categories" container-class="h-full overflow-y-auto" :open="showBrowser" width="w-2/3" @close="showBrowser = false">
         <div class="p-4 bg-gray-100">
           <category-list-item
             v-for="category in tree"

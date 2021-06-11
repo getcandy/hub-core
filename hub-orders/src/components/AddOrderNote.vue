@@ -19,7 +19,7 @@
                 <label>{{ $t('Note') }}</label>
               </header>
               <div>
-                <gc-textarea v-model="message" type="textarea" />
+                <gc-textarea v-model="message" type="textarea" required/>
               </div>
             </div>
 
@@ -63,6 +63,11 @@
         this.showModal = false;
       },
       async save () {
+
+        if (!this.message) {
+          return;
+        }
+
         const note = {
           properties: {
             message: this.message,
