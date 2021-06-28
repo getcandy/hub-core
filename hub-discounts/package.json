@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-discounts",
-  "version": "0.12.16",
+  "version": "0.12.17",
   "description": "",
   "main": "src/module.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@getcandy/hub-core": "^0.12.4"
+    "@getcandy/hub-core": "^0.12.17"
   },
   "gitHead": "d88d8b46e456e92c7baeddf1efb0962008ab2f52"
 }

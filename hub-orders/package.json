@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-orders",
-  "version": "0.12.14",
+  "version": "0.12.17",
   "description": "",
   "main": "src/module.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@getcandy/hub-core": "^0.12.14",
+    "@getcandy/hub-core": "^0.12.17",
     "chart.js": "^2.9.3",
     "moment": "^2.24.0"
   },
