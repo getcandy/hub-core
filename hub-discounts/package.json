@@ -1,0 +1,27 @@
+{
+  "name": "@getcandy/hub-discounts",
+  "version": "0.12.0",
+  "description": "",
+  "main": "src/module.js",
+  "scripts": {
+    "test": "jest",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:getcandy/hub-core.git",
+    "directory": "hub-discounts"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "@getcandy/hub-core": "^0.12.4"
+  },
+  "gitHead": "d88d8b46e456e92c7baeddf1efb0962008ab2f52"
+}
