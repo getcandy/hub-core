@@ -109,7 +109,7 @@ export default {
 
 
     each(fields, (field, handle) => {
-      if (!customer.fields) {
+      if (_.isEmpty(customer.fields)) {
         customer.fields = {}
       }
       if (!customer.fields[handle]) {
