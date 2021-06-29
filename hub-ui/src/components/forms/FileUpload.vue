@@ -18,7 +18,7 @@
               </div>
           </div>
           <div v-if="!!getFileErrors(file.id)">
-            <span class="text-sm text-red-600">{{ getFileErrors(file.id).join(',') }}</span>
+            <span class="text-sm text-red-600">{{ (Array.isArray(getFileErrors(file.id)))?getFileErrors(file.id).join(','):getFileErrors(file.id) }}</span>
           </div>
           <div v-if="!getFileErrors(file.id)">
           </div>
