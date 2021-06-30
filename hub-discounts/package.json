@@ -1,5 +1,5 @@
 {
-  "name": "@getcandy/hub-discounts",
+  "name": "@getcandy/hub-basic-discounts",
   "version": "0.12.18",
   "description": "",
   "main": "src/module.js",
