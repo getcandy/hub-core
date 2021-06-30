@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-ui",
-  "version": "0.12.19",
+  "version": "0.12.20",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -55,5 +55,5 @@
     "last 2 versions",
     "not dead"
   ],
-  "gitHead": "04aba41e1b6ca8b81155c099e23a1dd6c0f2dc8a"
+  "gitHead": "e9cfdb687ed235b7c136531aace0a9abc0745b53"
 }
