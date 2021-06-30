@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-core",
-  "version": "0.12.21",
+  "version": "0.12.22",
   "description": "",
   "main": "src/module.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "@getcandy/hub-ui": "^0.12.21",
+    "@getcandy/hub-ui": "^0.12.22",
     "@getcandy/node-client": "^0.10.2",
     "dropzone": "^5.3.0",
     "fuse.js": "^3.4.3",
@@ -53,5 +53,5 @@
     "vue-template-loader": "^1.0.0",
     "webpack": "^4.41.2"
   },
-  "gitHead": "ce1744d08e65493cab6ffb5fc646c69278a3f606"
+  "gitHead": "44affbe58a8b08c34f3a9d41459d8db89df5f387"
 }
