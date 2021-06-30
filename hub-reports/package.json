@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-reports",
-  "version": "0.12.18",
+  "version": "0.12.19",
   "description": "",
   "main": "src/module.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@getcandy/hub-core": "^0.12.18"
+    "@getcandy/hub-core": "^0.12.19"
   },
   "gitHead": "04aba41e1b6ca8b81155c099e23a1dd6c0f2dc8a"
 }
