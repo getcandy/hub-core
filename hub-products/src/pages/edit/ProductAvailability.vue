@@ -77,6 +77,40 @@ export default {
     syncModel () {
       this.product = this.normalize(this.storeModel)
     },
+    formatPayload (variant) {
+      const payload = {
+        price: variant.price,
+        asset_id: variant.asset_id,
+        tax_id: variant.tax.data.id,
+        sku: variant.sku,
+        weight: variant.weight,
+        min_qty: variant.min_qty,
+        unit_qty: variant.unit_qty,
+        min_batch: variant.min_batch,
+        height: variant.height,
+        depth: variant.depth,
+        width: variant.width,
+        volume: variant.volume,
+        inventory: variant.inventory,
+        incoming: variant.incoming,
+        backorder: variant.backorder,
+        pricing: variant.customer_pricing.data,
+        tiers: [],
+        options: variant.options
+      }
+
+      if (variant.tiers.data.length) {
+        payload.tiers = map(variant.tiers.data, (tier) => {
+          return {
+            lower_limit: tier.lower_limit,
+            price: tier.price,
+            customer_group_id: tier.group.id
+          }
+        })
+      }
+
+      return payload;
+    },
     handleCustomerGroupsChange: debounce(async function (groups) {
       await this.createDraft('product', this.product.id, {
         afterRedirect: (product) => {
@@ -158,20 +192,13 @@ export default {
     handleVariantsLiveChange: debounce(async function (variant, done) {
       try {
         const parent = get(variant, 'published_parent.data', null)
+
+        const payload = this.formatPayload(variant);
+
         if (parent) {
-          await this.$gc.products.variants.put(parent.id, {
-            inventory: variant.inventory,
-            sku: variant.sku,
-            backorder: variant.backorder,
-            pricing: variant.customer_pricing.data
-          })
+          await this.$gc.products.variants.put(parent.id, payload)
         }
-        await this.$gc.products.variants.put(variant.id, {
-          inventory: variant.inventory,
-          sku: variant.sku,
-          backorder: variant.backorder,
-          pricing: variant.customer_pricing.data
-        })
+        await this.$gc.products.variants.put(variant.id, payload)
         done()
         this.$notify.queue('success', this.$t('Product updated'))
       } catch (e) {
@@ -199,37 +226,7 @@ export default {
         }
       }, this.$getcandy)
 
-      const payload = {
-        price: variant.price,
-        asset_id: variant.asset_id,
-        tax_id: variant.tax.data.id,
-        sku: variant.sku,
-        weight: variant.weight,
-        min_qty: variant.min_qty,
-        unit_qty: variant.unit_qty,
-        min_batch: variant.min_batch,
-        height: variant.height,
-        depth: variant.depth,
-        width: variant.width,
-        volume: variant.volume,
-        inventory: variant.inventory,
-        incoming: variant.incoming,
-        backorder: variant.backorder,
-        pricing: variant.customer_pricing.data,
-        tiers: [],
-        options: variant.options
-      }
-
-      if (variant.tiers.data.length) {
-        payload.tiers = map(variant.tiers.data, (tier) => {
-          return {
-            lower_limit: tier.lower_limit,
-            price: tier.price,
-            customer_group_id: tier.group.id
-          }
-        })
-      }
-
+      const payload = this.formatPayload(variant);
       try {
         await this.$gc.products.variants.put(variant.id, payload)
         this.$notify.queue('success', this.$t('Product updated'))

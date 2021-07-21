@@ -58,7 +58,7 @@
         <template v-if="hasOptionData">
           <header class="px-6 py-3 border-t border-b shadow-sm">
             <h3 class="text-sm font-bold text-gray-700">
-              {{ $t('Details') }}
+              {{ $t('Variant Details') }}
             </h3>
           </header>
           <div class="p-6">
@@ -383,12 +383,8 @@ export default {
       })
     },
     async handleAssetChange (assetId) {
-      await this.createDraft('product', this.product.id, {
-      })
       this.$set(this.current, 'asset_id', assetId)
-
       const asset = find(this.productImages, asset => asset.id === assetId)
-
       this.$set(this.current, 'image', asset)
       this.handleChange()
     },
