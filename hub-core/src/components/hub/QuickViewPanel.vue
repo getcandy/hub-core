@@ -22,7 +22,7 @@
       leave-class="translate-x-0"
       leave-active-class="transition duration-100 ease-in-out transform sm:duration-100"
     >
-      <div v-show="open" class="fixed top-0 right-0 z-50 h-full bg-white shadow-2xl" :class="`${width}`">
+      <div v-show="open" class="fixed top-0 right-0 z-50 h-full bg-white shadow-2xl overflow-y-auto" :class="`${width}`">
         <header v-if="heading" class="px-3 py-4 border-b shadow-sm">
           <div class="flex justify-between">
             <h3 class="text-sm font-bold uppercase">
