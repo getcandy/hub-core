@@ -12,10 +12,10 @@
       <slot name="empty" />
       <gc-button @click="pickerIsVisible = true">{{ $t('Select an image') }}</gc-button>
     </div>
-    <quick-view-panel :open="pickerIsVisible" @close="pickerIsVisible = false" heading="Select an asset">
+    <quick-view-panel :open="pickerIsVisible" @close="pickerIsVisible = false" heading="Select an asset" width="w-2/5">
       <div class="p-4">
         <form @submit.prevent="save">
-          <div class="grid grid-cols-2 gap-4 ">
+          <div class="grid grid-cols-3 gap-4 ">
             <label
               v-for="asset in assets"
               :key="asset.id"
