@@ -36,7 +36,7 @@
         v-if="attribute.type == 'richtext'"
         :value="getValue(attribute.handle)"
         @input="setValue(attribute.handle, $event)"
-        @change="(value) => $emit('change', value)"
+        @change="setValue(attribute.handle, $event)"
       />
 
       <!-- <gc-input
