@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     formattedValue () {
-      return this.$format.currency(this.value, this.currency, this.isCents, false)
+      return this.$format.currency(this.value, this.currency, this.isCents, false).replace(',', '')
     }
   }
 }
