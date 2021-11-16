@@ -11,7 +11,8 @@ const defaultIncludes = Array([
   'versions.user',
   'routes.language',
   'routes.publishedParent',
-  'routes.draft'
+  'routes.draft',
+  'products',
 ]).join(',')
 
 export const state = () => ({

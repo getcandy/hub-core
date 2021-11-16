@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-categories",
-  "version": "0.13.7",
+  "version": "0.13.8",
   "description": "",
   "main": "src/module.js",
   "scripts": {
