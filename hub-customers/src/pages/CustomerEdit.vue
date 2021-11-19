@@ -85,6 +85,7 @@ import HandlesForms from '@getcandy/hub-core/src/mixins/HandlesForms.js'
 const get = require('lodash/get')
 const map = require('lodash/map')
 const each = require('lodash/each')
+const set = require('lodash/set')
 
 export default {
   layout: 'customer',
@@ -107,13 +108,13 @@ export default {
     const fields = get(fieldsResponse, 'data.data.fields', [])
     const customer = get(response, 'data.data')
 
+    if (!customer.fields || Array.isArray(customer.fields)) {
+      customer.fields = {}
+    }
 
     each(fields, (field, handle) => {
-      if (!customer.fields) {
-        customer.fields = {}
-      }
       if (!customer.fields[handle]) {
-        customer.fields[handle] = ''
+        set(customer.fields, handle, '')
       }
     })
 
