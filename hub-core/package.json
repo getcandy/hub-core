@@ -1,6 +1,6 @@
 {
   "name": "@getcandy/hub-core",
-  "version": "0.12.22",
+  "version": "0.12.23",
   "description": "",
   "main": "src/module.js",
   "scripts": {
