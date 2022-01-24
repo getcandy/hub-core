@@ -1,7 +1,14 @@
 <template>
   <div class="search-table">
     <div v-if="hideSearch === false" class="search-field">
-      <gc-input v-model="searchTerm" :placeholder="$t(searchPlaceholder)" @input="refresh" />
+      <div class="flex">
+        <div class="w-full mr-6">
+          <gc-input v-model="searchTerm" :placeholder="$t(searchPlaceholder)" />
+        </div>
+        <gc-button type="button" theme="gray" @click="refresh">
+          Search
+        </gc-button>
+      </div>
     </div>
     <div v-if="largeDataSet" class="p-4 text-xs font-medium text-white bg-red-500">
       Large data set returned, showing the first <strong class="text-white">{{ total }}</strong> results, use search and filters to find products.
@@ -84,10 +91,12 @@ export default {
     }
   },
   watch: {
-    externalTerm () {
-      this.searchTerm = this.externalTerm
-      this.refresh()
-    },
+    externalTerm: debounce(function () {
+      if (!this.externalTerm || this.externalTerm.length >= 3) {
+        this.searchTerm = this.externalTerm
+        this.refresh()
+      }
+    }, 300),
     filters: {
       deep: true,
       handler () {

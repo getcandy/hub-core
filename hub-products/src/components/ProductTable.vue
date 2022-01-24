@@ -7,12 +7,12 @@
     :checkable="checkable"
     class="has-round-edge"
     includes="channels,customer_groups,family,variants,assets.transforms,draft"
-    :hide-search="hideSearch"
+    :hide-search="false"
     :columns="tableColumns"
     @loaded="(e) => $emit('loaded', e)"
   >
-    <template v-slot:selection="{ row }" v-if="checkable">
-      <input type="checkbox" v-model="selected" :value="row" />
+    <template v-if="checkable" v-slot:selection="{ row }">
+      <input v-model="selected" type="checkbox" :value="row">
     </template>
     <template v-slot:status="{ row }">
       <span
@@ -30,7 +30,6 @@
       </span>
     </template>
     <template v-slot:name="{ row }">
-
       <nuxt-link
         class="flex items-center block"
         :to="{
@@ -97,28 +96,28 @@ export default {
       selected: []
     }
   },
-  watch: {
-    selected(val) {
-      this.$emit('selected', val)
-    }
-  },
   computed: {
-    tableColumns() {
+    tableColumns () {
       const columns = [
-        {label: 'Status', field: 'status'},
-        {label: this.$t('Name'), field: 'name', truncate: true},
-        {label: this.$t('Stock'), field: 'stock'},
-        {label: this.$t('Channels'), field: 'channels'},
-        {label: this.$t('Customer Groups'), field: 'customer-groups'},
-        {label: this.$t('Purchasable'), field: 'customer-groups'},
-      ];
+        { label: 'Status', field: 'status' },
+        { label: this.$t('Name'), field: 'name', truncate: true },
+        { label: this.$t('Stock'), field: 'stock' },
+        { label: this.$t('Channels'), field: 'channels' },
+        { label: this.$t('Customer Groups'), field: 'customer-groups' },
+        { label: this.$t('Purchasable'), field: 'customer-groups' }
+      ]
 
       if (this.checkable) {
         columns.unshift({
           name: null, field: 'selection'
         })
       }
-      return columns;
+      return columns
+    }
+  },
+  watch: {
+    selected (val) {
+      this.$emit('selected', val)
     }
   },
   methods: {
