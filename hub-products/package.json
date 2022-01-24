@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@getcandy/hub-core": "^0.12.22"
+    "@getcandy/hub-core": "^0.12.23"
   },
   "gitHead": "44affbe58a8b08c34f3a9d41459d8db89df5f387"
 }
