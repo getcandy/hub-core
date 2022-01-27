@@ -1,14 +1,14 @@
 <template>
   <div class="search-table">
     <div v-if="hideSearch === false" class="search-field">
-      <div class="flex">
+      <form class="flex" @submit.prevent="refresh">
         <div class="w-full mr-6">
           <gc-input v-model="searchTerm" :placeholder="$t(searchPlaceholder)" />
         </div>
-        <gc-button type="button" theme="gray" @click="refresh">
+        <gc-button theme="gray">
           Search
         </gc-button>
-      </div>
+      </form>
     </div>
     <div v-if="largeDataSet" class="p-4 text-xs font-medium text-white bg-red-500">
       Large data set returned, showing the first <strong class="text-white">{{ total }}</strong> results, use search and filters to find products.
