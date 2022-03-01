@@ -2,7 +2,14 @@
   <div>
     <toolbar heading="Orders">
       <template v-slot:search>
-        <gc-input v-model="searchTerm" icon="search-line" :placeholder="$t('Search orders...')" @input="initSearch" />
+        <form class="flex" @submit.prevent="initSearch">
+          <div class="w-full mr-2">
+            <gc-input v-model="searchTerm" icon="search" :placeholder="$t('Search orders...')" />
+          </div>
+          <gc-button theme="gray">
+            Search
+          </gc-button>
+        </form>
       </template>
       <div class="flex items-center">
         <div class="mr-4">
@@ -130,31 +137,6 @@ export default {
   mixins: [
     HasAttributes
   ],
-  async asyncData ({ app, params }) {
-    const settingResponse = await app.$gc.settings.fetch('orders')
-
-    return {
-      loading: true,
-      perPage: 30,
-      dates: [],
-      filters: {
-        status: null,
-        zone: null,
-        type: null,
-      },
-      checkedRows: [],
-      page: 1,
-      total: 0,
-      orders: [],
-      types: [],
-      showFilters: false,
-      zones: [],
-      searchTerm: null,
-      settings: settingResponse.data.data,
-      view: 'table',
-      meta: {}
-    }
-  },
   async fetch () {
     this.loading = true
 
@@ -190,7 +172,34 @@ export default {
     this.total = meta.total
     this.perPage = meta.per_page
     this.page = meta.current_page
+  },
+  async asyncData ({ app, params }) {
+    const settingResponse = await app.$gc.settings.fetch('orders')
 
+    return {
+      loading: true,
+      perPage: 30,
+      dates: [],
+      filters: {
+        status: null,
+        zone: null,
+        type: null
+      },
+      checkedRows: [],
+      page: 1,
+      total: 0,
+      orders: [],
+      types: [],
+      showFilters: false,
+      zones: [],
+      searchTerm: null,
+      settings: settingResponse.data.data,
+      view: 'table',
+      meta: {}
+    }
+  },
+  watch: {
+    $route: '$fetch'
   },
   mounted () {
     const { keywords, page, type } = this.$route.query
@@ -206,11 +215,8 @@ export default {
       title: 'Orders'
     }
   },
-  watch: {
-    '$route': '$fetch',
-  },
   methods: {
-    filterStatus(status) {
+    filterStatus (status) {
       this.filter('status', status)
     },
     filter (handle, value) {
@@ -278,7 +284,7 @@ export default {
           }
         }
       })
-    },
+    }
   },
   computed: {
     currencies () {
