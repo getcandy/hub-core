@@ -80,6 +80,14 @@ export default {
         if (attribute.group && !exists) {
           groups.push(attribute.group.data)
         }
+
+        if (!data.attribute_data[attribute.handle]) {
+          this.$set(data.attribute_data, attribute.handle, {
+            [this.channel]: {
+              en: ''
+            }
+          })
+        }
       })
 
       groups = orderBy(groups, 'position', 'asc')
